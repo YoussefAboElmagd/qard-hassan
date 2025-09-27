@@ -4,7 +4,7 @@ import logo from '@/assets/images/logo.png'
 
 export default function LoadingScreen() {
     return (
-        <div className='fixed inset-0 z-[60] grid place-items-center' style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}>
+        <div className='fixed inset-0 flex items-center justify-center z-[9999] bg-primary/70'>
             <div className='flex flex-col items-center gap-6 rounded-2xl bg-white/90 p-8 shadow-2xl backdrop-blur-sm border border-gray-200/50' role='status' aria-live='polite'>
                 <div className='relative h-16 w-16'>
                     <span className='absolute inset-0 rounded-full border-4 border-gray-200 border-t-primary animate-spin [animation-duration:1.2s] dark:border-gray-700 dark:border-t-primary'></span>
