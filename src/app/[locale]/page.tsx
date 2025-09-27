@@ -1,3 +1,4 @@
+'use client'
 import Navbar from "@/components/navbar/navbar";
 import background from "@/assets/images/LandingImgs/landingHeaderBG.png";
 import headerWhiteTop from "@/assets/images/LandingImgs/header-white-top.png";
@@ -10,8 +11,10 @@ import LoanFundingIntro from "@/components/LoanFundingIntroCard/LoanFundingIntro
 import TestimonialsCarousel from "@/components/TestimonialCard/testimonialCard";
 import FAQAccordion from "@/components/FAQAccordion/FAQAccordion";
 import Footer from "@/components/Footer/footer";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
+  const router = useRouter();
   return (
     <>
       <header className="w-full relative h-auto lg:h-[60vh] pb-10 lg:pb-0 bg-cover bg-center mb-16" style={{
@@ -34,7 +37,7 @@ export default function LandingPage() {
                 نقدم لك قروضًا حسنة بدون فوائد ربوية، متوافقة مع أحكام الشريعة الإسلامية. نؤمن بأن التمويل يجب أن يكون وسيلة لتمكين الأفراد والمجتمعات، لا عبئًا يثقل كاهلهم.
               </p>
 
-              <button className="bg-secondary hover:bg-secondary/90 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 flex items-center gap-2 w-fit mx-auto lg:ml-0 lg:mr-auto">
+              <button onClick={() => router.push('/ar/user-profile/loans/loan-request')} className="bg-secondary cursor-pointer hover:bg-secondary/90 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 flex items-center gap-2 w-fit mx-auto lg:ml-0 lg:mr-auto">
                 <span>اطلب الان</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
