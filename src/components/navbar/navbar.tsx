@@ -18,7 +18,7 @@ const links = [
     title: "من نحن",
   },
   {
-    ref: "",
+    ref: "/ar/user-profile/loans/loan-request",
     title: "طلب قرض",
   },
   {
