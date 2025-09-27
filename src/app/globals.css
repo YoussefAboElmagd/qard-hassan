@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "daisyui" {
+  themes: light --default;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -49,15 +52,15 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* --background: oklch(1 0 0); */
+  /* --foreground: oklch(0.145 0 0); */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: rgba(64, 111, 147, 1);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: rgba(217, 166, 69, 1);
+  --secondary: #d9a645;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -149,5 +152,5 @@
 .swiper-pagination-bullet-active {
   width: 32px;
   border-radius: 4px;
-  background: #2563eb;
+  background-color: var(--primary) !important;
 }

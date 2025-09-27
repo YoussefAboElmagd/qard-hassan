@@ -5,6 +5,7 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { FcBusinessman } from 'react-icons/fc';
+import { PiStarFourFill } from 'react-icons/pi';
 
 const TestimonialsCarousel = () => {
     const testimonials = [
@@ -19,7 +20,10 @@ const TestimonialsCarousel = () => {
     return (
         <div className="p-16  mt-10" dir="rtl">
             <div className="text-center mb-12">
-                <button className="text-blue-600 mb-4">شهادات ✚</button>
+                <div className='flex items-center justify-center gap-2 mb-4'>
+                    <PiStarFourFill className='text-lg text-primary' />
+                    <button className="text-primary text-xl font-bold">شهادات </button>
+                </div>
                 <h2 className="text-4xl font-bold">
                     ماذا يقول <span className="text-yellow-500">مستخدمنا السعيد</span>
                 </h2>
@@ -36,7 +40,7 @@ const TestimonialsCarousel = () => {
                     768: { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
                 }}
-                className="p-8"
+                className="p-8 "
             >
                 {testimonials.map((item, i) => (
                     <SwiperSlide key={i}>
@@ -54,7 +58,7 @@ const TestimonialsCarousel = () => {
                 ))}
             </Swiper>
 
-            
+
         </div>
     );
 };

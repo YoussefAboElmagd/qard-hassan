@@ -5,46 +5,49 @@ import appleStore from '@/assets/images/LandingImgs/Group.png'
 import logo from '@/assets/images/main-logo.png'
 import Image from 'next/image';
 
-const Footer = () => {
+const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
     return (
         <div className="bg-gray-50 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
             {/* Main content container */}
             <div className="max-w-7xl mx-auto">
                 {/* Top section with newsletter and logo */}
-                <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between mb-12 lg:mb-16">
-                    {/* Right side - Logo and tagline */}
-                    <div className="text-center lg:text-right">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 leading-tight text-secondary">
-                            <span className='text-primary'>تابع آخر</span>  الأخبار
-                        </h1>
-                        <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
-                            انضم إلى نشرتنا الإخبارية للبقاء على اطلاع على الميزات والإصدارات.                        </p>
-                    </div>
-                    {/* Left side - Newsletter signup */}
-                    <div className="flex-1 max-w-lg w-full">
-                        <h2 className="text-gray-600 text-base sm:text-lg mb-6 font-bold text-center lg:text-right">دائماً على تواصل</h2>
+                {contactUsFooter ? "" : <>
 
-                        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between mb-12 lg:mb-16">
+                        {/* Right side - Logo and tagline */}
+                        <div className="text-center lg:text-right">
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 leading-tight text-secondary">
+                                <span className='text-primary'>تابع آخر</span>  الأخبار
+                            </h1>
+                            <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
+                                انضم إلى نشرتنا الإخبارية للبقاء على اطلاع على الميزات والإصدارات.                        </p>
+                        </div>
+                        {/* Left side - Newsletter signup */}
+                        <div className="flex-1 max-w-lg w-full">
+                            <h2 className="text-gray-600 text-base sm:text-lg mb-6 font-bold text-center lg:text-right">دائماً على تواصل</h2>
 
-                            <input
-                                type="email"
-                                placeholder="ادخل البريد الالكتروني"
-                                className="flex-1 w-full px-5 py-3 border border-primary placeholder:text-primary rounded-full text-sm text-right focus:outline-none focus:border-2"
-                            />
-                            <button className="bg-secondary hover:bg-secondary/80 text-white px-8 py-3 rounded-full font-bold transition-colors w-full sm:w-auto">
-                                اشترك
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+
+                                <input
+                                    type="email"
+                                    placeholder="ادخل البريد الالكتروني"
+                                    className="flex-1 w-full px-5 py-3 border border-primary placeholder:text-primary rounded-full text-sm text-right focus:outline-none focus:border-2"
+                                />
+                                <button className="bg-secondary hover:bg-secondary/80 text-white px-8 py-3 rounded-full font-bold transition-colors w-full sm:w-auto">
+                                    اشترك
+                                </button>
+                            </div>
+
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                من خلال الاشتراك فإنك توافق على سياسة الخصوصية لخدمتنا
+                            </p>
                         </div>
 
-                        <p className="text-gray-500 text-sm leading-relaxed">
-                            من خلال الاشتراك فإنك توافق على سياسة الخصوصية لخدمتنا
-                        </p>
+
                     </div>
 
-
-                </div>
-
-                <div className="border-t border-gray-300 mb-12"></div>
+                    <div className="border-t border-gray-300 mb-12"></div>
+                </>}
 
                 <div className='flex flex-col sm:flex-row gap-6 sm:gap-10 justify-between items-center py-8 sm:py-10'>
                     <Image src={logo.src} alt="logo" width={200} height={150} className="w-40 sm:w-48 md:w-56 h-auto" />
@@ -94,7 +97,7 @@ const Footer = () => {
                     </div>
                     {/* App download buttons */}
                     <div className="flex gap-4 mb-6 flex-wrap justify-center sm:justify-end ">
-                      
+
                         <div className="cursor-pointer hover:opacity-80 transition-opacity">
                             <Image
                                 src={googlePlay.src}

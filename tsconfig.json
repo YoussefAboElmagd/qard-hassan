@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/[locale]/home/page.jsx"
-, "src/app/[locale]/contact-us/page.jsx"  ],
+, "src/app/[locale]/contact-us/page.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -54,7 +54,7 @@ export default function LandingPage() {
       <LoanFundingIntro/>
       <TestimonialsCarousel/>
       <FAQAccordion/>
-      <Footer/>
+      <Footer contactUsFooter={false} />
     </>
   )
 }
