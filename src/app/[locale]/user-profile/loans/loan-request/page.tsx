@@ -20,6 +20,7 @@ export default function LoanRequest() {
       <LoanRequestForm />
       <FinancialStatusForm />
       <GuarantorInformationForm />
+
       
       {/* Final Submit Button */}
       <div className="flex justify-end p-4 bg-[#D0D5DD52] items-center rounded-xl">

@@ -1,4 +1,4 @@
-import LoadingScreen from '@/components/LoadingScreen/LoadingScreen'
+import LoadingScreen from '@/components/Loading/LoadingScreen'
 import React from 'react'
 
 export default function Loading() {

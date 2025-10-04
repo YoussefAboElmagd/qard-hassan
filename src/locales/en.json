@@ -1,0 +1,10 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact Us",
+    "login": "Login",
+    "register": "Get Started",
+    "loanRequest": "Loan Request"
+  }
+}

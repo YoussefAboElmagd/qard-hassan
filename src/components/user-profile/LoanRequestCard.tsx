@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ChevronDown } from 'lucide-react';
-import { SlCloudUpload } from 'react-icons/sl';
+import FileUploadField from './FileUploadField';
 
 // Borrower Information Component
 function LoanRequestForm() {
@@ -23,11 +23,26 @@ function LoanRequestForm() {
     });
 
     const [signatureFile, setSignatureFile] = useState<File | null>(null);
+    const [files, setFiles] = useState({
+        nationalIdCopy: null,
+        mosqueReceipt: null,
+        loanReceipt: null,
+        proofStatus: null,
+        recentReport: null,
+        validityCard: null
+    });
 
     const handleSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             setSignatureFile(file);
+        }
+    };
+
+    const handleFileUpload = (field: string, event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFiles(prev => ({ ...prev, [field]: file }));
         }
     };
 
@@ -42,7 +57,7 @@ function LoanRequestForm() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     {/* Nationality */}
                     <div className="space-y-2">
-                        <Label htmlFor="nationality" className="block text-gray-600 font-medium text-sm sm:text-base">
+                        <Label htmlFor="nationality" className="block text-gray-600 font-bold text-sm sm:text-base">
                             الجنسية
                         </Label>
                         <div className="relative">
@@ -61,7 +76,7 @@ function LoanRequestForm() {
                     </div>
                     {/* City */}
                     <div className="space-y-2">
-                        <Label htmlFor="city" className="block text-gray-600 font-medium text-sm sm:text-base">
+                        <Label htmlFor="city" className="block text-gray-600 font-bold text-sm sm:text-base">
                             المدينة
                         </Label>
                         <Input
@@ -73,12 +88,9 @@ function LoanRequestForm() {
                             className="h-10 sm:h-12 rounded-lg border-gray-300 bg-white placeholder:text-gray-400 text-sm sm:text-base"
                         />
                     </div>
-
-
-
                     {/* Address */}
                     <div className="space-y-2">
-                        <Label htmlFor="address" className="block text-gray-600 font-medium text-sm sm:text-base">
+                        <Label htmlFor="address" className="block text-gray-600 font-bold text-sm sm:text-base">
                             عنوان السكن
                         </Label>
                         <Input
@@ -93,7 +105,7 @@ function LoanRequestForm() {
 
                     {/* Work Title */}
                     <div className="space-y-2">
-                        <Label htmlFor="workTitle" className="block text-gray-600 font-medium text-sm sm:text-base">
+                        <Label htmlFor="workTitle" className="block text-gray-600 font-bold text-sm sm:text-base">
                             عنوان العمل
                         </Label>
                         <Input
@@ -108,7 +120,7 @@ function LoanRequestForm() {
 
                     {/* Work Phone */}
                     <div className="space-y-2">
-                        <Label htmlFor="workPhone" className="block text-gray-600 font-medium text-sm sm:text-base">
+                        <Label htmlFor="workPhone" className="block text-gray-600 font-bold text-sm sm:text-base">
                             جوال العمل
                         </Label>
                         <Input
@@ -123,7 +135,7 @@ function LoanRequestForm() {
 
                     {/* Mobile Number (from image - has a pre-filled number) */}
                     <div className="space-y-2">
-                        <Label htmlFor="mobile" className="block text-gray-600 font-medium">
+                        <Label htmlFor="mobile" className="block text-gray-600 font-bold">
                             رقم الجوال
                         </Label>
                         <Input
@@ -136,7 +148,7 @@ function LoanRequestForm() {
 
                     {/* Contact Person */}
                     <div className="space-y-2">
-                        <Label htmlFor="contactPerson" className="block text-gray-600 font-medium">
+                        <Label htmlFor="contactPerson" className="block text-gray-600 font-bold">
                             اسم شخص آخر يمكن الاتصال به
                         </Label>
                         <Input
@@ -151,7 +163,7 @@ function LoanRequestForm() {
 
                     {/* Contact Person Phone */}
                     <div className="space-y-2">
-                        <Label htmlFor="contactPersonPhone" className="block text-gray-600 font-medium">
+                        <Label htmlFor="contactPersonPhone" className="block text-gray-600 font-bold">
                             رقم جوال شخص آخر
                         </Label>
                         <Input
@@ -166,7 +178,7 @@ function LoanRequestForm() {
 
                     {/* Installment Count */}
                     <div className="space-y-2">
-                        <Label htmlFor="installmentCount" className="block text-gray-600 font-medium">
+                        <Label htmlFor="installmentCount" className="block text-gray-600 font-bold">
                             عدد الأقساط
                         </Label>
                         <div className="relative">
@@ -187,7 +199,7 @@ function LoanRequestForm() {
 
                     {/* Loan Amount */}
                     <div className="space-y-2">
-                        <Label htmlFor="loanAmount" className="block text-gray-600 font-medium">
+                        <Label htmlFor="loanAmount" className="block text-gray-600 font-bold">
                             مبلغ القرض
                         </Label>
                         <Input
@@ -201,7 +213,7 @@ function LoanRequestForm() {
 
                     {/* Purpose */}
                     <div className="space-y-2">
-                        <Label htmlFor="purpose" className="block text-gray-600 font-medium">
+                        <Label htmlFor="purpose" className="block text-gray-600 font-bold">
                             الغرض
                         </Label>
                         <div className="relative">
@@ -221,8 +233,8 @@ function LoanRequestForm() {
                     </div>
 
                     {/* Signature Upload */}
-                    <div className="space-y-2">
-                        <Label className="block text-gray-600 font-medium">
+                    {/* <div className="space-y-2">
+                        <Label className="block text-gray-600 font-bold">
                             التوقيع
                         </Label>
                         <div className="relative">
@@ -243,18 +255,86 @@ function LoanRequestForm() {
                                 </span>
                             </label>
                         </div>
+                    </div> */}
+                    <FileUploadField
+                        id="signature"
+                        label="التوقيع"
+                        selectedFile={signatureFile}
+                        onChange={handleSignatureUpload}
+                    />
+                </div>
+
+                {/* Important Attachments Section */}
+                <div>
+                    <div className="pb-4 mt-10">
+                        <h2 className="text-[#919499] text-2xl font-bold text-right border-b border-gray-200 pb-4 mb-10">
+                            مرفقات هامة
+                        </h2>
+                    </div>
+                    <div className="space-y-8 mb-10">
+                        {/* Row 1: National ID Copy and Mosque Receipt */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <FileUploadField
+                                id="nationalIdCopy"
+                                label="إرفاق صورة العنوان الوطني"
+                                selectedFile={files.nationalIdCopy as unknown as File | null}
+                                onChange={(e) => handleFileUpload('nationalIdCopy', e)}
+                            />
+                            <FileUploadField
+                                id="mosqueReceipt"
+                                label="إرفاق ترخيص إمام المسجد للمقترض (خاص بالرجال)"
+                                selectedFile={files.mosqueReceipt as unknown as File | null}
+                                onChange={(e) => handleFileUpload('mosqueReceipt', e)}
+                            />
+                        </div>
+
+                        {/* Row 3: Proof Status and Recent Report */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <FileUploadField
+                                id="recentReport"
+                                label="و تقرير من (سمه) تقرير ملم حديث التاريخ"
+                                selectedFile={files.recentReport as unknown as File | null}
+                                onChange={(e) => handleFileUpload('recentReport', e)}
+                            />
+                            <FileUploadField
+                                id="proofStatus"
+                                label="اثبات حالة"
+                                selectedFile={files.proofStatus as unknown as File | null}
+                                onChange={(e) => handleFileUpload('proofStatus', e)}
+                            />
+                        </div>
+
+                        {/* Row 4: Validity Card (Full Width) */}
+                        <div className="grid grid-cols-1">
+                            <FileUploadField
+                                id="validityCard"
+                                label="هوية سارية الصلاحية"
+                                selectedFile={files.validityCard as unknown as File | null}
+                                onChange={(e) => handleFileUpload('validityCard', e)}
+                            />
+                        </div>
                     </div>
                 </div>
 
                 {/* Checkbox */}
-                <div className="flex items-start gap-3 pt-4">
+                <div className="flex items-start gap-3 pt-6 border-t border-gray-200">
                     <input
                         type="checkbox"
-                        id="terms"
-                        className="mt-1 w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500"
+                        id="borrowerTerms"
+                        className="mt-1 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500"
                     />
-                    <Label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed">
-                        أقرا أنا المقترض بصحة كافة البيانات المكتوبة أعلاه وأتحمل كامل المسؤولية في حال ثبوت خلاف ذلك.
+                    <Label htmlFor="borrowerTerms" className="text-sm text-gray-700 leading-relaxed text-right">
+                        أقر انا المقترض بصحة كامل البيانات المكتوبة اعلاه واحتمل كامل المسؤولية في حال ثبوت خلاف ذلك.
+                    </Label>
+                </div>
+                <div className="flex items-start gap-3 border-gray-200">
+                    <input
+                        type="checkbox"
+                        id="borrowerTerms"
+                        className="mt-1 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500"
+                    />
+                    <Label htmlFor="borrowerTerms" className="text-sm text-gray-700 leading-relaxed text-right">
+                        اوافق علي شروط الاقتراض
                     </Label>
                 </div>
             </CardContent>

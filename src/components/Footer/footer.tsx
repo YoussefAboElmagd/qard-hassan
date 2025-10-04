@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, Instagram, Facebook } from 'lucide-react';
 import googlePlay from '@/assets/images/LandingImgs/Groupplay.png'
 import appleStore from '@/assets/images/LandingImgs/Group.png'
 import logo from '@/assets/images/main-logo.png'
+import mdarjLogo from '@/assets/images/mdarjFooter.png'
 import Image from 'next/image';
 
 const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
@@ -119,6 +120,32 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
                     </div>
 
 
+                </div>
+
+                {/* Powered by Mdarj and Copyright section */}
+                <div className="bg-gray-100 py-4 px-4 rounded-lg">
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        {/* Copyright text */}
+                        <div className="text-center sm:text-right">
+                            <p className="text-gray-600 text-sm">
+                                حقوق الطبع والنشر © 2025  وقف الصدقة الجارية للإقراض الحسن. جميع الحقوق محفوظة
+                            </p>
+                        </div>
+                        
+                        {/* Powered by Mdarj */}
+                        <div className="flex items-center gap-2 text-gray-600">
+                            <span className="text-sm font-bold italic">Powered by Mdarj</span>
+                            <div className="flex items-center gap-2 bg-primary rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                                <Image
+                                    src={mdarjLogo.src}
+                                    alt="Mdarj Logo"
+                                    width={50}
+                                    height={50}
+                                    
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

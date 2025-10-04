@@ -12,13 +12,12 @@ const LoanFundingIntro = () => {
     return (
         <>
             <section className='bg-primary w-full max-w-[90%] md:max-w-[85%] lg:max-w-[80%] mx-auto text-white rounded-xl'>
-                <div style={{
-                    backgroundImage: `url(${BgPattern.src})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'top',
-                    backgroundRepeat: 'no-repeat',
-                    height: '100%',
-                }} className='relative flex flex-col lg:flex-row items-center justify-between' >
+                <div 
+                    className='relative flex flex-col lg:flex-row items-center justify-between h-full bg-cover bg-no-repeat bg-top'
+                    style={{
+                        backgroundImage: `url(${BgPattern.src})`
+                    }}
+                >
                     <div className='w-full lg:w-[50%] flex flex-col gap-6 md:gap-8 lg:gap-10 p-6 md:p-8 lg:p-10'>
                         <div className='ms-0 sm:ms-6 lg:ms-10'>
                             <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold mb-5'>لنبدأ بتمويل قرضك:</h2>

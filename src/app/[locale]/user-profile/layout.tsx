@@ -14,15 +14,18 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50" >
       {/* Header Background */}
-      <header
-        className="w-full relative h-[30vh] sm:h-[35vh] md:h-[40vh] lg:h-[45vh] bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(77, 128, 168, 0.8), rgba(29, 78, 116, 0.8)) , url(${background.src})`,
-          backgroundPosition: "100% 40%",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <header className="w-full relative h-[30vh] sm:h-[35vh] md:h-[40vh] lg:h-[45vh]">
+        {/* Background Image with Gradient Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-no-repeat bg-[100%_40%]"
+          style={{
+            backgroundImage: `url(${background.src})`
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(77,128,168,0.8)] to-[rgba(29,78,116,0.8)]" />
+        
+        {/* Content */}
+        <div className="relative z-10">
         <Navbar />
 
         <Image
@@ -32,6 +35,7 @@ export default function Layout({ children }: LayoutProps) {
           height={100}
           className="absolute top-0 start-0 hidden lg:block"
         />
+        </div>
       </header>
 
       {/* Main Content with proper spacing */}

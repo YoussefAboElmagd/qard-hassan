@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import SaudiRiyalIcon from '@/assets/images/SaudiRiyalSymbol.svg';
+import FileUploadField from './FileUploadField';
 
 export default function FinancialStatusForm() {
+    const [financialStatusFile, setFinancialStatusFile] = useState<File | null>(null);
+
+    const handleFinancialStatusUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setFinancialStatusFile(file);
+        }
+    };
     return (
         <Card className="w-full bg-gray-50">
             <CardHeader>
@@ -13,9 +22,8 @@ export default function FinancialStatusForm() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-                {/* Monthly Income */}
                 <div className="space-y-2">
-                    <Label htmlFor="monthlyIncome" className="text-right block text-gray-600 font-medium">
+                    <Label htmlFor="monthlyIncome" className="text-right block text-gray-600 font-bold">
                         الدخل الشهري
                     </Label>
                     <div className="relative">
@@ -32,10 +40,9 @@ export default function FinancialStatusForm() {
                     </div>
                 </div>
 
-                {/* Monthly Basic Salary */}
                 <div className="space-y-2">
-                    <Label htmlFor="basicSalary" className="text-right block text-gray-600 font-medium">
-                        قيمة الراتب الأساسي (شهرياً)
+                    <Label htmlFor="basicSalary" className="text-right block text-gray-600 font-bold">
+                        الإيجار السكني (شهرياً)
                     </Label>
                     <div className="relative">
                         <Input
@@ -51,10 +58,9 @@ export default function FinancialStatusForm() {
                     </div>
                 </div>
 
-                {/* Retirement Allowance */}
                 <div className="space-y-2">
-                    <Label htmlFor="retirementAllowance" className="text-right block text-gray-600 font-medium">
-                        بدلية التقاعد (شهرياً)
+                    <Label htmlFor="retirementAllowance" className="text-right block text-gray-600 font-bold">
+                        تكلفة الكهرباء (شهرياً)
                     </Label>
                     <div className="relative">
                         <Input
@@ -70,10 +76,9 @@ export default function FinancialStatusForm() {
                     </div>
                 </div>
 
-                {/* Other Income */}
                 <div className="space-y-2">
-                    <Label htmlFor="otherIncome" className="text-right block text-gray-600 font-medium">
-                        دخل آخر
+                    <Label htmlFor="otherIncome" className="text-right block text-gray-600 font-bold">
+                        مصاريف اخرى
                     </Label>
                     <div className="relative">
                         <Input
@@ -88,6 +93,14 @@ export default function FinancialStatusForm() {
                         </span>
                     </div>
                 </div>
+
+
+                <FileUploadField
+                    id="financialStatus"
+                    label="إرفاق تعريف حديث للراتب للمقترض (موجها لوقف الصدقة الجارية لإلقراض الحسن)"
+                    selectedFile={financialStatusFile}
+                    onChange={handleFinancialStatusUpload}
+                />
             </CardContent>
         </Card>
     );

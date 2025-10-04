@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
-import { SlCloudUpload } from 'react-icons/sl';
+import FileUploadField from './FileUploadField';
 
 export default function GuarantorInformationForm() {
     const [formData, setFormData] = useState({
@@ -23,11 +23,23 @@ export default function GuarantorInformationForm() {
     });
 
     const [signatureFile, setSignatureFile] = useState<File | null>(null);
+    const [attachments, setAttachments] = useState({
+        nationalAddress: null,
+        validId: null,
+        salaryDefinition: null
+    });
 
     const handleSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             setSignatureFile(file);
+        }
+    };
+
+    const handleAttachmentUpload = (field: string, event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setAttachments(prev => ({ ...prev, [field]: file }));
         }
     };
 
@@ -233,31 +245,49 @@ export default function GuarantorInformationForm() {
                     </div>
 
                     {/* Signature Upload */}
-                    <div className="space-y-2">
-                        <Label className="block text-gray-600 font-medium">
-                            التوقيع
-                        </Label>
-                        <div className="relative">
-                            <input
-                                type="file"
-                                id="signature"
-                                accept="image/*,.pdf"
-                                onChange={handleSignatureUpload}
-                                className="hidden"
+                    <FileUploadField
+                        id="signature"
+                        label="التوقيع"
+                        selectedFile={signatureFile}
+                        onChange={handleSignatureUpload}
+                    />
+                </div>
+
+                {/* Important Attachments Section */}
+                <div>
+                    <div className="pb-4 mt-10">
+                        <h2 className="text-[#919499] text-2xl font-bold text-right border-b border-gray-200 pb-4 mb-10">
+                            مرفقات هامة
+                        </h2>
+                    </div>
+                    <div className="space-y-8 mb-10">
+                        {/* Row 1: National Address and Valid ID */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <FileUploadField
+                                id="nationalAddress"
+                                label="إرفاق صورة العنوان الوطني"
+                                selectedFile={attachments.nationalAddress as unknown as File | null}
+                                onChange={(e) => handleAttachmentUpload('nationalAddress', e)}
                             />
-                            <label
-                                htmlFor="signature"
-                                className="w-full h-12 border border-gray-300 rounded-lg bg-white flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors"
-                            >
-                                <SlCloudUpload className="w-5 h-5 text-green-500" />
-                                <span className="text-gray-600">
-                                    {signatureFile ? signatureFile.name : 'رفع ملف'}
-                                </span>
-                            </label>
+                            <FileUploadField
+                                id="validId"
+                                label="هوية سارية الصلاحية"
+                                selectedFile={attachments.validId as unknown as File | null}
+                                onChange={(e) => handleAttachmentUpload('validId', e)}
+                            />
+                        </div>
+
+                        {/* Row 2: Salary Definition (Full Width) */}
+                        <div className="grid grid-cols-1">
+                            <FileUploadField
+                                id="salaryDefinition"
+                                label="إرفاق تعريف حديث للراتب للمقترض (موجها لوقف الصدقة الجارية للقرض الحسن)"
+                                selectedFile={attachments.salaryDefinition as unknown as File | null}
+                                onChange={(e) => handleAttachmentUpload('salaryDefinition', e)}
+                            />
                         </div>
                     </div>
                 </div>
-
 
                 {/* Checkbox */}
                 <div className="flex items-start gap-3 pt-4">

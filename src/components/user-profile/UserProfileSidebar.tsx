@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import profileImage from '@/assets/images/userProfileImg.jpg';
 import { HiMiniPlusCircle } from 'react-icons/hi2';
@@ -13,13 +13,26 @@ import mastercardLogo from '@/assets/images/Mastercard-logo.png';
 
 const Sidebar = () => {
     const router = useRouter();
+    const [activePage, setActivePage] = useState('/ar/user-profile/personal-info');
+    const [userName, setUserName] = useState<string | null>(null);
+
+    const getUser = () => {
+        if (typeof window === 'undefined') return null;
+        const name = "user";
+        const value = document.cookie.split(';').find((cookie: string) => cookie.trim().startsWith(name));
+        console.log(value);
+        return value ? value.split('=')[1] : null;
+    }
+
+    useEffect(() => {
+        const user = getUser();
+        setUserName(user);
+    }, []);
 
     const handleSidebarPage = (page: string) => {
         setActivePage(page);
         router.push(page);
     }
-
-    const [activePage, setActivePage] = useState('/ar/user-profile/personal-info');
 
     return (
         <div className="w-full xl:w-80 bg-gray-50 rounded-3xl shadow-lg px-4 sm:px-6 py-6 sm:py-8 h-full flex flex-col">
@@ -53,7 +66,7 @@ const Sidebar = () => {
                         <HiMiniPlusCircle className="w-4 h-4 sm:w-6 sm:h-6" />
                     </button>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-primary text-center">محمد الشافعي</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-primary text-center">{userName || ""}</h2>
             </div>
 
             {/* Menu Items */}

@@ -2,27 +2,26 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import logo from "@/assets/images/main-logo.png";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { Globe, Menu, X, LogOut } from "lucide-react";
 import { FaUserCircle, FaUserCog } from "react-icons/fa";
 import { PiUserCircleFill } from "react-icons/pi";
-
+import { useAuth } from "@/hooks/useAuth";
 const links = [
   {
-    ref: "/ar",
+    ref: "/",
     title: "الصفحة الرئيسية",
   },
   {
-    ref: "/ar/about-us",
+    ref: "/about-us",
     title: "من نحن",
   },
   {
-    ref: "/ar/user-profile/loans/loan-request",
+    ref: "/user-profile/loans/loan-request",
     title: "طلب قرض",
   },
   {
-    ref: "/ar/contact-us",
+    ref: "/contact-us",
     title: "اتصل بنا",
   },
 ];
@@ -33,6 +32,20 @@ const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { isAuthenticated, isLoading, logout } = useAuth();
+  const getUser = () => {
+    const name = "user";
+    const value = document.cookie.split(';').find((cookie: string) => cookie.trim().startsWith(name));
+    console.log(value);
+    return value ? value.split('=')[1] : null;
+  };
+
+  useEffect(() => {
+    const user = getUser();
+    console.log(user);
+  }, []);
+
+
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -42,11 +55,15 @@ const Navbar = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    console.log("Logging out...");
-    setIsUserDropdownOpen(false);
-    router.push("/");
+  const handleLogout = async () => {
+    try {
+      console.log("Logging out...");
+      setIsUserDropdownOpen(false);
+      await logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   // Close dropdown when clicking outside
@@ -64,10 +81,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-white lg:bg-[#406f9399] p-3 px-8  border-b border-gray-100/40 ">
-      <div className="flex justify-between items-center text-white">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-4 relative z-50">
+    <nav className="w-full bg-white lg:bg-[#406f9399] p-3 px-8  border-b border-gray-100/40">
+      <div className="flex lg:grid lg:grid-cols-[20%_50%_30%] justify-between items-center text-white">
+        {/* Logo  */}
+        <Link href="/" className=" flex items-center gap-4 relative z-50">
           <Image
             src={logo.src}
             alt="logo"
@@ -84,7 +101,7 @@ const Navbar = () => {
               <Link
                 href={ele.ref}
                 className={
-                  `hover:text-secondary transition-colors ${ele.ref === pathname
+                  `hover:text-secondary transition-colors ${pathname === ele.ref || (ele.ref === "/" && (pathname === "/ar" || pathname === "/en"))
                     ? "text-secondary border-b-4 border-secondary pb-1 rounded-b-[3px]"
                     : ""
                   } `
@@ -100,40 +117,40 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop CTA Buttons */}
-        <div className="hidden md:flex items-center gap-2 lg:gap-4">
-          {pathname.includes("/ar/user-profile") == false ? (
+        <div className="hidden md:flex justify-end items-center gap-2 lg:gap-4 me-4">
+          {isLoading ? (
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse [animation-delay:0.2s]" />
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse [animation-delay:0.4s]" />
+            </div>
+          ) : !isAuthenticated ? (
             <>
-              <Link href="/ar/user-profile" className="text-white hover:text-secondary transition-colors">
-                <FaUserCog className="w-6 h-6" />
-              </Link>
               <Link
-                href="/ar/login"
+                href="/auth/login"
                 className="text-white border-2 border-white font-bold bg-transparent px-3 py-1.5 lg:px-6 lg:py-2 rounded-full hover:bg-secondary hover:border-secondary hover:text-white transition-all duration-300 text-sm lg:text-base"
               >
                 تسجيل الدخول
               </Link>
               <Link
-                href="/ar/register"
+                href="/auth/register"
                 className="text-white border-2 border-secondary font-bold bg-secondary px-3 py-1.5 lg:px-6 lg:py-2 rounded-full hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 text-sm lg:text-base"
               >
                 ابدأ الان
               </Link>
             </>
-          ) : (
-            ""
-          )}
+          ) : null}
 
-          {pathname.includes("/ar/user-profile") && (
+          {isAuthenticated && (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={toggleUserDropdown}
                 className="flex cursor-pointer items-center gap-2 hover:text-secondary transition-colors"
               >
                 <PiUserCircleFill className="w-8 h-8" />
-                <span>محمد الشافعي</span>
+                <span>{getUser() ? getUser() : ""}</span>
               </button>
-
-              {/* Dropdown Menu */}
+              {/* Dropdown Menu */} 
               {isUserDropdownOpen && (
                 <div className="absolute top-full end-0 w-64 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100/50 py-3 pb-0 z-50 backdrop-blur-sm animate-in fade-in-0 zoom-in-95 duration-200">
                   {/* User Info Section */}
@@ -141,7 +158,7 @@ const Navbar = () => {
                     <div className="flex items-center gap-3">
                       <FaUserCircle className="w-8 h-8 text-primary" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 truncate">محمد الشافعي</p>
+                        <p className="text-sm font-semibold text-gray-900 truncate">{getUser() ? getUser() : ""}</p>
                         <p className="text-xs text-gray-500 truncate">user@example.com</p>
                       </div>
                     </div>
@@ -150,7 +167,7 @@ const Navbar = () => {
                   {/* Menu Items */}
                   <div className="py-2">
                     <Link
-                      href="/ar/user-profile"
+                      href="/user-profile"
                       className="flex items-center gap-3 px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 transition-all duration-200 group"
                       onClick={() => setIsUserDropdownOpen(false)}
                     >
@@ -209,9 +226,9 @@ const Navbar = () => {
           <ul className="flex flex-col gap-6 mb-8">
             <li>
               <Link
-                href="/ar"
+                href="/"
                 className={
-                  pathname === "/ar"
+                  pathname === "/" || pathname === "/ar" || pathname === "/en"
                     ? "text-secondary border-b-2 border-secondary pb-1"
                     : "hover:text-secondary transition-colors text-black"
                 }
@@ -222,9 +239,9 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/ar/about-us"
+                href="/about-us"
                 className={
-                  pathname === "/ar/about-us"
+                  pathname.endsWith("/about-us")
                     ? "text-secondary border-b-2 border-secondary pb-1"
                     : "hover:text-secondary transition-colors text-black"
                 }
@@ -235,9 +252,9 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/ar/contact-us"
+                href="/contact-us"
                 className={
-                  pathname === "/ar/contact-us"
+                  pathname.endsWith("/contact-us")
                     ? "text-secondary border-b-2 border-secondary pb-1"
                     : "hover:text-secondary transition-colors text-black"
                 }
@@ -253,7 +270,13 @@ const Navbar = () => {
           </ul>
 
           {/* Mobile CTA Buttons / User Profile Section */}
-          {pathname.includes("/ar/user-profile") ? (
+          {isLoading ? (
+            <div className="flex flex-col gap-4">
+              <div className="h-16 bg-gray-200 rounded-xl animate-pulse" />
+              <div className="h-12 bg-gray-200 rounded-full animate-pulse" />
+              <div className="h-12 bg-gray-200 rounded-full animate-pulse" />
+            </div>
+          ) : isAuthenticated ? (
             <div className="flex flex-col gap-4">
               {/* User Profile Info */}
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
@@ -263,17 +286,17 @@ const Navbar = () => {
                   <p className="text-xs text-gray-500 truncate">user@example.com</p>
                 </div>
               </div>
-              
+
               {/* Profile Actions */}
               <Link
-                href="/ar/user-profile"
+                href="/user-profile"
                 className="flex items-center gap-3 text-black border-2 border-gray-300 hover:border-secondary px-4 py-3 rounded-full hover:bg-secondary hover:text-white transition-all duration-300"
                 onClick={toggleMobileMenu}
               >
                 <FaUserCog className="w-5 h-5" />
                 <span>الملف الشخصي</span>
               </Link>
-              
+
               <button
                 onClick={() => {
                   handleLogout();
@@ -288,14 +311,14 @@ const Navbar = () => {
           ) : (
             <div className="flex flex-col gap-4">
               <Link
-                href="/ar/login"
+                href="/auth/login"
                 className="text-black border-2 border-black hover:border-secondary px-6 py-3 rounded-full hover:bg-secondary hover:text-white transition-all duration-300 text-center"
                 onClick={toggleMobileMenu}
               >
                 تسجيل الدخول
               </Link>
               <Link
-                href="/ar/register"
+                href="/auth/register"
                 className="bg-secondary hover:bg-secondary/90 text-white px-6 py-3 rounded-full transition-all duration-300 text-center font-semibold"
                 onClick={toggleMobileMenu}
               >

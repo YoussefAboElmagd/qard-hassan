@@ -13,14 +13,12 @@ export default function BannerFrom() {
     <div className="relative text-white px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col rounded-xl w-full h-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] overflow-hidden">
       {/* Background with gradient overlay */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 bg-cover bg-no-repeat bg-center"
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(30, 74, 116, 0.95), rgba(29, 78, 116, 0.95)), url(${background.src})`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
+          backgroundImage: `url(${background.src})`
         }}
       />
+      <div className="absolute inset-0 bg-gradient-to-br from-[rgba(30,74,116,0.95)] to-[rgba(29,78,116,0.95)]" />
       
       {/* Decorative circles */}
       <div className="absolute bottom-15 right-4 sm:right-8 w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-white/15" />

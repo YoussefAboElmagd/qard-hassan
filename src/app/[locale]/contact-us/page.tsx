@@ -25,8 +25,8 @@ export default function page() {
         <div className="flex  justify-center items-center mt-5">
           <Landing_Hero
             mainText={"تواصل معنا"}
-            linkOne={"/ar"}
-            linkTwo={"/ar/contact-us"}
+            linkOne={"/"}
+            linkTwo={"/contact-us"}
             textOne={"الصفحة الرئسية"}
             textTwo={"تواصل معنا"}
           />

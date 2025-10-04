@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/app/globals.css";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 
 const GK_Dinkum_Regular = localFont({
@@ -30,9 +32,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-
-
   const { locale } = await params;
+  const messages = await getMessages();
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   const fontClass = locale === "ar" ? `${GK_Dinkum_Regular.variable} ${GK_Dinkum_Bold.variable} font-gk-dinkum-regular` : "font-sans";
@@ -41,8 +42,11 @@ export default async function RootLayout({
     <html lang={locale} dir={dir}>
       <body
         className={`${fontClass} antialiased`}
+        suppressHydrationWarning={true}
       >
-       {children}
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
