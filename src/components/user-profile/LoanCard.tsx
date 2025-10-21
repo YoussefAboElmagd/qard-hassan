@@ -10,6 +10,11 @@ interface LoanCardProps {
     amount?: string;
     date?: string;
     progress?: number;
+    icon?: React.ReactNode;
+    buttonText?: string;
+    buttonColor?: string;
+    buttonHoverColor?: string;
+    onButtonClick?: () => void;
 }
 
 export default function LoanCard({
@@ -17,7 +22,12 @@ export default function LoanCard({
     duration = "12 شهر",
     amount = "10,000",
     date = "May 5, 2026",
-    progress = 25
+    progress = 25,
+    icon,
+    buttonText = "تسديد",
+    buttonColor = "bg-green-700",
+    buttonHoverColor = "hover:bg-green-800",
+    onButtonClick
 }: LoanCardProps) {
     const router = useRouter();
     return (
@@ -26,7 +36,7 @@ export default function LoanCard({
             <div className='flex items-center justify-between border-b border-gray-100 pb-4 mb-4' >
                 <div className="flex items-center gap-2">
                     <div className='w-12 h-12 bg-[#F2F2F7] flex justify-center items-center rounded-lg '>
-                        <RiGraduationCapFill className='text-primary text-2xl' />
+                        {icon || <RiGraduationCapFill className='text-primary text-2xl' />}
                     </div>
                     <div>
                         <h3 className='text-lg font-bold'>{title}</h3>
@@ -52,8 +62,11 @@ export default function LoanCard({
                     </div>
                     <div className='text-gray-500 text-sm'>{date}</div>
                 </div>
-                <button onClick={() => router.push('/ar/user-profile/loans/loan-info')} className="bg-green-700 text-white px-5 py-2 rounded-xl font-bold hover:bg-green-800 cursor-pointer transition-colors">
-                    تسديد
+                <button 
+                    onClick={onButtonClick || (() => router.push('/ar/user-profile/loans/loan-info'))} 
+                    className={`${buttonColor} text-white px-5 py-2 rounded-xl font-bold ${buttonHoverColor} cursor-pointer transition-colors`}
+                >
+                    {buttonText}
                 </button>
             </div>
 

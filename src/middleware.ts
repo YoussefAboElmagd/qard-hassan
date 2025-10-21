@@ -4,12 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const intlMiddleware = createMiddleware(routing);
 
-// Define routes that require authentication
 const protectedRoutes = [
   '/user-profile',
   '/loans',
   '/dashboard',
-  // Add more protected routes here
 ];
 
 export default function middleware(request: NextRequest) {

@@ -7,8 +7,10 @@ import TestimonialsCarousel from "@/components/TestimonialCard/testimonialCard";
 import Feature from "@/components/about/Feature";
 import Card from "@/components/about/Card";
 import Vision from "@/components/about/Vision";
-import WhyChooseUs from "@/components/WhyChooseUs/whyChooseUs";
 import Landing_Hero from "@/components/landingHero/Landing_Hero";
+import StrategicGoals from "@/components/about/strategicGoals";
+import Vision2030Slide from "@/components/about/Vision2030Card";
+import BoardMembers from "@/components/about/BoardMembers";
 
 
 const cards = [
@@ -71,7 +73,7 @@ export default function Page() {
         <div className="absolute -bottom-15 right-10 hidden lg:block"></div>
         </div>
       </header>
-      <div className="w-[75%] mx-auto">
+      <div className="w-[80%] mx-auto">
         <Feature />
         <div
           className="grid md:grid-cols-4 grid-cols-2 mb-10 "
@@ -81,11 +83,13 @@ export default function Page() {
           ))}
         </div>
         <Vision />
+        <StrategicGoals/>
+        <Vision2030Slide />
+        <BoardMembers />
 
       </div>
-
-      <WhyChooseUs />
       <TestimonialsCarousel />
+
       <Footer contactUsFooter={false} />
     </>
   );

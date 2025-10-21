@@ -1,5 +1,5 @@
 "use client"
-import { getProfileData } from '@/actions/profile.actions'
+import { getProfileData, editProfileData } from '@/actions/profile.actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,7 +9,8 @@ interface userInfoInterface {
     fullName: string,
     email: string,
     phone: string,
-    nationalId: string
+    nationalId: string,
+    idExpiryDate: string
 }
 
 export default function PersonalInfoForm() {
@@ -17,9 +18,12 @@ export default function PersonalInfoForm() {
         fullName: '',
         email: '',
         phone: '',
-        nationalId: ''
+        nationalId: '',
+        idExpiryDate: ''
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const getUserProfileData = async () => {
         try {
@@ -29,13 +33,44 @@ export default function PersonalInfoForm() {
                 fullName: data.profile.name,
                 email: data.profile.email,
                 phone: data.profile.phone,
-                nationalId: data.profile.national_id
+                nationalId: data.profile.national_id,
+                idExpiryDate: data.profile.id_expiry_date
             });
         } catch (error) {
             console.error('Error fetching profile data:', error);
         } finally {
             setIsLoading(false);
         }
+    }
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const profileData = {
+                name: userInfo.fullName,
+                email: userInfo.email,
+                phone: userInfo.phone,
+                national_id: userInfo.nationalId,
+                id_expiry_date: userInfo.idExpiryDate
+            };
+            
+            await editProfileData(profileData);
+            setIsEditing(false);
+            // Optionally show success message
+            alert('تم حفظ التعديلات بنجاح');
+        } catch (error) {
+            console.error('Error saving profile data:', error);
+            alert('حدث خطأ أثناء حفظ التعديلات');
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
+    const handleInputChange = (field: keyof userInfoInterface, value: string) => {
+        setUserInfo(prev => ({
+            ...prev,
+            [field]: value
+        }));
     }
 
     useEffect(() => {
@@ -71,6 +106,12 @@ export default function PersonalInfoForm() {
                             <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
                         </div>
 
+                        {/* Skeleton for ID Expiry Date */}
+                        <div className="space-y-2">
+                            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+                            <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
+                        </div>
+
                         {/* Skeleton for Button */}
                         <div className="pt-4 flex justify-end">
                             <div className="h-12 w-32 bg-gray-200 rounded-full animate-pulse" />
@@ -89,8 +130,9 @@ export default function PersonalInfoForm() {
                             id="fullName"
                             type="text"
                             value={userInfo.fullName}
-                            disabled
-                            className="text-start disabled:opacity-100 disabled:text-black bg-gray-100 border-gray-200 rounded-lg h-12 px-4 cursor-not-allowed"
+                            onChange={(e) => handleInputChange('fullName', e.target.value)}
+                            disabled={!isEditing}
+                            className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
                             dir="rtl"
                         />
                     </div>
@@ -104,8 +146,9 @@ export default function PersonalInfoForm() {
                             id="email"
                             type="email"
                             value={userInfo.email}
-                            disabled
-                            className="text-start disabled:opacity-100 disabled:text-black bg-gray-100 border-gray-200 rounded-lg h-12 px-4 cursor-not-allowed"
+                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            disabled={!isEditing}
+                            className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
                             dir="rtl"
                         />
                     </div>
@@ -119,8 +162,9 @@ export default function PersonalInfoForm() {
                             id="phone"
                             type="tel"
                             value={userInfo.phone}
-                            disabled
-                            className="text-end disabled:opacity-100 disabled:text-black bg-gray-100 border-gray-200 rounded-lg h-12 px-4 cursor-not-allowed"
+                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            disabled={!isEditing}
+                            className={`text-end ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
                             dir="ltr"
                         />
                     </div>
@@ -134,20 +178,45 @@ export default function PersonalInfoForm() {
                             id="nationalId"
                             type="text"
                             value={userInfo.nationalId}
-                            disabled
-                            className="text-start disabled:opacity-100 disabled:text-black bg-gray-100 border-gray-200 rounded-lg h-12 px-4 cursor-not-allowed"
+                            onChange={(e) => handleInputChange('nationalId', e.target.value)}
+                            disabled={!isEditing}
+                            className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
                             dir="rtl"
                         />
                     </div>
 
-                    {/* Save Button */}
+                    {/* ID Expiry Date */}
+                    <div className="space-y-2">
+                        <Label htmlFor="idExpiryDate" className="text-start text-gray-700 font-bold">
+                            تاريخ الانتهاء
+                        </Label>
+                        <Input
+                            id="idExpiryDate"
+                            type="text"
+                            value={userInfo.idExpiryDate}
+                            onChange={(e) => handleInputChange('idExpiryDate', e.target.value)}
+                            disabled={!isEditing}
+                            className={`text-right ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
+                            dir="rtl"
+                            placeholder="YYYY-MM-DD"
+                        />
+                    </div>
+
+                    {/* Edit/Save Button */}
                     <div className="pt-4 flex justify-end">
                         <Button
-                            onClick={() => { }}
+                            onClick={() => {
+                                if (isEditing) {
+                                    handleSave();
+                                } else {
+                                    setIsEditing(true);
+                                }
+                            }}
+                            disabled={isSaving}
                             variant="outline"
-                            className="w-auto px-8 py-3 border-2 border-secondary text-secondary hover:text-white hover:bg-secondary rounded-full font-bold bg-white"
+                            className="w-auto px-8 py-3 border-2 border-secondary text-secondary hover:text-white hover:bg-secondary rounded-full font-bold bg-white disabled:opacity-50"
                         >
-                            حفظ التعديلات
+                            {isSaving ? 'جارِ الحفظ...' : isEditing ? 'حفظ التعديلات' : 'تعديل'}
                         </Button>
                     </div>
                 </div>

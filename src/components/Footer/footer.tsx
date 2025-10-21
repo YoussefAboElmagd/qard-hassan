@@ -60,12 +60,12 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
                     </div>
                     <div className="space-y-4">
                         <div className="flex items-center justify-center sm:justify-end gap-3 text-gray-700 ">
-                            <span className="text-lg">0987654321</span>
+                            <span className="text-lg">00966507766965</span>
                             <Phone className="w-5 h-5 text-primary" />
 
                         </div>
                         <div className="flex items-center justify-center sm:justify-end gap-3 text-gray-700">
-                            <span className="text-base">info@gmail.com</span>
+                            <span className="text-base">waqf.qard.h@gmail.com</span>
                             <Mail className="w-5 h-5 text-primary" />
 
                         </div>

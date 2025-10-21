@@ -2,6 +2,9 @@
 import LoanCard from "@/components/user-profile/LoanCard";
 import { useRouter } from "next/navigation";
 import { FaCommentDollar } from "react-icons/fa";
+import {  RiGraduationCapFill } from "react-icons/ri";
+import { ImHome } from "react-icons/im";
+
 export default function LoanDashboard() {
   const router = useRouter();
   return (
@@ -24,15 +27,51 @@ export default function LoanDashboard() {
 
       {/* Loan Cards */}
       <div className="space-y-4">
+      
+
         <LoanCard
+          title="قرض شراء منزل"
+          duration="12 شهر"
+          amount="10,000"
+          date="May 5, 2026"
+          progress={0}
+          icon={<ImHome className='text-primary text-2xl' />}
+          buttonText="قيد المراجعة"
+          buttonColor="bg-gray-400"
+          buttonHoverColor="hover:bg-gray-500"
+        />
+
+        <LoanCard
+          title="قرض للدراسة"
+          duration="12 شهر"
+          amount="10,000"
+          date="May 5, 2026"
+          progress={0}
+          icon={<RiGraduationCapFill className='text-primary text-2xl' />}
+          buttonText="رفع سند الامر"
+          buttonColor="bg-primary"
+          buttonHoverColor="hover:bg-[#3078B7]"
+        />
+
+        <LoanCard
+          title="قرض للدراسة"
+          duration="12 شهر"
+          amount="10,000"
+          date="May 5, 2026"
+          progress={0}
+          icon={<RiGraduationCapFill className='text-primary text-2xl' />}
+          buttonText="مرفوض"
+          buttonColor="bg-red-600"
+          buttonHoverColor="hover:bg-red-700"
+        />
+          <LoanCard
           title="قرض للدراسة"
           duration="12 شهر"
           amount="10,000"
           date="May 5, 2026"
           progress={25}
         />
-
-        <LoanCard
+          <LoanCard
           title="قرض للدراسة"
           duration="12 شهر"
           amount="10,000"

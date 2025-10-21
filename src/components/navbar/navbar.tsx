@@ -21,6 +21,10 @@ const links = [
     title: "طلب قرض",
   },
   {
+    ref: "/governance",
+    title: "الحوكمة",
+  },
+  {
     ref: "/contact-us",
     title: "اتصل بنا",
   },
@@ -82,7 +86,7 @@ const Navbar = () => {
 
   return (
     <nav className="w-full bg-white lg:bg-[#406f9399] p-3 px-8  border-b border-gray-100/40">
-      <div className="flex lg:grid lg:grid-cols-[20%_50%_30%] justify-between items-center text-white">
+      <div className="flex lg:grid lg:grid-cols-[20%_60%_20%] justify-between items-center text-white">
         {/* Logo  */}
         <Link href="/" className=" flex items-center gap-4 relative z-50">
           <Image
@@ -239,6 +243,19 @@ const Navbar = () => {
             </li>
             <li>
               <Link
+                href="/user-profile/loans/loan-request"
+                className={
+                  pathname.includes("/user-profile/loans/loan-request")
+                    ? "text-secondary border-b-2 border-secondary pb-1"
+                    : "hover:text-secondary transition-colors text-black"
+                }
+                onClick={toggleMobileMenu}
+              >
+                طلب قرض
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/about-us"
                 className={
                   pathname.endsWith("/about-us")
@@ -248,6 +265,19 @@ const Navbar = () => {
                 onClick={toggleMobileMenu}
               >
                 من نحن
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/governance"
+                className={
+                  pathname.endsWith("/governance")
+                    ? "text-secondary border-b-2 border-secondary pb-1"
+                    : "hover:text-secondary transition-colors text-black"
+                }
+                onClick={toggleMobileMenu}
+              >
+                الحوكمة
               </Link>
             </li>
             <li>

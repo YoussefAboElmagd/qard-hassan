@@ -37,12 +37,36 @@ export default function Feature() {
           نافذة امل نحو <span className="text-secondary">مستقبل افضل</span>
         </h4>
 
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 leading-relaxed">
-          &quot;في قرض حسن، نؤمن بأن لكل شخص الحق في فرصة لتحقيق أحلامه وتطوير حياته.
-          انطلاقًا من هذا الإيمان، تأسس مشروعنا لتقديم قروض حسنة بدون فوائد،
-          تماشيًا مع مبادئ الشريعة الإسلامية السمحة، ودعمًا لمجتمعنا نحو مستقبل
-          مزدهر.&quot;
-        </p>
+        <div className="space-y-4 md:space-y-5">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
+            وقف الصدقة الجارية يعيد تشكيل مشهد الإقراض الحسن، مما يجعله خيارًا جاذبًا للكثيرين.
+            من خلال دمج التقنيات المتقدمة، يعيد التمويل الإسلامي تشكيل المشهد المالي ليصبح أكثر سهولة وتكيفًا مع الاحتياجات الحديثة.
+          </p>
+
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-right">
+            <li className="flex items-center justify-start gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/10 text-secondary text-xs">✓</span>
+              <span className="text-sm sm:text-base text-gray-700">حل للمشاكل الطارئة</span>
+            </li>
+            <li className="flex items-center justify-start gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/10 text-secondary text-xs">✓</span>
+              <span className="text-sm sm:text-base text-gray-700">دعم فني 24/7</span>
+            </li>
+            <li className="flex items-center justify-start gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/10 text-secondary text-xs">✓</span>
+              <span className="text-sm sm:text-base text-gray-700">بدون فوائد</span>
+            </li>
+            <li className="flex items-center justify-start gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary/10 text-secondary text-xs">✓</span>
+              <span className="text-sm sm:text-base text-gray-700">شروط ميسرة</span>
+            </li>
+          </ul>
+
+          <div className="space-y-2 text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
+<p>يُقدّم وقف الصدقة الجارية للإقراض الحسن حلًّا سريعًا ومشروعًا للمشكلات المالية مثل العلاج أو الإصلاحات المنزلية، مع فريقٍ جاهزٍ دائمًا لتقديم المساعدة والإجابة عن أي استفسار أو مشكلة.</p>
+<p>يُمنح القرض دون أي فوائد أو رسوم، بما يضمن التوافق مع أحكام الشريعة الإسلامية، وتتميّز إجراءاته بالسهولة والسرعة مقارنةً بالقروض التقليدية، مما يجعله خيارًا مثاليًا للكثيرين.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

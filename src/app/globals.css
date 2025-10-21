@@ -50,6 +50,15 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Text Stroke Utilities */
+.text-stroke {
+  -webkit-text-stroke: 0.5px;
+}
+
+.text-stroke-thick {
+  -webkit-text-stroke: 1px;
+}
+
 :root {
   --radius: 0.625rem;
   /* --background: oklch(1 0 0); */

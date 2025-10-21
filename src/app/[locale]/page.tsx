@@ -12,6 +12,7 @@ import TestimonialsCarousel from "@/components/TestimonialCard/testimonialCard";
 import FAQAccordion from "@/components/FAQAccordion/FAQAccordion";
 import Footer from "@/components/Footer/footer";
 import { useRouter } from "next/navigation";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -31,36 +32,34 @@ export default function LandingPage() {
         <div className="relative z-10">
           <Navbar />
           {/* Hero Content Section */}
-          <div className="container mx-auto px-4 sm:px-5 pt-20 lg:pt-16">
-            <div className="flex items-center justify-center lg:justify-end">
-              <div className="text-center md:text-right text-white max-w-3xl w-full lg:w-auto">
-                <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                  هل تحتاج إلى دعم مالي
-                  <span className="text-secondary">... القرض الحسن هنا لدعمك!</span>
+          <div className="container ms-auto px-4 sm:px-5 pt-20 lg:pt-16">
+            <div className="flex items-center justify-center lg:justify-center">
+              <div className="text-center md:text-right text-white max-w-5xl w-full lg:w-auto">
+                <h1 className="text-5xl lg:text-[64px] font-bold mb-6 leading-tight text-stroke">
+                  نحن ندعمك <span className="text-secondary">ماليًا .</span>
+                  {/* <span className="text-secondary ms-">ماليا</span> */}
                 </h1>
 
                 <p className="text-lg lg:text-xl mb-8 leading-relaxed opacity-90">
-                  نقدم لك قروضًا حسنة بدون فوائد ربوية، متوافقة مع أحكام الشريعة الإسلامية. نؤمن بأن التمويل يجب أن يكون وسيلة لتمكين الأفراد والمجتمعات، لا عبئًا يثقل كاهلهم.
+                وقف الصدقة الجارية يقدم لك قرضًا حسنًا متوافقًا مع أحكام الشريعة.
                 </p>
 
-                <button onClick={() => router.push('/ar/user-profile/loans/loan-request')} className="bg-secondary cursor-pointer hover:bg-secondary/90 text-black font-bold py-3 px-8 rounded-full transition-all duration-300 flex items-center gap-2 w-fit mx-auto lg:ml-0 lg:mr-auto">
-                  <span>اطلب الان</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
+                <button onClick={() => router.push('/ar/user-profile/loans/loan-request')} className="bg-secondary cursor-pointer hover:bg-secondary/90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 flex items-center gap-2 w-fit mx-auto lg:ml-0 lg:mr-auto -translate-x-10">
+                  <span> لسد احتياجاتك والوفاء بمتطلباتك</span>
+                 <FaArrowLeftLong className="w-5 h-5" />
                 </button>
               </div>
             </div>
           </div>
           <Image src={headerWhiteTop.src} alt="header-white-top" width={450} height={100} className="absolute top-0 start-0 hidden lg:block" />
-         
+
         </div>
-        
+
         <Image src={headerWhiteBottom.src} alt="header-white-bottom" width={800} height={100} className="bottom-0 absolute hidden lg:block" />
         <div className="absolute -bottom-15 right-10 hidden lg:block">
-            <Image src={headerBottomImg.src} alt="header-bottom-img" width={420} height={100} className="a" />
-            <Image src={usersRating.src} alt="users-rating" width={200} height={100} className="absolute -bottom-16 left-0 z-10" />
-          </div>
+          <Image src={headerBottomImg.src} alt="header-bottom-img" width={420} height={100} className="a" />
+          <Image src={usersRating.src} alt="users-rating" width={200} height={100} className="absolute -bottom-16 left-0 z-10" />
+        </div>
       </header>
       <WhyChooseUs />
       <LoanFundingIntro />

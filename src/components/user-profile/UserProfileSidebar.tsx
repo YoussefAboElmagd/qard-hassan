@@ -10,23 +10,28 @@ import { BsThreeDots } from 'react-icons/bs';
 import { IoChevronBack } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import mastercardLogo from '@/assets/images/Mastercard-logo.png';
+import { getProfileData } from '@/actions/profile.actions';
 
 const Sidebar = () => {
     const router = useRouter();
     const [activePage, setActivePage] = useState('/ar/user-profile/personal-info');
     const [userName, setUserName] = useState<string | null>(null);
-
-    const getUser = () => {
-        if (typeof window === 'undefined') return null;
-        const name = "user";
-        const value = document.cookie.split(';').find((cookie: string) => cookie.trim().startsWith(name));
-        console.log(value);
-        return value ? value.split('=')[1] : null;
-    }
+    const [userImage, setUserImage] = useState<string | null>(null);
 
     useEffect(() => {
-        const user = getUser();
-        setUserName(user);
+        const fetchProfileData = async () => {
+            try {
+                const data = await getProfileData();
+                if (data.success && data.profile) {
+                    setUserName(data.profile.name);
+                    setUserImage(data.profile.image_url);
+                }
+            } catch (error) {
+                console.error('Failed to fetch profile data:', error);
+            }
+        };
+
+        fetchProfileData();
     }, []);
 
     const handleSidebarPage = (page: string) => {
@@ -54,7 +59,7 @@ const Sidebar = () => {
                         {/* Profile image container */}
                         <div className="absolute inset-3 rounded-full overflow-hidden" style={{ width: 'calc(100% - 24px)', height: 'calc(100% - 24px)' }}>
                             <Image
-                                src={profileImage}
+                                src={userImage || profileImage}
                                 alt="Profile"
                                 fill
                                 className="object-cover rounded-full"
