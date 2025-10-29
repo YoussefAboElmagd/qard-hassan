@@ -1,26 +1,26 @@
+
 import SaudiRiyalIcon from '@/assets/images/SaudiRiyalSymbol.svg';
 import React from 'react';
 import { AiOutlineDollar } from 'react-icons/ai';
 
-interface LoanStatusCardProps {
-  totalAmount?: number;
-  remainingInstallments?: number;
-  completionDate?: string;
-  progressPercentage?: number;
-  currency?: string;
-  isLoading?: boolean;
-  hasLoans?: boolean;
+interface ActiveLoan {
+  id?: number;
+  name?: string;
+  loan_amount?: number;
+  remaining_installments?: number;
+  paid_installments_percentage?: number;
+  end_date?: string;
+  status?: string;
+  total_installments?: number;
 }
 
-function LoanStatusCard(props: LoanStatusCardProps = {}) {
-  const {
-    totalAmount = 10000,
-    remainingInstallments = 2,
-    completionDate = "05 May, 2026",
-    progressPercentage = 60,
-    isLoading = false,
-    hasLoans = true,
-  } = props;
+interface LoanStatusCardProps {
+  activeLoan?: ActiveLoan | null;
+}
+
+function LoanStatusCard({ activeLoan }: LoanStatusCardProps) {
+  const isLoading = false;
+  const hasLoans = !!activeLoan;
 
   // Loading Skeleton
   if (isLoading) {
@@ -69,7 +69,7 @@ function LoanStatusCard(props: LoanStatusCardProps = {}) {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-white rounded-full -ml-20 -mb-20"></div>
         </div>
-        
+
         <div className="relative flex flex-col items-center justify-center text-center py-8">
           <div className="bg-white/20 backdrop-blur-sm rounded-full p-8 mb-5 shadow-xl">
             <AiOutlineDollar className="w-16 h-16 text-white" />
@@ -97,15 +97,15 @@ function LoanStatusCard(props: LoanStatusCardProps = {}) {
         <div className="flex flex-col items-center">
           <div
             className="radial-progress bg-primary text-xl font-bold text-secondary border-gray-100 border-4"
-            style={{ "--value": progressPercentage } as React.CSSProperties}
-            aria-valuenow={progressPercentage}
+            style={{ "--value": activeLoan?.paid_installments_percentage || 0 } as React.CSSProperties}
+            aria-valuenow={activeLoan?.paid_installments_percentage || 0}
             role="progressbar">
-            {progressPercentage}%
+            {activeLoan?.paid_installments_percentage || 0}%
           </div>
           {/* Remaining Installments below circle */}
           <div className="text-center flex items-center gap-2 mt-4">
             <div className="font-bold">الأقساط المتبقية</div>
-            <div className="text-2xl font-bold">{remainingInstallments}</div>
+            <div className="text-2xl font-bold">{activeLoan?.remaining_installments || 0}</div>
           </div>
         </div>
 
@@ -121,7 +121,7 @@ function LoanStatusCard(props: LoanStatusCardProps = {}) {
 
           {/* Amount Display */}
           <div className="flex items-center justify-start gap-2 mb-6 px-4">
-            <span className="text-4xl font-bold">{totalAmount.toLocaleString()}</span>
+            <span className="text-4xl font-bold">{activeLoan?.loan_amount?.toLocaleString() || 0}</span>
             <SaudiRiyalIcon className="fill-secondary inline-block w-8 h-8" />
           </div>
 
@@ -129,7 +129,7 @@ function LoanStatusCard(props: LoanStatusCardProps = {}) {
           <div className="flex items-center justify-between text-sm opacity-90">
             <div className="text-start flex gap-2">
               <span className="font-bold text-lg">تاريخ الانتهاء</span>
-              <span className="text-lg">{completionDate}</span>
+              <span className="text-lg">{activeLoan?.end_date || '-'}</span>
             </div>
           </div>
         </div>

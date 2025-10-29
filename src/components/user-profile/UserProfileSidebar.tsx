@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import profileImage from '@/assets/images/userProfileImg.jpg';
 import { HiMiniPlusCircle } from 'react-icons/hi2';
@@ -10,33 +10,103 @@ import { BsThreeDots } from 'react-icons/bs';
 import { IoChevronBack } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import mastercardLogo from '@/assets/images/Mastercard-logo.png';
-import { getProfileData } from '@/actions/profile.actions';
+import { useUser } from '@/contexts/UserContext';
+import { changeProfilePhoto } from '@/actions/profile.actions';
+import { Icon } from '@iconify/react';
 
 const Sidebar = () => {
     const router = useRouter();
     const [activePage, setActivePage] = useState('/ar/user-profile/personal-info');
-    const [userName, setUserName] = useState<string | null>(null);
-    const [userImage, setUserImage] = useState<string | null>(null);
+    const { user, refreshUser } = useUser();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const [isError, setIsError] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
+    // Close menu when clicking outside
     useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const data = await getProfileData();
-                if (data.success && data.profile) {
-                    setUserName(data.profile.name);
-                    setUserImage(data.profile.image_url);
-                }
-            } catch (error) {
-                console.error('Failed to fetch profile data:', error);
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
             }
         };
 
-        fetchProfileData();
-    }, []);
+        if (showMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMenu]);
 
     const handleSidebarPage = (page: string) => {
         setActivePage(page);
         router.push(page);
+    }
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setModalMessage("يرجى اختيار صورة صالحة");
+            setIsError(true);
+            setShowModal(true);
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            setModalMessage("حجم الصورة يجب أن يكون أقل من 5 ميجابايت");
+            setIsError(true);
+            setShowModal(true);
+            return;
+        }
+
+        setIsUploading(true);
+        setShowMenu(false);
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await changeProfilePhoto(formData);
+
+            if (response.success) {
+                setModalMessage(response.message || "تم تحديث صورة الملف الشخصي بنجاح!");
+                setIsError(false);
+                setShowModal(true);
+                // Refresh user data to update the image
+                await refreshUser();
+            } else {
+                setModalMessage(response.message || "حدث خطأ أثناء تحديث الصورة");
+                setIsError(true);
+                setShowModal(true);
+            }
+        } catch (error) {
+            console.error("Error uploading profile photo:", error);
+            setModalMessage("حدث خطأ غير متوقع أثناء تحديث الصورة");
+            setIsError(true);
+            setShowModal(true);
+        } finally {
+            setIsUploading(false);
+            // Reset the input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    }
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    }
+
+    const toggleMenu = () => {
+        setShowMenu(!showMenu);
     }
 
     return (
@@ -59,19 +129,50 @@ const Sidebar = () => {
                         {/* Profile image container */}
                         <div className="absolute inset-3 rounded-full overflow-hidden" style={{ width: 'calc(100% - 24px)', height: 'calc(100% - 24px)' }}>
                             <Image
-                                src={userImage || profileImage}
+                                src={user?.image_url || profileImage}
                                 alt="Profile"
                                 fill
                                 className="object-cover rounded-full"
                             />
                         </div>
                     </div>
-                    {/* Floating add button */}
-                    <button className="absolute top-[50%] -right-3 sm:-right-5 transform translate-y-[-50%] w-10 h-10 sm:w-12 sm:h-12 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg border-4 border-white hover:bg-[#d9a645] transition-colors">
-                        <HiMiniPlusCircle className="w-4 h-4 sm:w-6 sm:h-6" />
-                    </button>
+                    {/* Floating add button with menu */}
+                    <div ref={menuRef} className="absolute top-[50%] -right-3 sm:-right-5 transform translate-y-[-50%]">
+                        <button 
+                            onClick={toggleMenu}
+                            disabled={isUploading}
+                            className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg border-4 border-white hover:bg-[#d9a645] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isUploading ? (
+                                <Icon icon="eos-icons:loading" className="w-4 h-4 sm:w-6 sm:h-6" />
+                            ) : (
+                                <HiMiniPlusCircle className="w-4 h-4 sm:w-6 sm:h-6" />
+                            )}
+                        </button>
+
+                        {/* Small Menu */}
+                        {showMenu && !isUploading && (
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-lg shadow-xl border border-gray-100 py-1 min-w-[160px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <button
+                                    onClick={handleUploadClick}
+                                    className="w-full px-4 py-2.5 text-right text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 justify-end"
+                                >
+                                    <span>تحديث الصورة</span>
+                                    <Icon icon="mdi:image-edit" className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    {/* Hidden file input */}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-primary text-center">{userName || ""}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-primary text-center">{user?.name || ""}</h2>
             </div>
 
             {/* Menu Items */}
@@ -128,8 +229,63 @@ const Sidebar = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Help / Chat Section */}
+                    <div className="mt-4 sm:mt-6">
+                        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100">
+                            <div className="flex flex-col items-center text-center gap-4">
+                                <p className="text-primary font-bold text-base sm:text-lg">هل تحتاج إلى مساعدة؟</p>
+                                <button
+                                    onClick={() => router.push('/ar/user-profile/chat')}
+                                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
+                                >
+                                    دعم
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            {/* Success/Error Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-in fade-in zoom-in duration-300">
+                        <div className="text-center">
+                            {/* Icon */}
+                            <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 ${isError ? 'bg-red-100' : 'bg-green-100'}`}>
+                                {isError ? (
+                                    <Icon icon="mdi:alert-circle" className="text-red-600 text-4xl" />
+                                ) : (
+                                    <Icon icon="mdi:check-circle" className="text-green-600 text-4xl" />
+                                )}
+                            </div>
+
+                            {/* Title */}
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                                {isError ? 'حدث خطأ!' : 'تم التحديث بنجاح!'}
+                            </h3>
+
+                            {/* Message */}
+                            <p className="text-gray-600 mb-6 text-sm sm:text-base">
+                                {modalMessage}
+                            </p>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${
+                                    isError
+                                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                                        : 'bg-secondary hover:bg-secondary/90 text-white'
+                                }`}
+                            >
+                                حسناً
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

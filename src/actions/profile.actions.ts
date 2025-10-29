@@ -1,5 +1,5 @@
 "use server";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { cookies } from "next/headers";
 
 interface ProfileData {
@@ -24,10 +24,22 @@ export async function getProfileData() {
             withCredentials: true
         });
         
-        return response.data;
+        return {
+            success: true,
+            ...response.data
+        };
     } catch (error) {
         console.error("Error getting profile data:", error);
-        throw error;
+        
+        const axiosError = error as AxiosError<{ message?: string; error?: string }>;
+        const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
+        
+        console.log("Backend error response:", axiosError.response?.data);
+        
+        return {
+            success: false,
+            message: backendMessage || "حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى."
+        };
     }
 }
 
@@ -46,10 +58,23 @@ export async function editProfileData(data: ProfileData) {
             withCredentials: true
         });
         
-        return response.data;
+        return {
+            success: true,
+            message: response.data.message || "تم حفظ التعديلات بنجاح!",
+            data: response.data
+        };
     } catch (error) {
         console.error("Error editing profile data:", error);
-        throw error;
+        
+        const axiosError = error as AxiosError<{ message?: string; error?: string }>;
+        const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
+        
+        console.log("Backend error response:", axiosError.response?.data);
+        
+        return {
+            success: false,
+            message: backendMessage || "حدث خطأ أثناء حفظ التعديلات. يرجى المحاولة مرة أخرى."
+        };
     }
 }
 
@@ -84,15 +109,24 @@ export async function changeProfilePhoto(formData: FormData) {
         const sessionId = cookieStore.get("session_id")?.value;
         const api_session = cookieStore.get("api_session")?.value;
 
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/change-profile-photo`, formData, {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/photo`, formData, {
             headers: {
                 Cookie: `api_session=${api_session}; session_id=${sessionId}`,
             },
             withCredentials: true
         });
-        return response.data;
+        
+        return {
+            success: true,
+            message: response.data.message || "تم تحديث صورة الملف الشخصي بنجاح!",
+            data: response.data
+        };
     } catch (error) {
         console.error("Error changing profile photo:", error);
-        throw error;
+        const axiosError = error as AxiosError<{ message?: string }>;
+        return {
+            success: false,
+            message: axiosError.response?.data?.message || "حدث خطأ أثناء تحديث الصورة. يرجى المحاولة مرة أخرى."
+        };
     }
 }

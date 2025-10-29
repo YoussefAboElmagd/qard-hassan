@@ -14,14 +14,10 @@ import { getProfileData } from '@/actions/profile.actions';
 import { requestLoan } from '@/actions/loan.actions';
 import { Button } from '../ui/button';
 
-// Normalize various date inputs to YYYY-MM-DD text
 function normalizeToISODate(input: string): string {
     if (!input) return '';
-    // If already YYYY-MM-DD
     if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
-    // Replace slashes with dashes
     const sanitized = input.replaceAll('/', '-').trim();
-    // Handle D-M-YYYY or DD-MM-YYYY
     const dmyMatch = sanitized.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
     if (dmyMatch) {
         const day = dmyMatch[1].padStart(2, '0');
@@ -29,7 +25,6 @@ function normalizeToISODate(input: string): string {
         const year = dmyMatch[3];
         return `${year}-${month}-${day}`;
     }
-    // Handle YYYY/M/D or similar after replacement
     const ymdLoose = sanitized.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
     if (ymdLoose) {
         const year = ymdLoose[1];
@@ -37,7 +32,7 @@ function normalizeToISODate(input: string): string {
         const day = ymdLoose[3].padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
-    return input; // fallback, let backend validate
+    return input; 
 }
 
 // Borrower Information Component
@@ -78,7 +73,6 @@ function LoanRequestForm() {
         purpose: 'اختيار'
     });
 
-    // Financial data state - ALL in one object!
     const [financialData, setFinancialData] = useState({
         incomeAmount: '',
         rentAmount: '',
@@ -88,7 +82,6 @@ function LoanRequestForm() {
         incomeProofFile: null as File | null
     });
 
-    // Guarantor data state - ALL in one object including files!
     const [guarantorData, setGuarantorData] = useState({
         name: '',
         nationalId: '',
@@ -131,7 +124,6 @@ function LoanRequestForm() {
 
     const [checkboxWarning, setCheckboxWarning] = useState<string | null>(null);
 
-    // Simple handler for signature (borrower's main signature)
     const handleSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -139,7 +131,6 @@ function LoanRequestForm() {
         }
     };
 
-    // Simple handlers for child components - just one function per component!
     const handleFinancialChange = (field: keyof typeof financialData, value: string | boolean | File | null) => {
         setFinancialData(prev => ({ ...prev, [field]: value }));
     };

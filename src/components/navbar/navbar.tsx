@@ -3,10 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import logo from "@/assets/images/main-logo.png";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { Globe, Menu, X, LogOut } from "lucide-react";
+import { Globe, Menu, X, LogOut, ChevronDown } from "lucide-react";
 import { FaUserCircle, FaUserCog } from "react-icons/fa";
 import { PiUserCircleFill } from "react-icons/pi";
 import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/contexts/UserContext";
+import { motion, AnimatePresence } from "framer-motion";
+
 const links = [
   {
     ref: "/",
@@ -30,26 +33,33 @@ const links = [
   },
 ];
 
+const governanceMenuItems = [
+  { title: "السجل التجاري", isActive: false },
+  { title: "اللجان الدائمة والمؤقتة", isActive: false },
+  { title: "إقرارات الإفصاح", isActive: false },
+  { title: "قرارات التعيين", isActive: false },
+  { title: "قرارات التملك والاستثمار", isActive: false },
+  { title: "أدلة الحوكمة", isActive: false },
+  { title: "اللوائح والسياسات", isActive: true, href: "/governance" },
+  { title: "اجتماعات الجمعية العمومية", isActive: false },
+  { title: "الموازنة التقديرية", isActive: false },
+  { title: "التوجه الاستراتيجي", isActive: false },
+  { title: "الخطة التشغيلية", isActive: false },
+  { title: "التقارير السنوية", isActive: false },
+  { title: "القوائم المالية", isActive: false },
+  { title: "ورش مقامة بالشراكة المجتمعية 2024", isActive: false },
+];
+
 const Navbar = () => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isGovernanceDropdownOpen, setIsGovernanceDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const governanceDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isAuthenticated, isLoading, logout } = useAuth();
-  const getUser = () => {
-    const name = "user";
-    const value = document.cookie.split(';').find((cookie: string) => cookie.trim().startsWith(name));
-    console.log(value);
-    return value ? value.split('=')[1] : null;
-  };
-
-  useEffect(() => {
-    const user = getUser();
-    console.log(user);
-  }, []);
-
-
+  const { user } = useUser();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -76,6 +86,9 @@ const Navbar = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsUserDropdownOpen(false);
       }
+      if (governanceDropdownRef.current && !governanceDropdownRef.current.contains(event.target as Node)) {
+        setIsGovernanceDropdownOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -101,20 +114,70 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <ul className="hidden lg:flex  items-center justify-center gap-6 xl:gap-10">
           {links.map((ele, ind) => (
-            <li key={ind}>
-              <Link
-                href={ele.ref}
-                className={
-                  `hover:text-secondary transition-colors ${pathname === ele.ref || (ele.ref === "/" && (pathname === "/ar" || pathname === "/en"))
-                    ? "text-secondary border-b-4 border-secondary pb-1 rounded-b-[3px]"
-                    : ""
-                  } `
-                }
-              >
-                {ele.title}
-              </Link>
+            <li key={ind} className="relative">
+              {ele.ref === "/governance" ? (
+                <div ref={governanceDropdownRef}>
+                  <button
+                    onClick={() => setIsGovernanceDropdownOpen(!isGovernanceDropdownOpen)}
+                    className={
+                      `inline-flex items-center gap-1 pb-1 transition-colors cursor-pointer ${
+                        pathname === ele.ref
+                          ? "text-secondary border-b-4 border-secondary rounded-b-[3px]"
+                          : "border-b-4 border-transparent"
+                      } `
+                    }
+                  >
+                    <span>{ele.title}</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGovernanceDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence>
+                    {isGovernanceDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18 }}
+                        className="absolute top-full start-0 w-80 mt-3 bg-white rounded-xl shadow-xl border border-primary/20 py-1.5 z-50 max-h-[70vh] overflow-y-auto divide-y divide-gray-100"
+                      >
+                        {governanceMenuItems.map((item, idx) => (
+                          <div key={idx}>
+                            {item.isActive && item.href ? (
+                              <Link
+                                href={item.href}
+                                onClick={() => setIsGovernanceDropdownOpen(false)}
+                                className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-secondary/10 hover:text-primary focus:bg-secondary/10 focus:text-primary transition-colors outline-none focus:outline-none"
+                              >
+                                <span className="me-2 h-2 w-2 rounded-full bg-secondary/70 group-hover:bg-secondary" aria-hidden="true" />
+                                <span className="flex-1">{item.title}</span>
+                              </Link>
+                            ) : (
+                              <div className="px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed">
+                                {item.title}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link
+                  href={ele.ref}
+                  className={
+                    `inline-block hover:text-secondary transition-colors pb-1 ${pathname === ele.ref || (ele.ref === "/" && (pathname === "/ar" || pathname === "/en"))
+                      ? "text-secondary border-b-4 border-secondary rounded-b-[3px]"
+                      : "border-b-4 border-transparent"
+                    } `
+                  }
+                >
+                  {ele.title}
+                </Link>
+              )}
             </li>
-          ))}<li className="ms-5 flex items-center gap-2">
+          ))}
+          <li className="ms-5 flex items-center gap-2">
             <span className="text-sm">EN</span>
             <Globe className="w-6 h-6" />
           </li>
@@ -152,18 +215,18 @@ const Navbar = () => {
                 className="flex cursor-pointer items-center gap-2 hover:text-secondary transition-colors"
               >
                 <PiUserCircleFill className="w-8 h-8" />
-                <span>{getUser() ? getUser() : ""}</span>
+                <span>{user?.name || ""}</span>
               </button>
               {/* Dropdown Menu */} 
               {isUserDropdownOpen && (
-                <div className="absolute top-full end-0 w-64 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100/50 py-3 pb-0 z-50 backdrop-blur-sm animate-in fade-in-0 zoom-in-95 duration-200">
+                <div className="absolute top-full end-0 w-64 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100/50 py-3 pb-0 z-50 backdrop-blur-sm">
                   {/* User Info Section */}
                   <div className="px-5 py-3 border-b border-gray-100/60 bg-gradient-to-r from-gray-50/50 to-gray-100/30">
                     <div className="flex items-center gap-3">
                       <FaUserCircle className="w-8 h-8 text-primary" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 truncate">{getUser() ? getUser() : ""}</p>
-                        <p className="text-xs text-gray-500 truncate">user@example.com</p>
+                        <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || ""}</p>
+                        <p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
                       </div>
                     </div>
                   </div>
@@ -267,18 +330,54 @@ const Navbar = () => {
                 من نحن
               </Link>
             </li>
-            <li>
-              <Link
-                href="/governance"
-                className={
+            <li className="relative">
+              <button
+                onClick={() => setIsGovernanceDropdownOpen(!isGovernanceDropdownOpen)}
+                className={`flex items-center gap-1 transition-colors ${
                   pathname.endsWith("/governance")
                     ? "text-secondary border-b-2 border-secondary pb-1"
-                    : "hover:text-secondary transition-colors text-black"
-                }
-                onClick={toggleMobileMenu}
+                    : "text-black hover:text-primary"
+                }`}
               >
-                الحوكمة
-              </Link>
+                <span>الحوكمة</span>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGovernanceDropdownOpen ? 'rotate-180 text-primary' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isGovernanceDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.22 }}
+                    className="mt-3 bg-white rounded-xl shadow-lg overflow-hidden border border-primary/20 divide-y divide-gray-100"
+                  >
+                    <div className="py-1">
+                      {governanceMenuItems.map((item, idx) => (
+                        <div key={idx}>
+                          {item.isActive && item.href ? (
+                            <Link
+                              href={item.href}
+                              onClick={() => {
+                                setIsGovernanceDropdownOpen(false);
+                                toggleMobileMenu();
+                              }}
+                              className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-secondary/10 hover:text-primary focus:bg-secondary/10 focus:text-primary transition-colors"
+                            >
+                              <span className="flex-1">{item.title}</span>
+                              <span className="ms-2 h-2 w-2 rounded-full bg-secondary/70" aria-hidden="true" />
+                            </Link>
+                          ) : (
+                            <div className="block px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed">
+                              {item.title}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </li>
             <li>
               <Link
@@ -312,8 +411,8 @@ const Navbar = () => {
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
                 <PiUserCircleFill className="w-10 h-10 text-primary" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">محمد الشافعي</p>
-                  <p className="text-xs text-gray-500 truncate">user@example.com</p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || ""}</p>
+                  <p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
                 </div>
               </div>
 

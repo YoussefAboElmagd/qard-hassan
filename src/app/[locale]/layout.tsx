@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { UserProvider } from '@/contexts/UserContext';
 
 
 const GK_Dinkum_Regular = localFont({
@@ -45,7 +46,9 @@ export default async function RootLayout({
         suppressHydrationWarning={true}
       >
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <UserProvider>
+            {children}
+          </UserProvider>
         </NextIntlClientProvider>
       </body>
     </html>

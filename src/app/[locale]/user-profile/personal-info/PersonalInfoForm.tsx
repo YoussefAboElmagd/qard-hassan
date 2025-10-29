@@ -3,7 +3,9 @@ import { getProfileData, editProfileData } from '@/actions/profile.actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
+import { useUser } from '@/contexts/UserContext'
 
 interface userInfoInterface {
     fullName: string,
@@ -14,6 +16,7 @@ interface userInfoInterface {
 }
 
 export default function PersonalInfoForm() {
+    const { refreshUser } = useUser();
     const [userInfo, setUserInfo] = useState<userInfoInterface>({
         fullName: '',
         email: '',
@@ -24,11 +27,22 @@ export default function PersonalInfoForm() {
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const [isError, setIsError] = useState(false);
 
     const getUserProfileData = async () => {
         try {
             const data = await getProfileData();
             console.log(data);
+
+            if (!data.success) {
+                setModalMessage(data.message || "حدث خطأ أثناء تحميل البيانات");
+                setIsError(true);
+                setShowModal(true);
+                return;
+            }
+
             setUserInfo({
                 fullName: data.profile.name,
                 email: data.profile.email,
@@ -38,6 +52,10 @@ export default function PersonalInfoForm() {
             });
         } catch (error) {
             console.error('Error fetching profile data:', error);
+            const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
+            setModalMessage(errorMessage);
+            setIsError(true);
+            setShowModal(true);
         } finally {
             setIsLoading(false);
         }
@@ -53,14 +71,28 @@ export default function PersonalInfoForm() {
                 national_id: userInfo.nationalId,
                 id_expiry_date: userInfo.idExpiryDate
             };
-            
-            await editProfileData(profileData);
-            setIsEditing(false);
-            // Optionally show success message
-            alert('تم حفظ التعديلات بنجاح');
+
+            const response = await editProfileData(profileData);
+
+            if (response.success) {
+                setModalMessage(response.message || "تم حفظ التعديلات بنجاح!");
+                setIsError(false);
+                setShowModal(true);
+                setIsEditing(false);
+
+                // Refresh user data in context to update navbar and sidebar
+                await refreshUser();
+            } else {
+                setModalMessage(response.message || "حدث خطأ أثناء حفظ البيانات");
+                setIsError(true);
+                setShowModal(true);
+            }
         } catch (error) {
             console.error('Error saving profile data:', error);
-            alert('حدث خطأ أثناء حفظ التعديلات');
+            const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
+            setModalMessage(errorMessage);
+            setIsError(true);
+            setShowModal(true);
         } finally {
             setIsSaving(false);
         }
@@ -186,19 +218,20 @@ export default function PersonalInfoForm() {
                     </div>
 
                     {/* ID Expiry Date */}
+                    {/* ID Expiry Date */}
                     <div className="space-y-2">
                         <Label htmlFor="idExpiryDate" className="text-start text-gray-700 font-bold">
                             تاريخ الانتهاء
                         </Label>
                         <Input
                             id="idExpiryDate"
-                            type="text"
+                            type="date"
                             value={userInfo.idExpiryDate}
                             onChange={(e) => handleInputChange('idExpiryDate', e.target.value)}
                             disabled={!isEditing}
-                            className={`text-right ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
+                            min={new Date().toISOString().split('T')[0]}
+                            className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
                             dir="rtl"
-                            placeholder="YYYY-MM-DD"
                         />
                     </div>
 
@@ -218,6 +251,43 @@ export default function PersonalInfoForm() {
                         >
                             {isSaving ? 'جارِ الحفظ...' : isEditing ? 'حفظ التعديلات' : 'تعديل'}
                         </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Success/Error Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-in fade-in zoom-in duration-300">
+                        <div className="text-center">
+                            {/* Icon */}
+                            <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 ${isError ? 'bg-red-100' : 'bg-green-100'}`}>
+                                {isError ? (
+                                    <Icon icon="mdi:alert-circle" className="text-red-600" />
+                                ) : (
+                                    <Icon icon="mdi:check-circle" className="text-green-600" />
+                                )}
+                            </div>
+                            {/* Title */}
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                                {isError ? 'حدث خطأ!' : 'تم الحفظ بنجاح!'}
+                            </h3>
+
+                            {/* Message */}
+                            <p className="text-gray-600 mb-6 text-sm sm:text-base">
+                                {modalMessage}
+                            </p>
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${isError
+                                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                                    : 'bg-secondary hover:bg-secondary/90 text-white'
+                                    }`}
+                            >
+                                حسناً
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

@@ -4,13 +4,16 @@ import background from "@/assets/images/background-arabic.png"
 import Navbar from '@/components/navbar/navbar'
 import headerWhiteTop from "@/assets/images/LandingImgs/header-white-top.png"
 import UserProfileSidebar from '@/components/user-profile/UserProfileSidebar'
-import LoanStatusCard from '@/components/user-profile/LoanStatusCard'
+import ConditionalLoanStatus from '@/components/user-profile/ConditionalLoanStatus'
+import { getActiveLoanDetails } from '@/actions/loan.actions'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default async function Layout({ children }: LayoutProps) {
+  const loanResponse = await getActiveLoanDetails();
+  const activeLoan = loanResponse?.success ? loanResponse.data?.active_loan : null;
   return (
     <div className="min-h-screen bg-gray-50" >
       {/* Header Background */}
@@ -50,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
             {/* Main Content */}
             <div className="flex-1 min-w-0 space-y-4 sm:space-y-6">
               {/* Loan Status Card */}
-              <LoanStatusCard />
+              <ConditionalLoanStatus activeLoan={activeLoan} />
               {children}
             </div>
           </div>
