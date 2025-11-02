@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import mastercardLogo from '@/assets/images/Mastercard-logo.png';
 import { useUser } from '@/contexts/UserContext';
 import { changeProfilePhoto } from '@/actions/profile.actions';
+import chatIcon from '@/assets/images/chaticonF.png';
 import { Icon } from '@iconify/react';
 
 const Sidebar = () => {
@@ -231,13 +232,14 @@ const Sidebar = () => {
                     </div>
 
                     {/* Help / Chat Section */}
-                    <div className="mt-4 sm:mt-6">
-                        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100">
-                            <div className="flex flex-col items-center text-center gap-4">
+                    <div className="mt-4 sm:mt-16">
+                        <div className="bg-white rounded-2xl p-4 sm:p-5  shadow-sm border-2 border-primary ">
+                            <div className="relative flex flex-col items-center text-center gap-4 pt-24">
+                                <Image src={chatIcon} alt='chat' width={100} height={100} className='w-40 h-40 object-cover absolute -top-[40%] left-1/2 transform -translate-x-1/2' />
                                 <p className="text-primary font-bold text-base sm:text-lg">هل تحتاج إلى مساعدة؟</p>
                                 <button
                                     onClick={() => router.push('/ar/user-profile/chat')}
-                                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
+                                    className="w-full sm:w-auto px-14 py-2 rounded-xl bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
                                 >
                                     دعم
                                 </button>

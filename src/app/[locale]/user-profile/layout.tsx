@@ -4,7 +4,7 @@ import background from "@/assets/images/background-arabic.png"
 import Navbar from '@/components/navbar/navbar'
 import headerWhiteTop from "@/assets/images/LandingImgs/header-white-top.png"
 import UserProfileSidebar from '@/components/user-profile/UserProfileSidebar'
-import ConditionalLoanStatus from '@/components/user-profile/ConditionalLoanStatus'
+import { ConditionalContentWrapper } from '@/components/user-profile/ConditionalContentWrapper'
 import { getActiveLoanDetails } from '@/actions/loan.actions'
 
 interface LayoutProps {
@@ -31,31 +31,27 @@ export default async function Layout({ children }: LayoutProps) {
         <div className="relative z-10">
         <Navbar />
 
-        <Image
-          src={headerWhiteTop.src}
-          alt="header-white-top"
-          width={450}
-          height={100}
-          className="absolute top-0 start-0 hidden lg:block"
-        />
+        <Image 
+            src={headerWhiteTop.src} 
+            alt="header-white-top" 
+            width={450} 
+            height={100} 
+            className="absolute top-0 start-0 hidden lg:block w-[30vw] max-w-[400px] h-auto" 
+          />
         </div>
       </header>
 
       {/* Main Content with proper spacing */}
-      <main className="relative -mt-16 sm:-mt-20 md:-mt-24 lg:-mt-32 pb-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <main className="relative pb-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-3 max-w-[1350px]">
           <div className="flex flex-col xl:flex-row gap-4 sm:gap-6 lg:gap-8">
-            {/* Sidebar */}
-            <aside className="w-full xl:w-auto xl:flex-shrink-0">
+            <aside className="w-full xl:w-auto xl:flex-shrink-0 -mt-16 sm:-mt-20 md:-mt-24 lg:-mt-32">
               <UserProfileSidebar />
             </aside>
 
-            {/* Main Content */}
-            <div className="flex-1 min-w-0 space-y-4 sm:space-y-6">
-              {/* Loan Status Card */}
-              <ConditionalLoanStatus activeLoan={activeLoan} />
+            <ConditionalContentWrapper activeLoan={activeLoan}>
               {children}
-            </div>
+            </ConditionalContentWrapper>
           </div>
         </div>
       </main>

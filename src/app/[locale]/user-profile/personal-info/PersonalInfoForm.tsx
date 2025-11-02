@@ -6,13 +6,21 @@ import { Label } from '@/components/ui/label'
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useUser } from '@/contexts/UserContext'
+import DatePicker from 'react-datepicker'
+import { registerLocale } from 'react-datepicker'
+import { ar } from 'date-fns/locale/ar'
+import { format, parse } from 'date-fns'
+import 'react-datepicker/dist/react-datepicker.css';
+
+
+registerLocale('ar', ar)
 
 interface userInfoInterface {
     fullName: string,
     email: string,
     phone: string,
     nationalId: string,
-    idExpiryDate: string
+    idExpiryDate: Date | null
 }
 
 export default function PersonalInfoForm() {
@@ -22,7 +30,7 @@ export default function PersonalInfoForm() {
         email: '',
         phone: '',
         nationalId: '',
-        idExpiryDate: ''
+        idExpiryDate: null
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -48,7 +56,9 @@ export default function PersonalInfoForm() {
                 email: data.profile.email,
                 phone: data.profile.phone,
                 nationalId: data.profile.national_id,
-                idExpiryDate: data.profile.id_expiry_date
+                idExpiryDate: data.profile.id_expiry_date 
+                    ? parse(data.profile.id_expiry_date, 'yyyy-MM-dd', new Date())
+                    : null
             });
         } catch (error) {
             console.error('Error fetching profile data:', error);
@@ -69,7 +79,9 @@ export default function PersonalInfoForm() {
                 email: userInfo.email,
                 phone: userInfo.phone,
                 national_id: userInfo.nationalId,
-                id_expiry_date: userInfo.idExpiryDate
+                id_expiry_date: userInfo.idExpiryDate 
+                    ? format(userInfo.idExpiryDate, 'yyyy-MM-dd')
+                    : ''
             };
 
             const response = await editProfileData(profileData);
@@ -79,8 +91,6 @@ export default function PersonalInfoForm() {
                 setIsError(false);
                 setShowModal(true);
                 setIsEditing(false);
-
-                // Refresh user data in context to update navbar and sidebar
                 await refreshUser();
             } else {
                 setModalMessage(response.message || "حدث خطأ أثناء حفظ البيانات");
@@ -98,7 +108,7 @@ export default function PersonalInfoForm() {
         }
     }
 
-    const handleInputChange = (field: keyof userInfoInterface, value: string) => {
+    const handleInputChange = (field: keyof userInfoInterface, value: string | Date | null) => {
         setUserInfo(prev => ({
             ...prev,
             [field]: value
@@ -217,21 +227,24 @@ export default function PersonalInfoForm() {
                         />
                     </div>
 
-                    {/* ID Expiry Date */}
-                    {/* ID Expiry Date */}
+                    {/* ID Expiry Date with DatePicker */}
                     <div className="space-y-2">
                         <Label htmlFor="idExpiryDate" className="text-start text-gray-700 font-bold">
                             تاريخ الانتهاء
                         </Label>
-                        <Input
-                            id="idExpiryDate"
-                            type="date"
-                            value={userInfo.idExpiryDate}
-                            onChange={(e) => handleInputChange('idExpiryDate', e.target.value)}
+                        <DatePicker
+                            selected={userInfo.idExpiryDate}
+                            onChange={(date) => handleInputChange('idExpiryDate', date)}
+                            locale="ar"
+                            dateFormat="dd/MM/yyyy"
+                            minDate={new Date()}
                             disabled={!isEditing}
-                            min={new Date().toISOString().split('T')[0]}
-                            className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
-                            dir="rtl"
+                            placeholderText="اختر تاريخ الانتهاء"
+                            className={`w-full text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border border-gray-200 rounded-lg h-12 px-4`}
+                            wrapperClassName="w-full"
+                            showYearDropdown
+                            showMonthDropdown
+                            dropdownMode="select"
                         />
                     </div>
 
@@ -260,7 +273,6 @@ export default function PersonalInfoForm() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
                     <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-in fade-in zoom-in duration-300">
                         <div className="text-center">
-                            {/* Icon */}
                             <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 ${isError ? 'bg-red-100' : 'bg-green-100'}`}>
                                 {isError ? (
                                     <Icon icon="mdi:alert-circle" className="text-red-600" />
@@ -268,16 +280,12 @@ export default function PersonalInfoForm() {
                                     <Icon icon="mdi:check-circle" className="text-green-600" />
                                 )}
                             </div>
-                            {/* Title */}
                             <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                                 {isError ? 'حدث خطأ!' : 'تم الحفظ بنجاح!'}
                             </h3>
-
-                            {/* Message */}
                             <p className="text-gray-600 mb-6 text-sm sm:text-base">
                                 {modalMessage}
                             </p>
-                            {/* Close Button */}
                             <button
                                 onClick={() => setShowModal(false)}
                                 className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${isError

@@ -4,6 +4,12 @@
   themes: light --default;
 }
 
+@layer theme {
+  a, span {
+    display: inline-block;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

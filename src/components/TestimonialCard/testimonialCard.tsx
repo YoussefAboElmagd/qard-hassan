@@ -24,8 +24,8 @@ const TestimonialsCarousel = () => {
                     <PiStarFourFill className='text-lg text-primary' />
                     <button className="text-primary text-xl font-bold">شهادات </button>
                 </div>
-                <h2 className="text-4xl font-bold">
-                    ماذا يقول <span className="text-yellow-500">مستخدمنا السعيد</span>
+                <h2 className="text-4xl font-bold text-primary">
+                    ماذا يقول <span className="text-secondary">مستخدمنا السعيد</span>
                 </h2>
             </div>
 

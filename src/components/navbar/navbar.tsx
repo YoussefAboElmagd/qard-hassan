@@ -177,9 +177,9 @@ const Navbar = () => {
               )}
             </li>
           ))}
-          <li className="ms-5 flex items-center gap-2">
+          <li className="flex items-center gap-2 mb-1">
             <span className="text-sm">EN</span>
-            <Globe className="w-6 h-6" />
+            <Globe className="w-5 h-5" />
           </li>
         </ul>
 
