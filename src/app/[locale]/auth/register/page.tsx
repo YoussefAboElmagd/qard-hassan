@@ -27,6 +27,7 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const router = useRouter();
 
@@ -34,7 +35,7 @@ export default function Register() {
         name: z.string().nonempty("الاسم مطلوب").min(2, "الاسم يجب أن يكون على الأقل حرفين"),
         email: z.string().nonempty("البريد الإلكتروني مطلوب").email("البريد الإلكتروني غير صالح"),
         phone: z.string().nonempty("رقم الهاتف مطلوب").min(9, "رقم الهاتف يجب أن يكون من 9 إلى 15 رقمًا").max(15, "رقم الهاتف يجب أن يكون من 9 إلى 15 رقمًا").regex(/^\d+$/, "رقم الهاتف يجب أن يحتوي على أرقام فقط"),
-        national_id: z.string().nonempty("رقم الهوية مطلوب").length(9, "رقم الهوية يجب أن يكون 9 أرقام").regex(/^\d+$/, "رقم الهوية يجب أن يحتوي على أرقام فقط"),
+        national_id: z.string().nonempty("رقم الهوية مطلوب").length(10, "رقم الهوية يجب أن يكون 10 أرقام").regex(/^\d+$/, "رقم الهوية يجب أن يحتوي على أرقام فقط"),
         id_expiry_date: z.string().min(1, "تاريخ الانتهاء مطلوب").refine((date) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)), "تاريخ الانتهاء يجب أن يكون تاريخًا مستقبليًا"),
         password: z.string().nonempty("كلمة المرور مطلوبة").min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل").regex(/^[a-zA-Z0-9]+$/, "كلمة المرور يجب أن تحتوي على حروف وأرقام فقط"),
         confirmPassword: z.string().nonempty("تأكيد كلمة المرور مطلوب")
@@ -42,31 +43,40 @@ export default function Register() {
         message: "كلمة المرور غير متطابقة",
         path: ["confirmPassword"]
     });
+    
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
         criteriaMode: "all",
         mode: "onChange",
-
     });
 
     const handleRegister = async (data: RegisterFormData) => {
-        console.log(data);
-        const response = await userRegister(data);
-        console.log(response);
-        if (response.success == true) {
-            try {
-                sessionStorage.setItem("userEmail", data.email);
-                sessionStorage.setItem("otpType", "register");
-            } catch (error: unknown) {
-                console.error("Register error:", error);
-                setError((error as { error: string }).error);
-             }
-            router.push("/ar/auth/otp-verification");
-        }
-        if (response.success == false) {
-            setError(response.error);
+        setError("");
+        setSuccess("");
+        try {
+            const response = await userRegister(data);
+            if (response?.success === true) {
+                // Set cookies for OTP verification
+                document.cookie = `otp_email=${encodeURIComponent(data.email)}; path=/; max-age=3600`;
+                document.cookie = `otp_type=register; path=/; max-age=3600`;
+                
+                setSuccess("تم إنشاء الحساب بنجاح. سيتم التحويل إلى صفحة التحقق...");
+                setTimeout(() => {
+                    router.push("/ar/auth/otp-verification");
+                }, 2000);
+                return;
+            }
+            if (response?.success === false) {
+                setError(response?.error ?? "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+                return;
+            }
+            setError("حدث خطأ غير متوقع. يرجى المحاولة لاحقاً.");
+        } catch (e) {
+            console.error("Register failed:", e);
+            setError("فشل في إنشاء الحساب. يرجى التحقق من البيانات المدخلة.");
         }
     }
+    
     return (
         <div className="w-full">
             {/* Logo and Welcome Section */}
@@ -80,9 +90,18 @@ export default function Register() {
             </div>
 
             {/* Registration Form */}
-            <div className="space-y-2">
-                {/* Error Message */}
-                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            <form onSubmit={handleSubmit(handleRegister)} className="space-y-2">
+                {/* Alerts */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                        <p className="text-red-700 text-center font-medium">{error}</p>
+                    </div>
+                )}
+                {success && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                        <p className="text-green-700 text-center font-medium">{success}</p>
+                    </div>
+                )}
                 {/* Name Field */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-bold text-[#919499] block" >
@@ -217,7 +236,7 @@ export default function Register() {
                 </div>
 
                 {/* Register Button */}
-                <Button onClick={handleSubmit(handleRegister)} disabled={isSubmitting} className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all mt-8">
+                <Button type="submit" disabled={isSubmitting} className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all mt-8">
                     {isSubmitting ? "جاري الإنشاء..." : "انشاء حساب"}
                 </Button>
 
@@ -230,7 +249,7 @@ export default function Register() {
                         </Link>
                     </p>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }

@@ -37,11 +37,14 @@ export default function ForgotPassword() {
         try {
             const response = await forgotPassword(data.email);
             if (response.success == true) {
-                setSuccess("تم إرسال رمز التحقق إلى البريد الإلكتروني المسجل. سيتم التحويل خلال 5 ثوانٍ...");                setTimeout(() => {
+                // Set cookies for OTP verification
+                document.cookie = `otp_email=${encodeURIComponent(data.email)}; path=/; max-age=3600`;
+                document.cookie = `otp_type=forgot_password; path=/; max-age=3600`;
+                
+                setSuccess("تم إرسال رمز التحقق إلى البريد الإلكتروني المسجل. سيتم التحويل خلال 3 ثوانٍ...");
+                setTimeout(() => {
                     router.push("/ar/auth/otp-verification");
                 }, 3000);
-                sessionStorage.setItem("userEmail", data.email);
-                sessionStorage.setItem("otpType", "forgot_password");
             }
             if (response.success == false) {
                 setError(response.error);

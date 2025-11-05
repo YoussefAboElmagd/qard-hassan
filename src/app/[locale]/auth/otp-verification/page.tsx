@@ -132,8 +132,6 @@ export default function OTPVerification() {
         }, 0);
     };
 
-
-
     const handleConfirm = async () => {
         const otpCode = otp.join("");
         if (!email || !otpType) {
@@ -145,19 +143,29 @@ export default function OTPVerification() {
         try {
             const response = await userOtpVerification({ email, otp: otpCode, type: otpType });
             console.log(response);
-            document.cookie = `user=${response.user}; path=/; max-age=604800`;
-            if (response.success == true) {
-                if (otpType == "forgot_password") {
-                    sessionStorage.setItem("otpNumber", otpCode);
+            
+            // Check if the response indicates success
+            if (response && response.success === true) {
+                // Set user cookie
+                document.cookie = `user=${response.user}; path=/; max-age=604800`;
+                
+                // Handle different OTP types
+                if (otpType === "forgot_password") {
+                    // Set the verified OTP in a cookie for the reset password page
+                    document.cookie = `verified_otp=${otpCode}; path=/; max-age=3600`;
                     router.push("/ar/auth/reset-password");
-                } else if (otpType == "register") {
+                } else if (otpType === "register") {
+                    // Clear cookies after registration verification
+                    document.cookie = "otp_email=; path=/; max-age=0";
+                    document.cookie = "otp_type=; path=/; max-age=0";
                     router.push("/ar/auth/login");
                 } else {
+                    // Login - clear cookies and go to home
+                    document.cookie = "otp_email=; path=/; max-age=0";
+                    document.cookie = "otp_type=; path=/; max-age=0";
                     router.push("/");
                 }
-            }
-            // Check if the response indicates success
-            if (response && response.success === false) {
+            } else if (response && response.success === false) {
                 setError("كود OTP غير صحيح. يرجى المحاولة مرة أخرى.");
             }
         } catch (error) {
@@ -186,7 +194,6 @@ export default function OTPVerification() {
         } finally {
             setIsLoading(false);
         }
-        
     }
 
     // Show loading while checking for cookies
@@ -258,34 +265,27 @@ export default function OTPVerification() {
                 </div>
             )}
 
-            {/* Timer */}
-            {/* <div className="mb-6">
-                    <p className="text-lg text-gray-600">
-                        تم إرسال الكود <span className="text-red-500 font-bold">{formatTime(timer)}</span>
-                    </p>
-                </div> */}
-
             {/* Resend Link */}
             <div className="mb-10 flex flex-col gap-2 justify-center items-center">
-                    <p className="text-base text-black">
-                        لم يصلني الكود؟ {" "}
-                        <button
-                            onClick={handleResendCode}
-                            className="text-primary hover:text-primary/80 cursor-pointer font-bold "
-                        >
-                               {isLoading ? (
-                                    <span>جاري الإرسال...</span>
-                            ) : (
-                                "إرسال مره أخري"
-                            )}
-                        </button>
+                <p className="text-base text-black">
+                    لم يصلني الكود؟ {" "}
+                    <button
+                        onClick={handleResendCode}
+                        className="text-primary hover:text-primary/80 cursor-pointer font-bold "
+                    >
+                        {isLoading ? (
+                            <span>جاري الإرسال...</span>
+                        ) : (
+                            "إرسال مره أخري"
+                        )}
+                    </button>
+                </p>
+                {resendMessage && (
+                    <p className="text-green-500 text-lg text-center font-medium">
+                        {resendMessage} 
                     </p>
-                    {resendMessage && (
-                        <p className="text-green-500 text-lg text-center font-medium">
-                            {resendMessage} 
-                        </p>
-                    )}
-                </div>
+                )}
+            </div>
 
             {/* Confirm Button */}
             <Button
@@ -303,6 +303,5 @@ export default function OTPVerification() {
                 )}
             </Button>
         </div>
-
     );
 }

@@ -42,6 +42,10 @@ export default function Login() {
             const response = await userLogin(data);
             console.log("Login successful:", response);
             if (response.success == true) {
+                // Set cookies for OTP verification
+                document.cookie = `otp_email=${encodeURIComponent(data.login)}; path=/; max-age=3600`;
+                document.cookie = `otp_type=login; path=/; max-age=3600`;
+                
                 setSuccess("تم تسجيل الدخول بنجاح. سيتم التحويل إلى صفحة التحقق...");
                 setTimeout(() => {
                     router.push("/ar/auth/otp-verification");

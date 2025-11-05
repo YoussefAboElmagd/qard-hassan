@@ -106,10 +106,13 @@ export async function userOtpVerification(userData: OtpVerificationData) {
             });
         }
 
-        // Clear OTP cookies after successful verification
+        // Clear OTP cookies after successful verification EXCEPT for forgot_password flow
+        // Reset-password page depends on these cookies to proceed
         const cookieStore = await cookies();
-        cookieStore.delete("otp_email");
-        cookieStore.delete("otp_type");
+        if (userData.type !== "forgot_password") {
+            cookieStore.delete("otp_email");
+            cookieStore.delete("otp_type");
+        }
 
         return response.data;
     } catch (error) {
