@@ -9,7 +9,6 @@ interface Message {
   text: string;
   sender: "user" | "support";
   timestamp: string;
-  avatar: string;
 }
 
 interface ChatAreaProps {
