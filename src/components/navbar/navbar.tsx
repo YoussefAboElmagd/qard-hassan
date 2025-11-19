@@ -9,6 +9,7 @@ import { PiUserCircleFill } from "react-icons/pi";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@/contexts/UserContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { NotificationBell } from "@/components/notifications";
 
 const links = [
   {
@@ -112,7 +113,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden lg:flex  items-center justify-center gap-6 xl:gap-10">
+        <ul className="hidden lg:flex  items-center justify-center gap-4 xl:gap-6">
           {links.map((ele, ind) => (
             <li key={ind} className="relative">
               {ele.ref === "/governance" ? (
@@ -120,7 +121,7 @@ const Navbar = () => {
                   <button
                     onClick={() => setIsGovernanceDropdownOpen(!isGovernanceDropdownOpen)}
                     className={
-                      `inline-flex items-center hover:text-secondary gap-1 pb-1 transition-colors cursor-pointer ${
+                      `inline-flex items-center hover:text-secondary gap-1 pb-1 transition-colors cursor-pointer text-sm xl:text-base ${
                         pathname === ele.ref
                           ? "text-secondary border-b-4 border-secondary rounded-b-[3px]"
                           : "hover:text-secondary border-b-4 border-transparent"
@@ -166,7 +167,7 @@ const Navbar = () => {
                 <Link
                   href={ele.ref}
                   className={
-                    `inline-block hover:text-secondary transition-colors pb-1 ${pathname === ele.ref || (ele.ref === "/" && (pathname === "/ar" || pathname === "/en"))
+                    `inline-block hover:text-secondary transition-colors pb-1 text-sm xl:text-base ${pathname === ele.ref || (ele.ref === "/" && (pathname === "/ar" || pathname === "/en"))
                       ? "text-secondary border-b-4 border-secondary rounded-b-[3px]"
                       : "border-b-4 border-transparent"
                     } `
@@ -178,13 +179,16 @@ const Navbar = () => {
             </li>
           ))}
           <li className="flex items-center gap-2 mb-1">
-            <span className="text-sm">EN</span>
-            <Globe className="w-5 h-5" />
+            <span className="text-xs xl:text-sm">EN</span>
+            <Globe className="w-4 h-4 xl:w-5 xl:h-5" />
           </li>
         </ul>
 
         {/* Desktop CTA Buttons */}
         <div className="hidden md:flex justify-end items-center gap-2 lg:gap-4 me-4">
+          {/* Notification Bell - Always visible */}
+          {isAuthenticated && <NotificationBell />}
+          
           {isLoading ? (
  <div className="flex items-center gap-2">
  {/* Avatar skeleton */}
@@ -197,13 +201,13 @@ const Navbar = () => {
             <>
               <Link
                 href="/auth/login"
-                className="text-white border-2 border-white font-bold bg-transparent px-3 py-1.5 lg:px-6 lg:py-2 rounded-full hover:bg-secondary hover:border-secondary hover:text-white transition-all duration-300 text-sm lg:text-base"
+                className="text-white border-2 border-white font-bold bg-transparent px-2 py-1 lg:px-4 lg:py-1.5 xl:px-6 xl:py-2 rounded-full hover:bg-secondary hover:border-secondary hover:text-white transition-all duration-300 text-xs lg:text-sm xl:text-base"
               >
                 تسجيل الدخول
               </Link>
               <Link
                 href="/auth/register"
-                className="text-white border-2 border-secondary font-bold bg-secondary px-3 py-1.5 lg:px-6 lg:py-2 rounded-full hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 text-sm lg:text-base"
+                className="text-white border-2 border-secondary font-bold bg-secondary px-2 py-1 lg:px-4 lg:py-1.5 xl:px-6 xl:py-2 rounded-full hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 text-xs lg:text-sm xl:text-base"
               >
                 ابدأ الان
               </Link>
@@ -216,8 +220,8 @@ const Navbar = () => {
                 onClick={toggleUserDropdown}
                 className="flex cursor-pointer items-center gap-2 hover:text-secondary transition-colors"
               >
-                <PiUserCircleFill className="w-8 h-8" />
-                <span>{user?.name || ""}</span>
+                <PiUserCircleFill className="w-6 h-6 lg:w-8 lg:h-8" />
+                <span className="text-sm xl:text-base">{user?.name || ""}</span>
               </button>
               {/* Dropdown Menu */} 
               {isUserDropdownOpen && (
@@ -415,6 +419,9 @@ const Navbar = () => {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || ""}</p>
                   <p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
+                </div>
+                <div className="md:hidden">
+                  <NotificationBell />
                 </div>
               </div>
 

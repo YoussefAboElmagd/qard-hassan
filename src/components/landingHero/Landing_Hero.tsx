@@ -16,7 +16,7 @@ export default function Landing_Hero({
   linkTwo,
 }: LandingHeroProps) {
   return (
-    <div className="text-white mt-10">
+    <div className="text-white">
       <h3 className="leading-tight text-center text-4xl lg:text-5xl font-semibold mb-7 ">
         {mainText}
       </h3>

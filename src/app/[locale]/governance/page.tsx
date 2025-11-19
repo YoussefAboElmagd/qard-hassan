@@ -73,13 +73,13 @@ export default function Page() {
                             textTwo={"الحوكمة"}
                         />
                     </div>
-                    <Image
-                        src={headerWhiteTop.src}
-                        alt="header-white-top"
-                        width={450}
-                        height={100}
-                        className="absolute top-0 start-0 hidden lg:block"
-                    />
+                    <Image 
+            src={headerWhiteTop.src} 
+            alt="header-white-top" 
+            width={450} 
+            height={100} 
+            className="absolute top-0 start-0 hidden lg:block w-[35vw] max-w-[400px] h-auto" 
+          />
                 </div>
             </header>
 

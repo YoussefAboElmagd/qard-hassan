@@ -18,7 +18,7 @@ export default function LandingPage() {
   const router = useRouter();
   return (
     <>
-      <header className="w-full relative h-auto lg:h-[60vh] pb-10 lg:pb-0 mb-16">
+      <header className="w-full relative h-auto lg:h-[70vh] xl:h-[75vh] pb-10 lg:pb-0 mb-16">
         {/* Background Image with Gradient Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-no-repeat bg-center"
@@ -33,8 +33,8 @@ export default function LandingPage() {
           <Navbar />
           {/* Hero Content Section */}
           <div className="container ms-auto px-4 sm:px-5 pt-20 lg:pt-16">
-            <div className="flex items-center justify-center lg:justify-center">
-              <div className="text-center md:text-right text-white max-w-5xl w-full lg:w-auto">
+            <div className="flex items-center justify-start lg:justify-center">
+              <div className="text-center md:text-right text-white max-w-4xl w-full lg:w-auto lg:mr-64 xl:mr-80">
                 <h1 className="text-5xl lg:text-[64px] font-bold mb-6 leading-tight text-stroke">
                   نحن ندعمك <span className="text-secondary">ماليًا .</span>
                 </h1>
@@ -57,7 +57,7 @@ export default function LandingPage() {
             alt="header-white-top" 
             width={450} 
             height={100} 
-            className="absolute top-0 start-0 hidden lg:block w-[30vw] max-w-[400px] h-auto" 
+            className="absolute top-0 start-0 hidden lg:block w-[35vw] max-w-[400px] h-auto" 
           />
         </div>
 
@@ -70,13 +70,13 @@ export default function LandingPage() {
           className="bottom-0 absolute hidden lg:block w-[50vw] max-w-[800px] h-auto" 
         />
         
-        <div className="absolute -bottom-10 right-10 hidden lg:block">
+        <div className="absolute bottom-2 right-10 hidden lg:block">
           <Image 
             src={headerBottomImg.src} 
             alt="header-bottom-img" 
             width={420} 
             height={100} 
-            className="w-[25vw] max-w-[420px] h-auto" 
+            className="w-[30vw] max-w-[420px] h-auto" 
           />
           <Image 
             src={usersRating.src} 
