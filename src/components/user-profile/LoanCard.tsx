@@ -21,7 +21,6 @@ interface LoanCardProps {
 }
 
 export default function LoanCard({
-    name,
     loan_amount,
     loan_reason,
     number_of_installments,
