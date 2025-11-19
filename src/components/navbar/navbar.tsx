@@ -120,15 +120,15 @@ const Navbar = () => {
                   <button
                     onClick={() => setIsGovernanceDropdownOpen(!isGovernanceDropdownOpen)}
                     className={
-                      `inline-flex items-center gap-1 pb-1 transition-colors cursor-pointer ${
+                      `inline-flex items-center hover:text-secondary gap-1 pb-1 transition-colors cursor-pointer ${
                         pathname === ele.ref
                           ? "text-secondary border-b-4 border-secondary rounded-b-[3px]"
-                          : "border-b-4 border-transparent"
+                          : "hover:text-secondary border-b-4 border-transparent"
                       } `
                     }
                   >
-                    <span>{ele.title}</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isGovernanceDropdownOpen ? 'rotate-180' : ''}`} />
+                    <span className="hover:text-secondary">{ele.title}</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 hover:text-secondary ${isGovernanceDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
                   
                   <AnimatePresence>
@@ -186,11 +186,13 @@ const Navbar = () => {
         {/* Desktop CTA Buttons */}
         <div className="hidden md:flex justify-end items-center gap-2 lg:gap-4 me-4">
           {isLoading ? (
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse [animation-delay:0.2s]" />
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse [animation-delay:0.4s]" />
-            </div>
+ <div className="flex items-center gap-2">
+ {/* Avatar skeleton */}
+ <div className="w-8 h-8 rounded-full bg-white/20 animate-pulse" />
+
+ {/* Name shimmer */}
+ <div className="h-3 w-20 rounded-full bg-gradient-to-r from-white/10 via-white/30 to-white/10 animate-[shimmer_1.5s_infinite]" />
+</div>
           ) : !isAuthenticated ? (
             <>
               <Link

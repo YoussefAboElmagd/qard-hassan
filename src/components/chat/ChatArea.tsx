@@ -1,167 +1,356 @@
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { Send, Paperclip, MessageSquare, X } from "lucide-react";
 import logo from "@/assets/images/logo.png";
 import userAvatar from "@/assets/images/userProfileImg.jpg";
+import { db, storage } from "@/lib/firebase";
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useUser } from "@/contexts/UserContext";
 
 interface Message {
   id: string;
   text: string;
-  sender: "user" | "support";
-  timestamp: string;
+  userId: number;
+  userPartnerId: number;
+  userName: string;
+  userLogin: string;
+  createdAt: Date;
+  fileName?: string;
+  fileUrl?: string;
 }
 
 interface ChatAreaProps {
-  chatName: string;
+  ticketNumber: string;
+  chatRoomId: string;
+  initialMessage: string;
   status: string;
-  statusBadge: "in-progress" | "resolved" | "pending";
-  messages: Message[];
-  isOnline: boolean;
 }
 
-export function ChatArea({ chatName, status, statusBadge, messages }: ChatAreaProps) {
-  const [messageText, setMessageText] = useState("");
+const STATUS_CONFIG = {
+  new: { label: "جديد", color: "bg-blue-100 text-blue-600" },
+  "in_progress": { label: "جاري العمل", color: "bg-amber-100 text-amber-600" },
+  resolved: { label: "تم الحل", color: "bg-green-100 text-green-600" },
+  closed: { label: "مغلق", color: "bg-gray-200 text-gray-600" },
+};
 
-  const handleSend = () => {
-    if (messageText.trim()) {
-      console.log("Sending:", messageText);
-      setMessageText("");
+export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: ChatAreaProps) {
+  const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useUser();
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    if (!chatRoomId) {
+      setIsLoading(false);
+      return;
+    }
+    
+    const messagesRef = collection(db, 'chatRooms', chatRoomId, 'messages');
+    const q = query(messagesRef, orderBy('timestamp', 'asc'));
+
+    const unsubscribe = onSnapshot(
+      q, 
+      (snapshot) => {
+        const msgs: Message[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            text: data.text || '',
+            userId: data.userId || 0,
+            userPartnerId: data.userPartnerId || 0,
+            userName: data.userName || '',
+            userLogin: data.userLogin || '',
+            createdAt: data.timestamp?.toDate?.() || new Date(),
+            fileName: data.fileName,
+            fileUrl: data.fileUrl,
+          };
+        });
+        
+        setMessages(msgs);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching messages:", error);
+        setIsLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [chatRoomId]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setSelectedFile(e.target.files[0]);
     }
   };
 
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<{ fileName: string; fileUrl: string }> => {
+    const timestamp = Date.now();
+    const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const storagePath = `chats/${chatRoomId}/${timestamp}_${sanitizedFileName}`;
+    const storageRef = ref(storage, storagePath);
+    
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+    
+    return { fileName: file.name, fileUrl: downloadURL };
+  };
+
+  const handleSend = async () => {
+    if (status === "closed") {
+      alert("لا يمكن إرسال رسائل في تذكرة مغلقة");
+      return;
+    }
+    
+    if (!chatRoomId) {
+      alert("خطأ: لا يوجد معرف غرفة الدردشة");
+      return;
+    }
+    
+    if (!user?.user_id || !user?.user_partner_id) {
+      alert("خطأ: بيانات المستخدم غير مكتملة. يرجى تسجيل الدخول مرة أخرى.");
+      return;
+    }
+    
+    const trimmedMessage = messageText.trim();
+    if (!trimmedMessage && !selectedFile) return;
+
+    try {
+      setIsUploading(true);
+      let fileData = {};
+
+      if (selectedFile) {
+        const { fileName, fileUrl } = await uploadFile(selectedFile);
+        fileData = { fileName, fileUrl };
+      }
+
+      const messageData = {
+        text: selectedFile && !trimmedMessage ? `📎 تم مشاركة ملف: ${selectedFile.name}` : trimmedMessage,
+        userId: user.user_id,
+        userPartnerId: user.user_partner_id,
+        userName: user.name,
+        userLogin: user.email || 'user',
+        timestamp: serverTimestamp(),
+        ...fileData,
+      };
+
+      const messagesRef = collection(db, 'chatRooms', chatRoomId, 'messages');
+      await addDoc(messagesRef, messageData);
+
+      setMessageText("");
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleString('ar-EG', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const statusConfig = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.new;
+
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1  flex flex-col bg-gradient-to-b from-gray-50 to-white h-full">
       {/* Header */}
-      <div className="border-b border-gray-200 py-4">
-        <div className="flex items-center justify-between gap-3 px-3">
-          <div className="text-right">
-            <h2 className="text-gray-800 mb-0.5 font-bold text-stroke text-lg">{chatName}</h2>
-            <div className="flex-row-reverse items-center justify-end gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-green-500 me-2"></span>
-              <span className="text-sm text-gray-500 text-right font-bold">{status}</span>
-            </div>
+      <div className="bg-white border-b border-gray-200 px-6 py-5 shadow-sm">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 text-right">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">{ticketNumber}</h2>
+            <p className="text-sm text-gray-500 line-clamp-1">{initialMessage}</p>
           </div>
-          <div >
-            <span
-              className={`inline-flex items-center rounded-md font-bold px-3 py-0.5 ${statusBadge === "in-progress"
-                ? "bg-secondary/15 text-secondary"
-                : "bg-green-500/50 text-green-500"
-                }`}
-            >
-              {statusBadge === "in-progress" ? "جاري العمل" : statusBadge === "resolved" ? "تم الحل" : "قيد الانتظار"}
-            </span>
-          </div>
+          <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${statusConfig.color} shrink-0`}>
+            {statusConfig.label}
+          </span>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
-        <div className="flex flex-col gap-4 max-w-4xl">
-          {messages.map((message) => (
-            <div key={message.id}>
-              {message.sender === "user" ? (
-                /* User message */
-                <div className="flex justify-start items-start gap-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center shrink-0">
-                    <Image src={userAvatar} alt="User" width={40} height={40} className="object-cover scale-150" />
-                  </div>
-                  <div className="bg-[#4A7396] text-white px-5 py-2 rounded-2xl rounded-tr-md max-w-md">
-                    <p className="text-right">{message.text}</p>
-                  </div>
-
-                </div>
-              ) : (
-                /* Support message */
-                <div className="flex justify-end items-end gap-3">
-
-                  <div className="bg-gray-100 text-gray-900 px-5 py-3 rounded-2xl rounded-tl-md max-w-md">
-                    <p className="text-right">{message.text}</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-green-400 flex items-center justify-center shrink-0">
-                    <Image src={logo} alt="Support" width={24} height={24} className="object-contain" />
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-
-          {/* Typing indicator */}
-          <div className="flex justify-end items-end gap-3">
-
-            <div className="bg-gray-100 text-gray-900 px-5 py-3 rounded-2xl rounded-tl-md max-w-md">
-              <p className="text-right">يكتب...</p>
-            </div>
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-green-400 flex items-center justify-center shrink-0">
-              <Image src={logo} alt="Support" width={24} height={24} className="object-contain" />
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto px-6 py-6 bg-gradient-to-b from-gray-50/50 to-white">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="w-14 h-14 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-500 font-medium">جاري تحميل المحادثة...</p>
             </div>
           </div>
-        </div>
+        ) : messages.length === 0 ? (
+          <div className="flex items-start justify-center h-full">
+            <div className="text-center max-w-md px-6">
+              <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                <MessageSquare className="w-12 h-12 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">ابدأ المحادثة</h3>
+              <p className="text-gray-500 leading-relaxed">
+                لم يتم إرسال أي رسائل بعد. اكتب رسالتك أدناه للتواصل مع فريق الدعم.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-4xl mx-auto space-y-6">
+            {messages.map((message) => {
+              const isCurrentUser = user?.user_id === message.userId;
+              
+              return isCurrentUser ? (
+                <div key={message.id} className="flex gap-3 items-start">
+                  <div className="size-11 rounded-full overflow-hidden bg-gray-200 shrink-0 ring-2 ring-primary/10 shadow-sm">
+                    <Image src={userAvatar} alt="User" width={100} height={100} className="object-cover size-full" />
+                  </div>
+                  <div className="flex-1 flex flex-col items-start gap-2">
+                    <div className="bg-gradient-to-br from-primary to-primary/90 text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-md hover:shadow-lg transition-all max-w-lg">
+                      {message.fileUrl ? (
+                        <div className="space-y-2">
+                          <p className="text-right leading-relaxed">{message.text}</p>
+                          <a 
+                            href={message.fileUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="block text-xs underline hover:opacity-80 text-right bg-white/10 px-3 py-1 rounded-lg"
+                          >
+                            📎 عرض الملف
+                          </a>
+                        </div>
+                      ) : (
+                        <p className="text-right leading-relaxed">{message.text}</p>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-500 px-1">
+                      {formatTime(message.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div key={message.id} className="flex gap-3 justify-end items-start">
+                  <div className="flex-1 flex flex-col items-end gap-2">
+                    <div className="bg-white px-5 py-2 rounded-2xl rounded-tl-sm shadow-md hover:shadow-lg transition-all max-w-lg border border-gray-200">
+                      {message.fileUrl ? (
+                        <div className="space-y-2">
+                          <p className="text-right text-gray-800 leading-relaxed">{message.text}</p>
+                          <a 
+                            href={message.fileUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="block text-xs text-primary underline hover:opacity-80 text-right bg-primary/5 px-3 py-1 rounded-lg"
+                          >
+                            📎 عرض الملف
+                          </a>
+                        </div>
+                      ) : (
+                        <p className="text-right text-gray-800 leading-relaxed">{message.text}</p>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-500 px-1">
+                      {formatTime(message.createdAt)}
+                    </span>
+                  </div>
+                  <div className="size-11 rounded-full overflow-hidden bg-white border-2 border-green-500/30 flex items-center justify-center shrink-0 shadow-sm">
+                    <Image src={logo} alt="Support" width={28} height={28} className="object-contain" />
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </div>
 
       {/* Input Area */}
-      <div className="px-8 py-5 border-t border-gray-200">
-        <div className="flex items-center gap-3 max-w-4xl">
-          <button className="text-black cursor-pointer p-2 shrink-0">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <g clipPath="url(#clip0_4418_9143)">
-                <path
-                  d="M11.97 12V15.5C11.97 17.43 13.54 19 15.47 19C17.4 19 18.97 17.43 18.97 15.5V10C18.97 6.13 15.84 3 11.97 3C8.09997 3 4.96997 6.13 4.96997 10V16C4.96997 19.31 7.65997 22 10.97 22"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_4418_9143">
-                  <rect width="24" height="24" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </button>
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSend()}
-              placeholder="اكتب هنا"
-              className="w-full text-right border border-gray-200 h-12 rounded-xl pr-4 pl-12 focus:outline-none focus:ring-2 focus:ring-[#4A7396] focus:border-transparent"
-            />
-            <button
-              className="absolute left-2 top-1/2 -translate-y-1/2  text-primary rotate-y-180 rounded-lg w-8 h-8 flex items-center justify-center"
-              onClick={handleSend}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="#fff"
+      <div className="bg-white border-t border-gray-200 px-6 py-5 shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          {/* Closed Ticket Message */}
+          {status === "closed" && (
+            <div className="mb-4 flex items-center justify-center gap-2 bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl">
+              <span className="text-sm font-medium">⚠️ هذه التذكرة مغلقة ولا يمكن إرسال رسائل جديدة</span>
+            </div>
+          )}
+          
+          {/* File Preview */}
+          {selectedFile && (
+            <div className="mb-3 flex items-center gap-3 bg-blue-50 border border-blue-200 p-3 rounded-xl">
+              <Paperclip className="w-5 h-5 text-primary shrink-0" />
+              <span className="text-sm text-gray-700 flex-1 text-right font-medium truncate">{selectedFile.name}</span>
+              <button
+                onClick={handleRemoveFile}
+                className="text-red-500 hover:text-red-700 hover:bg-red-100 p-1.5 rounded-lg transition-all"
+                title="إزالة الملف"
               >
-                <g clipPath="url(#clip0_4418_8610)">
-                  <path
-                    d="M16.1401 2.95907L7.11012 5.95907C1.04012 7.98907 1.04012 11.2991 7.11012 13.3191L9.79012 14.2091L10.6801 16.8891C12.7001 22.9591 16.0201 22.9591 18.0401 16.8891L21.0501 7.86907C22.3901 3.81907 20.1901 1.60907 16.1401 2.95907ZM16.4601 8.33907L12.6601 12.1591C12.5101 12.3091 12.3201 12.3791 12.1301 12.3791C11.9401 12.3791 11.7501 12.3091 11.6001 12.1591C11.3101 11.8691 11.3101 11.3891 11.6001 11.0991L15.4001 7.27907C15.6901 6.98907 16.1701 6.98907 16.4601 7.27907C16.7501 7.56907 16.7501 8.04907 16.4601 8.33907Z"
-                    fill="currentColor"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_4418_8610">
-                    <rect width="24" height="24" fill="white" />
-                  </clipPath>
-                </defs>
-              </svg>
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          
+          <div className="flex items-center gap-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              onChange={handleFileSelect}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx"
+              disabled={status === "closed"}
+            />
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="p-3 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 hover:border-primary shrink-0"
+              title={status === "closed" ? "التذكرة مغلقة" : "إرفاق ملف"}
+              disabled={isUploading || status === "closed"}
+            >
+              <Paperclip className="w-5 h-5" />
             </button>
+            
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && !isUploading && status !== "closed" && handleSend()}
+                placeholder={status === "closed" ? "التذكرة مغلقة" : "اكتب رسالتك هنا..."}
+                disabled={isUploading || status === "closed"}
+                className="w-full text-right bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 pr-5 pl-16 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white transition-all placeholder:text-gray-400 disabled:opacity-50 disabled:bg-gray-100 text-base"
+              />
+              <button
+                onClick={handleSend}
+                disabled={(!messageText.trim() && !selectedFile) || isUploading || status === "closed"}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-primary text-white rounded-xl w-11 h-11 flex items-center justify-center hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95"
+                title={status === "closed" ? "التذكرة مغلقة" : "إرسال"}
+              >
+                {isUploading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

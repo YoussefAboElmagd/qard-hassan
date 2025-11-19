@@ -239,7 +239,7 @@ const Sidebar = () => {
                                 <p className="text-primary font-bold text-base sm:text-lg">هل تحتاج إلى مساعدة؟</p>
                                 <button
                                     onClick={() => router.push('/ar/user-profile/chat')}
-                                    className="w-full sm:w-auto px-14 py-2 rounded-xl bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
+                                    className="w-full sm:w-auto px-14 py-2 rounded-xl cursor-pointer bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
                                 >
                                     دعم
                                 </button>

@@ -4,76 +4,48 @@ import { useState } from "react";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { ChatArea } from "@/components/chat/ChatArea";
 
-const mockConversations = [
-  {
-    id: "1",
-    name: "مشكلة بشاشة القروض",
-    preview: "مشكلة بشاشة القروض.....",
-    timestamp: "١٢ دقيقة",
-    status: "in-progress" as const,
-    active: true,
-  },
-  {
-    id: "3",
-    name: "مشكلة بشاشة القروض",
-    preview: "مشكلة بشاشة القروض.....",
-    timestamp: "١٢ دقيقة",
-    status: "resolved" as const,
-    active: false,
-  },
-  {
-    id: "4",
-    name: "مشكلة بشاشة القروض",
-    preview: "مشكلة بشاشة القروض.....",
-    timestamp: "١٢ دقيقة",
-    status: "resolved" as const,
-    active: false,
-  },
-  {
-    id: "5",
-    name: "مشكلة بشاشة القروض",
-    preview: "مشكلة بشاشة القروض.....",
-    timestamp: "١٢ دقيقة",
-    status: "resolved" as const,
-    active: false,
-  },
-];
-
-const mockMessages = [
-  {
-    id: "1",
-    text: "لدي مشكلة بشاشة طلب القرض",
-    sender: "user" as const,
-    timestamp: "١٢ دقيقة",
-  },
-  {
-    id: "2",
-    text: "ناسف لسماع ذلك",
-    sender: "support" as const,
-    timestamp: "١٢ دقيقة",
-  },
-];
+interface SelectedTicket {
+  ticketNumber: string;
+  chatRoomId: string;
+  message: string;
+  status: string;
+}
 
 export default function ChatPage() {
-  const [selectedConversation, setSelectedConversation] = useState("1");
+  const [selectedTicket, setSelectedTicket] = useState<SelectedTicket | null>(null);
+
+  const handleSelectConversation = (
+    ticketNumber: string,
+    chatRoomId: string,
+    message: string,
+    status: string
+  ) => {
+    setSelectedTicket({ ticketNumber, chatRoomId, message, status });
+  };
 
   return (
-    <div className="flex min-h-screen rounded-3xl overflow-hidden py-4">
-      <ChatArea
-        chatName="مشكلة بشاشة القروض"
-        status="متصل"
-        statusBadge="in-progress"
-        messages={mockMessages}
-        isOnline={true}
-      />
-      <ChatSidebar
-        conversations={mockConversations}
-        selectedId={selectedConversation}
-        onSelectConversation={setSelectedConversation}
-      />
+    <div className="flex  flex-1  overflow-hidden h-full pt-10">
+      <div className="flex flex-1 h-full">
+        {selectedTicket ? (
+          <ChatArea
+            ticketNumber={selectedTicket.ticketNumber}
+            chatRoomId={selectedTicket.chatRoomId}
+            initialMessage={selectedTicket.message}
+            status={selectedTicket.status}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-gray-400">
+            اختر تذكرة لعرض المحادثة
+          </div>
+        )}
+      </div>
+
+      <div className="h-full">
+        <ChatSidebar
+          selectedId={selectedTicket?.ticketNumber || ""}
+          onSelectConversation={handleSelectConversation}
+        />
+      </div>
     </div>
   );
 }
-
-
-

@@ -106,9 +106,41 @@ export async function userOtpVerification(userData: OtpVerificationData) {
             });
         }
 
+        // Store user_id and user_partner_id from the response
+        const cookieStore = await cookies();
+        if (response.data.user_id) {
+            cookieStore.set({
+                name: "user_id",
+                value: response.data.user_id.toString(),
+                httpOnly: false,
+                secure: process.env.NODE_ENV === "production",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 30, // 30 days
+            });
+        }
+        if (response.data.user_partner_id) {
+            cookieStore.set({
+                name: "user_partner_id",
+                value: response.data.user_partner_id.toString(),
+                httpOnly: false,
+                secure: process.env.NODE_ENV === "production",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 30, // 30 days
+            });
+        }
+        if (response.data.user) {
+            cookieStore.set({
+                name: "user_name",
+                value: response.data.user,
+                httpOnly: false,
+                secure: process.env.NODE_ENV === "production",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 30, // 30 days
+            });
+        }
+
         // Clear OTP cookies after successful verification EXCEPT for forgot_password flow
         // Reset-password page depends on these cookies to proceed
-        const cookieStore = await cookies();
         if (userData.type !== "forgot_password") {
             cookieStore.delete("otp_email");
             cookieStore.delete("otp_type");
@@ -127,21 +159,27 @@ export async function userLogout() {
             withCredentials: true
         });
         
-        // Clear all cookies after successful logout
+        // Clear cookies after logout
         const cookieStore = await cookies();
         cookieStore.delete("session_id");
         cookieStore.delete("access_token");
         cookieStore.delete("refresh_token");
+        cookieStore.delete("user_id");
+        cookieStore.delete("user_partner_id");
+        cookieStore.delete("user_name");
         
         return response.data;
     } catch (error) {
         console.error("Logout error:", error);
-        // Even if the API call fails, clear local cookies
+        // Clear cookies if the API call fails
         try {
             const cookieStore = await cookies();
             cookieStore.delete("session_id");
             cookieStore.delete("access_token");
             cookieStore.delete("refresh_token");
+            cookieStore.delete("user_id");
+            cookieStore.delete("user_partner_id");
+            cookieStore.delete("user_name");
         } catch (cookieError) {
             console.error("Error clearing cookies:", cookieError);
         }
