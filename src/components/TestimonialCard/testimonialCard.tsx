@@ -6,26 +6,30 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { FcBusinessman } from 'react-icons/fc';
 import { PiStarFourFill } from 'react-icons/pi';
+import { useTranslations, useLocale } from 'next-intl';
 
-const TestimonialsCarousel = () => {
+function TestimonialsCarousel() {
+    const t = useTranslations('testimonials');
+    const locale = useLocale();
+    const isRTL = locale === 'ar';
+
     const testimonials = [
-        { name: 'فتحي ابراهيم', text: 'لقد اقترضت المال وكانت الخطوات بسيطة و سريعة وبدون فوائد', img: <FcBusinessman className='text-4xl rounded-full' /> },
-        { name: 'فتحي ابراهيم', text: 'لقد اقترضت المال وكانت الخطوات بسيطة و سريعة وبدون فوائد', img: <FcBusinessman className='text-4xl rounded-full' /> },
-        { name: 'فتحي ابراهيم', text: 'لقد اقترضت المال وكانت الخطوات بسيطة و سريعة وبدون فوائد', img: <FcBusinessman className='text-4xl rounded-full' /> },
-        { name: 'فتحي ابراهيم', text: 'لقد اقترضت المال وكانت الخطوات بسيطة و سريعة وبدون فوائد', img: <FcBusinessman className='text-4xl rounded-full' /> },
-        { name: 'فتحي ابراهيم', text: 'لقد اقترضت المال وكانت الخطوات بسيطة و سريعة وبدون فوائد', img: <FcBusinessman className='text-4xl rounded-full' /> },
-
+        { name: t('testimonial1.name'), text: t('testimonial1.text'), img: <FcBusinessman className='text-4xl rounded-full' /> },
+        { name: t('testimonial2.name'), text: t('testimonial2.text'), img: <FcBusinessman className='text-4xl rounded-full' /> },
+        { name: t('testimonial3.name'), text: t('testimonial3.text'), img: <FcBusinessman className='text-4xl rounded-full' /> },
+        { name: t('testimonial4.name'), text: t('testimonial4.text'), img: <FcBusinessman className='text-4xl rounded-full' /> },
+        { name: t('testimonial5.name'), text: t('testimonial5.text'), img: <FcBusinessman className='text-4xl rounded-full' /> },
     ];
 
     return (
-        <div className="p-16  mt-10" dir="rtl">
+        <div className="p-16 mt-10">
             <div className="text-center mb-12">
-                <div className='flex items-center justify-center gap-2 mb-4'>
+                <div className={`flex items-center justify-center gap-2 mb-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
                     <PiStarFourFill className='text-lg text-primary' />
-                    <button className="text-primary text-xl font-bold">شهادات </button>
+                    <button className="text-primary text-xl font-bold">{t('sectionLabel')}</button>
                 </div>
                 <h2 className="text-4xl font-bold text-primary">
-                    ماذا يقول <span className="text-secondary">مستخدمنا السعيد</span>
+                    {t('title')} <span className="text-secondary">{t('titleHighlight')}</span>
                 </h2>
             </div>
 
@@ -40,14 +44,15 @@ const TestimonialsCarousel = () => {
                     768: { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
                 }}
-                className="p-8 "
+                className="p-8"
+                dir={isRTL ? 'rtl' : 'ltr'}
             >
                 {testimonials.map((item, i) => (
                     <SwiperSlide key={i}>
-                        <div className="bg-white rounded-xl p-6 shadow-lg my-10">
-                            <p className="text-gray-600 mb-6">{item.text}</p>
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-3">
+                        <div className="bg-white rounded-xl p-6 shadow-lg my-10  flex flex-col h-full ">
+                            <p className="text-gray-600 mb-6 flex-grow">{item.text}</p>
+                            <div className={`flex justify-between items-center ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
+                                <div className={`flex items-center gap-3 ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
                                     <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">{item.img}</div>
                                     <span className="font-semibold">{item.name}</span>
                                 </div>
@@ -57,10 +62,8 @@ const TestimonialsCarousel = () => {
                     </SwiperSlide>
                 ))}
             </Swiper>
-
-
         </div>
     );
-};
+}
 
 export default TestimonialsCarousel;

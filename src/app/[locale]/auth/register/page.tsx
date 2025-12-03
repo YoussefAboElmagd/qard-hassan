@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations, useLocale } from "next-intl";
 
 interface RegisterFormData {
     name: string;
@@ -28,19 +29,20 @@ export default function Register() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-
     const router = useRouter();
+    const t = useTranslations("auth");
+    const locale = useLocale();
 
     const registerSchema = z.object({
-        name: z.string().nonempty("الاسم مطلوب").min(2, "الاسم يجب أن يكون على الأقل حرفين"),
-        email: z.string().nonempty("البريد الإلكتروني مطلوب").email("البريد الإلكتروني غير صالح"),
-        phone: z.string().nonempty("رقم الهاتف مطلوب").min(9, "رقم الهاتف يجب أن يكون من 9 إلى 15 رقمًا").max(15, "رقم الهاتف يجب أن يكون من 9 إلى 15 رقمًا").regex(/^\d+$/, "رقم الهاتف يجب أن يحتوي على أرقام فقط"),
-        national_id: z.string().nonempty("رقم الهوية مطلوب").length(10, "رقم الهوية يجب أن يكون 10 أرقام").regex(/^\d+$/, "رقم الهوية يجب أن يحتوي على أرقام فقط"),
-        id_expiry_date: z.string().min(1, "تاريخ الانتهاء مطلوب").refine((date) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)), "تاريخ الانتهاء يجب أن يكون تاريخًا مستقبليًا"),
-        password: z.string().nonempty("كلمة المرور مطلوبة").min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل").regex(/^[a-zA-Z0-9]+$/, "كلمة المرور يجب أن تحتوي على حروف وأرقام فقط"),
-        confirmPassword: z.string().nonempty("تأكيد كلمة المرور مطلوب")
+        name: z.string().nonempty(t("validation.nameRequired")).min(2, t("validation.nameMin")),
+        email: z.string().nonempty(t("validation.emailRequired")).email(t("validation.emailInvalid")),
+        phone: z.string().nonempty(t("validation.phoneRequired")).min(9, t("validation.phoneLength")).max(15, t("validation.phoneLength")).regex(/^\d+$/, t("validation.phoneNumeric")),
+        national_id: z.string().nonempty(t("validation.nationalIdRequired")).length(10, t("validation.nationalIdLength")).regex(/^\d+$/, t("validation.nationalIdNumeric")),
+        id_expiry_date: z.string().min(1, t("validation.expiryDateRequired")).refine((date) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)), t("validation.expiryDateFuture")),
+        password: z.string().nonempty(t("validation.passwordRequired")).min(8, t("validation.passwordMin")).regex(/^[a-zA-Z0-9]+$/, t("validation.passwordAlphanumeric")),
+        confirmPassword: z.string().nonempty(t("validation.confirmPasswordRequired"))
     }).refine((data) => data.password === data.confirmPassword, {
-        message: "كلمة المرور غير متطابقة",
+        message: t("validation.passwordMismatch"),
         path: ["confirmPassword"]
     });
     
@@ -60,20 +62,20 @@ export default function Register() {
                 document.cookie = `otp_email=${encodeURIComponent(data.email)}; path=/; max-age=3600`;
                 document.cookie = `otp_type=register; path=/; max-age=3600`;
                 
-                setSuccess("تم إنشاء الحساب بنجاح. سيتم التحويل إلى صفحة التحقق...");
+                setSuccess(t("register.success"));
                 setTimeout(() => {
-                    router.push("/ar/auth/otp-verification");
+                    router.push(`/${locale}/auth/otp-verification`);
                 }, 2000);
                 return;
             }
             if (response?.success === false) {
-                setError(response?.error ?? "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+                setError(response?.error ?? t("register.error"));
                 return;
             }
-            setError("حدث خطأ غير متوقع. يرجى المحاولة لاحقاً.");
+            setError(t("register.error"));
         } catch (e) {
             console.error("Register failed:", e);
-            setError("فشل في إنشاء الحساب. يرجى التحقق من البيانات المدخلة.");
+            setError(t("register.error"));
         }
     }
     
@@ -84,8 +86,8 @@ export default function Register() {
                 <div className="mb-8">
                     <Image src={mainLogo.src} alt="Logo" width={170} height={170} className="" />
                 </div>
-                <h1 className="text-4xl font-bold text-primary mb-2" >
-                    مرحباً بكم من جديد!
+                <h1 className="text-4xl font-bold text-primary mb-2">
+                    {t("register.title")}
                 </h1>
             </div>
 
@@ -104,13 +106,13 @@ export default function Register() {
                 )}
                 {/* Name Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-bold text-[#919499] block" >
-                        الاسم
+                    <Label htmlFor="name" className="text-sm font-bold text-[#919499] block">
+                        {t("register.name")}
                     </Label>
                     <Input
                         id="name"
                         type="text"
-                        placeholder="احمد محمد احمد"
+                        placeholder={t("register.namePlaceholder")}
                         className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         {...register("name")}
                         required
@@ -119,14 +121,14 @@ export default function Register() {
                 </div>
                 {/* Email Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-bold text-[#919499] block" >
-                        الايميل
+                    <Label htmlFor="email" className="text-sm font-bold text-[#919499] block">
+                        {t("register.email")}
                     </Label>
                     <Input
                         id="email"
                         type="email"
-                        placeholder="Name@gmail.com"
-                        className="h-12  placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        placeholder={t("register.emailPlaceholder")}
+                        className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         {...register("email")}
                         required
                     />
@@ -134,14 +136,14 @@ export default function Register() {
                 </div>  
                 {/* Phone Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-bold text-[#919499] block" >
-                        رقم الهاتف
+                    <Label htmlFor="phone" className="text-sm font-bold text-[#919499] block">
+                        {t("register.phone")}
                     </Label>
                     <Input
                         dir="rtl"
                         id="phone"
                         type="tel"
-                        placeholder="9975421345"
+                        placeholder={t("register.phonePlaceholder")}
                         className="h-12 placeholder:text-gray-400 placeholder:text-start border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         {...register("phone")}
                         required
@@ -153,14 +155,14 @@ export default function Register() {
                 <div className="grid grid-cols-2 gap-4">
                     {/* ID Number Field */}
                     <div className="space-y-2">
-                        <Label htmlFor="idNumber" className="text-sm font-bold text-[#919499] block" >
-                            رقم الهوية
+                        <Label htmlFor="idNumber" className="text-sm font-bold text-[#919499] block">
+                            {t("register.nationalId")}
                         </Label>
                         <Input
                             dir="rtl"
                             id="national_id"
                             type="text"
-                            placeholder="1234567890"
+                            placeholder={t("register.nationalIdPlaceholder")}
                             className="h-12 placeholder:text-gray-400 placeholder:text-start border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             {...register("national_id")}
                             required
@@ -170,13 +172,13 @@ export default function Register() {
 
                     {/* Expiry Date Field */}
                     <div className="space-y-2" dir="rtl">
-                        <Label htmlFor="expiryDate" className="text-sm font-bold text-[#919499] block" >
-                            تاريخ الانتهاء
+                        <Label htmlFor="expiryDate" className="text-sm font-bold text-[#919499] block">
+                            {t("register.expiryDate")}
                         </Label>
                         <Input
                             id="id_expiry_date"
                             type="date"
-                            placeholder="تاريخ الانتهاء"
+                            placeholder={t("register.expiryDatePlaceholder")}
                             className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             {...register("id_expiry_date")}
                             required
@@ -187,14 +189,14 @@ export default function Register() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-bold text-[#919499] block" >
-                        كلمة المرور
+                    <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
+                        {t("register.password")}
                     </Label>
                     <div className="relative">
                         <Input
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="••••••"
+                            placeholder={t("register.passwordPlaceholder")}
                             className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             {...register("password")}
                             required
@@ -212,14 +214,14 @@ export default function Register() {
 
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-bold text-[#919499] block" >
-                        تأكيد كلمة المرور
+                    <Label htmlFor="confirmPassword" className="text-sm font-bold text-[#919499] block">
+                        {t("register.confirmPassword")}
                     </Label>
                     <div className="relative">
                         <Input
                             id="confirmPassword"
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="••••••"
+                            placeholder={t("register.confirmPasswordPlaceholder")}
                             className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             {...register("confirmPassword")}
                             required
@@ -237,15 +239,15 @@ export default function Register() {
 
                 {/* Register Button */}
                 <Button type="submit" disabled={isSubmitting} className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all mt-8">
-                    {isSubmitting ? "جاري الإنشاء..." : "انشاء حساب"}
+                    {isSubmitting ? t("register.submitting") : t("register.submit")}
                 </Button>
 
                 {/* Login Link */}
                 <div className="text-center mt-6">
-                    <p className="text-sm text-gray-600" >
-                        لديك حساب؟{"  "}
+                    <p className="text-sm text-gray-600">
+                        {t("register.hasAccount")}{"  "}
                         <Link href="/auth/login" className="text-secondary hover:text-secondary/90 font-bold">
-                            تسجيل الدخول
+                            {t("register.login")}
                         </Link>
                     </p>
                 </div>

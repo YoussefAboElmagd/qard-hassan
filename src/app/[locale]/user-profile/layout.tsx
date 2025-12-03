@@ -6,12 +6,15 @@ import headerWhiteTop from "@/assets/images/LandingImgs/header-white-top.png"
 import UserProfileSidebar from '@/components/user-profile/UserProfileSidebar'
 import { ConditionalContentWrapper } from '@/components/user-profile/ConditionalContentWrapper'
 import { getActiveLoanDetails } from '@/actions/loan.actions'
+import { getLocale } from 'next-intl/server'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 export default async function Layout({ children }: LayoutProps) {
+  const locale = await getLocale()
+  const isRTL = locale === "ar"
   const loanResponse = await getActiveLoanDetails();
   const activeLoan = loanResponse?.success ? loanResponse.data?.active_loan : null;
   return (
@@ -36,7 +39,7 @@ export default async function Layout({ children }: LayoutProps) {
             alt="header-white-top" 
             width={450} 
             height={100} 
-            className="absolute top-0 start-0 hidden lg:block w-[30vw] max-w-[400px] h-auto" 
+            className={`absolute top-0 hidden lg:block w-[30vw] max-w-[400px] h-auto ${isRTL ? "start-0" : "start-0 -scale-x-100"}`}
           />
         </div>
       </header>

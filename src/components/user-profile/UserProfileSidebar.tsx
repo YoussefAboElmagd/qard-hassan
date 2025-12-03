@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import profileImage from '@/assets/images/userProfileImg.jpg';
 import { HiMiniPlusCircle } from 'react-icons/hi2';
-import { MdLock } from 'react-icons/md';
+import { MdLock, MdNotifications } from 'react-icons/md';
 import { FaCommentDollar } from 'react-icons/fa';
 import { FaUserLarge } from 'react-icons/fa6';
 import { BsThreeDots } from 'react-icons/bs';
@@ -14,18 +14,24 @@ import { useUser } from '@/contexts/UserContext';
 import { changeProfilePhoto } from '@/actions/profile.actions';
 import chatIcon from '@/assets/images/chaticonF.png';
 import { Icon } from '@iconify/react';
+import { handleApiError, showSuccessToast, showErrorToast } from '@/lib/toast-utils';
+import { useTranslations, useLocale } from 'next-intl';
 
 const Sidebar = () => {
     const router = useRouter();
-    const [activePage, setActivePage] = useState('/ar/user-profile/personal-info');
+    const [activePage, setActivePage] = useState('');
     const { user, refreshUser } = useUser();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
-    const [isError, setIsError] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const t = useTranslations('userProfile');
+    const locale = useLocale();
+
+    // Set initial active page based on current locale
+    useEffect(() => {
+        setActivePage(`/${locale}/user-profile/personal-info`);
+    }, [locale]);
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -55,17 +61,13 @@ const Sidebar = () => {
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-            setModalMessage("يرجى اختيار صورة صالحة");
-            setIsError(true);
-            setShowModal(true);
+            showErrorToast(t('photoValidation.invalidType'));
             return;
         }
 
         // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            setModalMessage("حجم الصورة يجب أن يكون أقل من 5 ميجابايت");
-            setIsError(true);
-            setShowModal(true);
+            showErrorToast(t('photoValidation.sizeLimit'));
             return;
         }
 
@@ -78,21 +80,18 @@ const Sidebar = () => {
             const response = await changeProfilePhoto(formData);
 
             if (response.success) {
-                setModalMessage(response.message || "تم تحديث صورة الملف الشخصي بنجاح!");
-                setIsError(false);
-                setShowModal(true);
-                // Refresh user data to update the image
+                showSuccessToast(response.message || t('photoSuccess'));
                 await refreshUser();
             } else {
-                setModalMessage(response.message || "حدث خطأ أثناء تحديث الصورة");
-                setIsError(true);
-                setShowModal(true);
+                handleApiError({
+                    success: response.success,
+                    message: response.message,
+                    status: response.status
+                });
             }
         } catch (error) {
             console.error("Error uploading profile photo:", error);
-            setModalMessage("حدث خطأ غير متوقع أثناء تحديث الصورة");
-            setIsError(true);
-            setShowModal(true);
+            showErrorToast(t('photoError'));
         } finally {
             setIsUploading(false);
             // Reset the input
@@ -158,7 +157,7 @@ const Sidebar = () => {
                                     onClick={handleUploadClick}
                                     className="w-full px-4 py-2.5 text-right text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 justify-end"
                                 >
-                                    <span>تحديث الصورة</span>
+                                    <span>{t('updatePhoto')}</span>
                                     <Icon icon="mdi:image-edit" className="w-4 h-4" />
                                 </button>
                             </div>
@@ -178,34 +177,42 @@ const Sidebar = () => {
 
             {/* Menu Items */}
             <div className="space-y-3 sm:space-y-4 flex-grow">
-                <div onClick={() => handleSidebarPage('/ar/user-profile/personal-info')}
-                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === '/ar/user-profile/personal-info' ? 'bg-gray-200/70' : ''}`}>
-                    <div className={`${activePage === '/ar/user-profile/personal-info' ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
+                <div onClick={() => handleSidebarPage(`/${locale}/user-profile/personal-info`)}
+                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === `/${locale}/user-profile/personal-info` ? 'bg-gray-200/70' : ''}`}>
+                    <div className={`${activePage === `/${locale}/user-profile/personal-info` ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
                         <FaUserLarge className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                     </div>
-                    <span className={`text-gray-600 text-base sm:text-lg font-medium transition-all duration-300 ${activePage === '/ar/user-profile/personal-info' ? 'font-bold' : ''}`}>المعلومات الشخصية</span>
+                    <span className={`text-gray-600 text-base sm:text-lg font-medium transition-all duration-300 ${activePage === `/${locale}/user-profile/personal-info` ? 'font-bold' : ''}`}>{t('personalInfo')}</span>
                 </div>
 
-                <div onClick={() => handleSidebarPage('/ar/user-profile/loans')}
-                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === '/ar/user-profile/loans' ? 'bg-gray-200/70' : ''}`}>
-                    <div className={`${activePage === '/ar/user-profile/loans' ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
+                <div onClick={() => handleSidebarPage(`/${locale}/user-profile/loans`)}
+                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === `/${locale}/user-profile/loans` ? 'bg-gray-200/70' : ''}`}>
+                    <div className={`${activePage === `/${locale}/user-profile/loans` ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
                         <FaCommentDollar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                     </div>
-                    <span className={`text-gray-600 text-base sm:text-lg font-medium transition-all duration-300 ${activePage === '/ar/user-profile/loans' ? 'font-bold' : ''}`}>القروض</span>
+                    <span className={`text-gray-600 text-base sm:text-lg font-medium transition-all duration-300 ${activePage === `/${locale}/user-profile/loans` ? 'font-bold' : ''}`}>{t('loans')}</span>
                 </div>
 
-                <div onClick={() => handleSidebarPage('/ar/user-profile/change-password')}
-                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === '/ar/user-profile/change-password' ? 'bg-gray-200/70' : ''}`}>
-                    <div className={`${activePage === '/ar/user-profile/change-password' ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
+                <div onClick={() => handleSidebarPage(`/${locale}/user-profile/change-password`)}
+                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === `/${locale}/user-profile/change-password` ? 'bg-gray-200/70' : ''}`}>
+                    <div className={`${activePage === `/${locale}/user-profile/change-password` ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
                         <MdLock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
                     </div>
-                    <span className={`text-gray-700 text-base sm:text-lg transition-all duration-300 font-medium ${activePage === '/ar/user-profile/change-password' ? 'font-bold' : ''}`}>تغيير كلمة المرور</span>
+                    <span className={`text-gray-700 text-base sm:text-lg transition-all duration-300 font-medium ${activePage === `/${locale}/user-profile/change-password` ? 'font-bold' : ''}`}>{t('changePassword')}</span>
+                </div>
+
+                <div onClick={() => handleSidebarPage(`/${locale}/user-profile/notifications`)}
+                    className={`w-full flex items-center justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-[20px] hover:bg-gray-200 transition-all duration-300 cursor-pointer ${activePage === `/${locale}/user-profile/notifications` ? 'bg-gray-200/70' : ''}`}>
+                    <div className={`${activePage === `/${locale}/user-profile/notifications` ? "w-8 h-8 sm:w-10 sm:h-10 bg-white/80" : ""} rounded-full flex items-center justify-center shadow-sm transition-all duration-300`}>
+                        <MdNotifications className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                    </div>
+                    <span className={`text-gray-700 text-base sm:text-lg transition-all duration-300 font-medium ${activePage === `/${locale}/user-profile/notifications` ? 'font-bold' : ''}`}>{t('notifications')}</span>
                 </div>
 
                 {/* Saved Cards Section */}
                 <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                        <h3 className="text-gray-500 text-xs sm:text-sm font-medium">البطاقات المحفوظة</h3>
+                        <h3 className="text-gray-500 text-xs sm:text-sm font-medium">{t('savedCards')}</h3>
                         <button className="text-gray-400 hover:text-gray-600">
                             <BsThreeDots className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
@@ -236,58 +243,18 @@ const Sidebar = () => {
                         <div className="bg-white rounded-2xl p-4 sm:p-5  shadow-sm border-2 border-primary ">
                             <div className="relative flex flex-col items-center text-center gap-4 pt-24">
                                 <Image src={chatIcon} alt='chat' width={100} height={100} className='w-40 h-40 object-cover absolute -top-[40%] left-1/2 transform -translate-x-1/2' />
-                                <p className="text-primary font-bold text-base sm:text-lg">هل تحتاج إلى مساعدة؟</p>
+                                <p className="text-primary font-bold text-base sm:text-lg">{t('needHelp')}</p>
                                 <button
-                                    onClick={() => router.push('/ar/user-profile/chat')}
+                                    onClick={() => router.push(`/${locale}/user-profile/chat`)}
                                     className="w-full sm:w-auto px-14 py-2 rounded-xl cursor-pointer bg-[#3F6586] hover:bg-[#33526C] text-white font-bold transition-colors"
                                 >
-                                    دعم
+                                    {t('support')}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Success/Error Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-in fade-in zoom-in duration-300">
-                        <div className="text-center">
-                            {/* Icon */}
-                            <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 ${isError ? 'bg-red-100' : 'bg-green-100'}`}>
-                                {isError ? (
-                                    <Icon icon="mdi:alert-circle" className="text-red-600 text-4xl" />
-                                ) : (
-                                    <Icon icon="mdi:check-circle" className="text-green-600 text-4xl" />
-                                )}
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                                {isError ? 'حدث خطأ!' : 'تم التحديث بنجاح!'}
-                            </h3>
-
-                            {/* Message */}
-                            <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                                {modalMessage}
-                            </p>
-
-                            {/* Close Button */}
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${
-                                    isError
-                                        ? 'bg-red-600 hover:bg-red-700 text-white'
-                                        : 'bg-secondary hover:bg-secondary/90 text-white'
-                                }`}
-                            >
-                                حسناً
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

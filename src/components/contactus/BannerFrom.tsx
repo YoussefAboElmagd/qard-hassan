@@ -1,3 +1,5 @@
+"use client";
+
 import background from "@/assets/images/background-arabic.png";
 import {
   Facebook,
@@ -7,8 +9,14 @@ import {
   PhoneCall,
   Twitter,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function BannerFrom() {
+  const t = useTranslations("contactUs");
+  const tFooter = useTranslations("footer");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   return (
     <div className="relative text-white px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col rounded-xl w-full h-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] overflow-hidden">
       {/* Background with gradient overlay */}
@@ -26,30 +34,29 @@ export default function BannerFrom() {
       
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
-        {/* Header - centered */}
-        <div className="text-start mb-8 sm:mb-12">
-          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">معلومات الاتصال</p>
-          <p className="text-sm sm:text-base opacity-90">قل شيئا لبدء محادثة مباشرة!</p>
+        {/* Header */}
+        <div className={`mb-8 sm:mb-12 ${isRTL ? "text-start" : "text-start"}`}>
+          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">{t("banner.title")}</p>
+          <p className="text-sm sm:text-base opacity-90">{t("banner.subtitle")}</p>
         </div>
 
-        {/* Contact Information - RTL layout preserved */}
+        {/* Contact Information */}
         <div className="mb-8 sm:mb-12 lg:mb-16 space-y-4 sm:space-y-6">
-          <div className="flex gap-x-3 sm:gap-x-4 justify-end items-center">
-            <span className="text-sm sm:text-base lg:text-lg">+1012 3456 789</span>
+          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+            <span className="text-sm sm:text-base lg:text-lg">{tFooter("contact.phone")}</span>
             <span>
               <PhoneCall size={18} className="sm:w-5 sm:h-5" />
             </span>
           </div>
-          <div className="flex gap-x-3 sm:gap-x-4 justify-end items-center">
-            <span className="text-sm sm:text-base lg:text-lg">demo@gmail.com</span>
+          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+            <span className="text-sm sm:text-base lg:text-lg">{tFooter("contact.email")}</span>
             <span>
               <Mail size={18} className="sm:w-5 sm:h-5" />
             </span>
           </div>
-          <div className="flex gap-x-3 sm:gap-x-4 justify-end items-start">
-            <span className="text-end text-sm sm:text-base lg:text-lg leading-relaxed">
-              132 Dartmouth Street Boston,<br />
-              Massachusetts 02156 United States
+          <div className={`flex gap-x-3 sm:gap-x-4 items-start ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+            <span className={`text-sm sm:text-base lg:text-lg leading-relaxed ${isRTL ? "text-end" : "text-start"}`}>
+              {tFooter("contact.location")}
             </span>
             <span className="mt-1">
               <MapPin size={18} className="sm:w-5 sm:h-5" />
@@ -57,8 +64,8 @@ export default function BannerFrom() {
           </div>
         </div>
 
-        {/* Social Media Icons - with boxes like in image */}
-        <div className="flex gap-x-3 sm:gap-x-4 mt-auto justify-end">
+        {/* Social Media Icons */}
+        <div className={`flex gap-x-3 sm:gap-x-4 mt-auto ${isRTL ? "justify-end" : "justify-start"}`}>
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded border border-white/40 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
             <Instagram size={18} className="sm:w-[22px] sm:h-[22px]" />
           </div>

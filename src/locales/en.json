@@ -5,6 +5,526 @@
     "contact": "Contact Us",
     "login": "Login",
     "register": "Get Started",
-    "loanRequest": "Loan Request"
+    "loanRequest": "Loan Request",
+    "governance": "Governance",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "governanceMenu": {
+    "commercialRegistry": "Commercial Registry",
+    "permanentAndTemporaryCommittees": "Permanent and Temporary Committees",
+    "disclosureStatements": "Disclosure Statements",
+    "appointmentDecisions": "Appointment Decisions",
+    "ownershipAndInvestmentDecisions": "Ownership and Investment Decisions",
+    "governanceGuides": "Governance Guides",
+    "regulationsAndPolicies": "Regulations and Policies",
+    "generalAssemblyMeetings": "General Assembly Meetings",
+    "estimatedBudget": "Estimated Budget",
+    "strategicDirection": "Strategic Direction",
+    "operationalPlan": "Operational Plan",
+    "annualReports": "Annual Reports",
+    "financialStatements": "Financial Statements",
+    "communityPartnershipWorkshops2024": "Community Partnership Workshops 2024"
+  },
+  "hero": {
+    "title": "We Support You",
+    "titleHighlight": "Financially.",
+    "description": "Sadaqa Jariya Waqf offers you a Qard Hassan loan in compliance with Sharia principles.",
+    "cta": "To meet your needs and fulfill your requirements"
+  },
+  "whyChooseUs": {
+    "mainTitle": "reshapes the lending landscape,",
+    "mainTitleHighlight": "Sadaqa Jariya Waqf",
+    "mainTitleEnd": "making it an attractive option for many.",
+    "subtitle": "By integrating advanced technologies, Islamic finance is reshaping the financial landscape, making it more user-friendly and adaptable to modern needs.",
+    "features": {
+      "easyTerms": {
+        "title": "Easy Terms",
+        "description": "The procedures for obtaining a Qard Hassan are often easier and faster than traditional loans, making it an attractive option for many."
+      },
+      "noInterest": {
+        "title": "No Interest",
+        "description": "No interest or fees are charged, ensuring compliance with Islamic Sharia."
+      },
+      "support247": {
+        "title": "24/7 Technical Support",
+        "description": "Our team is ready to help you anytime. If you have any questions or issues, don't hesitate to contact us."
+      },
+      "emergencySolution": {
+        "title": "Emergency Solution",
+        "description": "Sadaqa Jariya Waqf for Qard Hassan provides a quick and legitimate solution to financial problems that individuals and families may face, such as treatment or necessary home repairs."
+      }
+    }
+  },
+  "loanFunding": {
+    "title": "Let's Start Funding Your Loan:",
+    "subtitle": "By integrating advanced technologies, Islamic finance is reshaping the financial landscape, making it more user-friendly and adaptable to modern needs.",
+    "steps": {
+      "createAccount": {
+        "title": "Create an Account",
+        "description": "Create an account using your email address or social media profile. Quick and straightforward registration process."
+      },
+      "trackTransactions": {
+        "title": "Track Your Transactions in Real-Time:",
+        "description": "Monitor the status of your transactions with instant updates and notifications."
+      },
+      "customerSupport": {
+        "title": "Access 24/7 Customer Support:",
+        "description": "Get help anytime with our dedicated support team ready to assist with any issues or questions."
+      }
+    }
+  },
+  "testimonials": {
+    "sectionLabel": "Testimonials",
+    "title": "What Our",
+    "titleHighlight": "Happy Users Say",
+    "testimonial1": {
+      "name": "Fathi ",
+      "text": "I borrowed money and the steps were simple, fast, and without interest."
+    },
+    "testimonial2": {
+      "name": "Ahmed ",
+      "text": "An excellent service that helped me in a difficult time."
+    },
+    "testimonial3": {
+      "name": "Khaled ",
+      "text": "A smooth and Sharia-compliant experience. I highly recommend it."
+    },
+    "testimonial4": {
+      "name": "Omar ",
+      "text": "Fast approval and no interest. The best lending experience I've had."
+    },
+    "testimonial5": {
+      "name": "Youssef ",
+      "text": "The support team was very helpful throughout the entire process."
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "questions": {
+      "processingTime": {
+        "question": "How long does it take to process a financing request?",
+        "answer": "The financing request is processed within 24-48 hours of submitting all required documents."
+      },
+      "signContract": {
+        "question": "How can I sign the financing contract and promissory notes?",
+        "answer": "You can sign the contract electronically through the platform using the approved digital signature."
+      },
+      "otherObligations": {
+        "question": "Can I get cash financing if I have other obligations?",
+        "answer": "Yes, you can get financing provided that your monthly obligations do not exceed 50% of your monthly income."
+      }
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Follow the Latest",
+      "titleHighlight": "News",
+      "subtitle": "Join our newsletter to stay updated on features and releases.",
+      "stayConnected": "Always in Touch",
+      "emailPlaceholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "privacyNote": "By subscribing, you agree to our service privacy policy."
+    },
+    "links": {
+      "termsOfUse": "Terms of Use",
+      "helpSupport": "Help & Support",
+      "aboutUs": "About Us",
+      "financing": "Financing"
+    },
+    "contact": {
+      "phone": "00966507766965",
+      "email": "waqf.qard.h@gmail.com",
+      "location": "Saudi Arabia"
+    },
+    "copyright": "Copyright © 2025 Sadaqa Jariya Waqf for Qard Hassan. All rights reserved",
+    "poweredBy": "Powered by Mdarj"
+  },
+  "aboutUs": {
+    "hero": {
+      "title": "About Us",
+      "breadcrumb": {
+        "home": "Home",
+        "about": "About Us"
+      }
+    },
+    "statistics": {
+      "lendingOperations": "Lending Operations",
+      "clients": "Clients",
+      "expertConsultants": "Expert Consultants",
+      "completedProjects": "Completed Projects"
+    },
+    "feature": {
+      "subtitle": "Enhancing Financial Clarity",
+      "title": "Window of Hope",
+      "titleHighlight": "Towards a Better Future",
+      "description": "Sadaqa Jariya Waqf reshapes the Qard Hassan lending landscape, making it an attractive option for many. By integrating advanced technologies, Islamic finance is reshaping the financial landscape to become more user-friendly and adaptable to modern needs.",
+      "benefits": {
+        "emergencySolutions": "Emergency Solutions",
+        "technicalSupport": "24/7 Technical Support",
+        "noInterest": "No Interest",
+        "easyTerms": "Easy Terms"
+      },
+      "additionalInfo": [
+        "Sadaqa Jariya Waqf for Qard Hassan provides a quick and legitimate solution to financial problems such as treatment or necessary home repairs, with a team always ready to provide assistance and answer any questions or issues.",
+        "The loan is granted without any interest or fees, ensuring compliance with Islamic Sharia principles, and its procedures are characterized by ease and speed compared to traditional loans, making it an ideal choice for many."
+      ]
+    },
+    "vision": {
+      "title": "Our Vision",
+      "content": [
+        "To be the leading and reference endowment for peers in the Kingdom of Saudi Arabia in the field of Qard Hassan and to be a model to be emulated in responsible financial empowerment, achieving sustainable development and enhancing social and economic impact.",
+        "To make a positive difference in the lives of individuals and families by providing good loans that help them achieve their goals and overcome financial challenges."
+      ]
+    },
+    "mission": {
+      "title": "Our Mission",
+      "content": [
+        "Providing Qard Hassan services according to the highest standards of efficiency and transparency, with sustainable endowment mechanisms, and strategic partnerships with the public, private and non-profit sectors, contributing to improving quality of life.",
+        "Empowering beneficiaries to rely on themselves, and supporting social and economic innovation.",
+        "Promoting Islamic finance culture and raising awareness of the importance of good loans in achieving community development."
+      ]
+    },
+    "strategicGoals": {
+      "title": "Strategic",
+      "titleHighlight": "Goals",
+      "goals": {
+        "focusOnNeedy": {
+          "title": "Focus on the Most Needy Categories",
+          "description": "Expanding the scope of beneficiaries from Qard Hassan services, with a focus on the most needy categories."
+        },
+        "strategicPartnerships": {
+          "title": "Building Strategic Partnerships",
+          "description": "Building strategic partnerships with government, private and non-profit entities to maximize impact."
+        },
+        "enhanceSustainability": {
+          "title": "Enhancing Sustainability",
+          "description": "Enhancing the financial sustainability of the endowment by developing its resources and investments to ensure continued giving."
+        },
+        "development": {
+          "title": "Development",
+          "description": "Developing programs and initiatives that link Qard Hassan with economic and social development."
+        },
+        "governancePrinciples": {
+          "title": "Establishing Governance Principles",
+          "description": "Establishing governance, transparency and accountability principles in endowment management and programs."
+        },
+        "capacityBuilding": {
+          "title": "Building Beneficiaries' Capacities",
+          "description": "Building beneficiaries' capacities through financial education and non-financial support to enhance their success opportunities."
+        }
+      }
+    },
+    "vision2030": {
+      "title": {
+        "part1": "Contributing to Achieving the Kingdom's",
+        "part2": "Vision"
+      },
+      "description": "Sadaqa Jariya Waqf for Qard Hassan contributes to achieving the Kingdom's Vision 2030 targets",
+      "through": "through:",
+      "benefits": {
+        "financial": "Financially empowering individuals and families to achieve self-sufficiency and reduce the need for traditional support.",
+        "economy": "Supporting the national economy by financing micro-projects with a spirit of justice and benevolence.",
+        "sustainability": "Contributing to the sustainability of the non-profit sector through an innovative endowment model that supports comprehensive development.",
+        "transformation": "Alignment with national transformation programs aimed at improving quality of life and expanding opportunities for all.",
+        "opportunities": "Creating sustainable opportunities for economic growth and social development."
+      }
+    },
+    "boardMembers": {
+      "title": "Board",
+      "titleHighlight": "Members",
+      "members": [
+        {
+          "name": "Sheikh Abdulaziz bin",
+          "title": "Mohammed bin Saleh Al-Sayf"
+        },
+        {
+          "name": "Sheikh Abdullah bin Nasser",
+          "title": "bin Mohammed Al-Makhairbash"
+        },
+        {
+          "name": "Dr. Omar bin Saeed bin",
+          "title": "Mohammed Al-Mubti"
+        },
+        {
+          "name": "Dr. Yusuf bin Saeed",
+          "title": "bin Hamdan Al-Ghamdi"
+        }
+      ]
+    }
+  },
+  "vision2030": {
+    "title": {
+      "part1": "Contributing to",
+      "part2": "Achieving the Kingdom's Vision"
+    },
+    "description": "The Ongoing Charity Endowment for Qard Hasan contributes to supporting the goals of Saudi Vision 2030",
+    "through": "through:",
+    "benefits": {
+      "financial": "Empowering individuals and families financially to achieve self-sufficiency and reduce dependence on traditional support.",
+      "economy": "Supporting the national economy through financing micro-enterprises with a spirit of justice and charity.",
+      "sustainability": "Contributing to the sustainability of the non-profit sector through an innovative endowment model supporting comprehensive development.",
+      "transformation": "Aligning with national transformation programs aimed at improving quality of life and expanding opportunities for all",
+      "opportunities": "Aligning with national transformation programs aimed at improving quality of life and expanding opportunities for all"
+    }
+  },
+  "contactUs": {
+    "hero": {
+      "title": "Contact Us",
+      "breadcrumb": {
+        "home": "Home",
+        "contact": "Contact Us"
+      }
+    },
+    "title": "Contact Us",
+    "stayIn": "Stay in",
+    "touch": "Touch",
+    "description": "Don't hesitate to contact us. Our support team is available around the clock.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Name",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "message": "Message",
+      "messagePlaceholder": "Your message",
+      "submit": "Send",
+      "submitting": "Sending..."
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "messageRequired": "Message is required",
+      "messageMinLength": "Message must be at least 10 characters"
+    },
+    "success": {
+      "title": "Sent Successfully!",
+      "message": "Your message has been sent successfully!",
+      "close": "OK"
+    },
+    "banner": {
+      "title": "Contact Information",
+      "subtitle": "Say something to start a live chat!"
+    }
+  },
+  "governance": {
+    "hero": {
+      "title": "Governance",
+      "breadcrumb": {
+        "home": "Home",
+        "governance": "Governance"
+      }
+    },
+    "pageTitle": "Regulations and",
+    "pageTitleHighlight": "Policies",
+    "viewFile": "View File",
+    "documents": {
+      "basicRegulation": "Basic Regulation",
+      "regulationsApprovalMinutes": "Regulations and Policies Approval Minutes",
+      "codeOfConductPolicy": "Code of Conduct Policy",
+      "employeeEthicsCharter": "Employee Ethics Charter",
+      "amlCftBoardRoles": "Board Roles and Responsibilities for AML/CFT",
+      "donationRedirectionPolicy": "Donation Redirection Policy",
+      "boardSelectionAndRoles": "Board Chairman, Vice Chairman and Members Roles and Selection",
+      "financialAdminAuthorities": "Financial and Administrative Authorities Regulation",
+      "committeesAuthorities": "Permanent and Temporary Committees Authorities",
+      "conflictOfInterestPolicy": "Conflict of Interest Policy",
+      "donationRefundMechanism": "Donation Refund Mechanism",
+      "ceoAppointmentRegulation": "CEO Appointment Regulation",
+      "ceoAuthorities": "CEO Authorities and Responsibilities",
+      "generalAssemblyMembership": "General Assembly Membership Categories and Conditions",
+      "hrAndWorkRegulation": "Human Resources and Work Organization Regulation",
+      "volunteerEthicsCharter": "Volunteer Ethics Charter",
+      "organizationManagementRegulation": "Organization and Specialization Management Regulation",
+      "internalControlSystem": "Internal Control System",
+      "financialRegulation": "Financial Regulation",
+      "receivablesHandlingProcedures": "Receivables Handling Procedures",
+      "cashFollowUpProcedures": "Cash Follow-up Procedures from Donor to Beneficiary",
+      "procurementAndContractingProcedures": "Procurement and Contracting Procedures",
+      "assetPurchaseRegulation": "Asset Purchase Regulation",
+      "donationsCollectionPolicy": "Donations and Grants Collection Policy",
+      "assistanceDistributionPolicy": "Assistance Distribution Policy",
+      "dataPrivacyPolicy": "Data Privacy Policy",
+      "donationsCollectionPolicy2": "Donations and Grants Collection Policy",
+      "beneficiaryRelationsPolicy": "Beneficiary Relations Policy",
+      "beneficiaryComplaintMechanism": "Beneficiary Complaint Mechanism",
+      "donationIncreaseMechanism": "Donation Increase Mechanism",
+      "activitiesRecognitionPolicy": "Activities Recognition Policy",
+      "riskAssessmentPolicy": "Internal and External Risk Assessment Policy",
+      "investmentPolicy": "Investment Policy",
+      "documentRetentionPolicy": "Document Retention Policy",
+      "financialAccountingPoliciesGuide": "Financial and Accounting Policies and Procedures Guide",
+      "whistleblowerPolicy": "Whistleblower Policy and Protection",
+      "amlIndicatorsPolicy": "AML Crime Indicators Policy",
+      "amlAgencyServicesPolicy": "AML Agency Services Policy",
+      "dueDiligenceServices": "Due Diligence Services for AML/CFT Risk",
+      "amlRiskManagementGuide": "AML/CFT Risk Management Guide",
+      "policyEffectivenessVerificationMechanism": "AML/CFT Policy Effectiveness Verification Mechanism"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back!",
+      "email": "Email",
+      "emailPlaceholder": "Name@gmail.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Login",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create Account",
+      "success": "Login successful. Redirecting to verification page...",
+      "error": "Login failed. Please check your credentials."
+    },
+    "register": {
+      "title": "Welcome!",
+      "name": "Name",
+      "namePlaceholder": "Ahmed Mohammed Ahmed",
+      "email": "Email",
+      "emailPlaceholder": "Name@gmail.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "9975421345",
+      "nationalId": "National ID",
+      "nationalIdPlaceholder": "1234567890",
+      "expiryDate": "Expiry Date",
+      "expiryDatePlaceholder": "Expiry Date",
+      "password": "Password",
+      "passwordPlaceholder": "••••••",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••",
+      "submit": "Create Account",
+      "submitting": "Creating...",
+      "hasAccount": "Already have an account?",
+      "login": "Login",
+      "success": "Account created successfully. Redirecting to verification page...",
+      "error": "Failed to create account. Please check your information."
+    },
+    "forgotPassword": {
+      "title": "Account Recovery",
+      "description": "Enter your registered email to receive OTP",
+      "email": "Email",
+      "emailPlaceholder": "Name@gmail.com",
+      "submit": "Confirm",
+      "submitting": "Sending...",
+      "success": "Verification code sent to your email. Redirecting in 3 seconds..."
+    },
+    "otp": {
+      "title": "Enter OTP",
+      "description": "An OTP message containing your code has been sent to",
+      "instruction": "Enter the 6-digit code sent to you",
+      "noCode": "Didn't receive the code?",
+      "resend": "Resend",
+      "resending": "Sending...",
+      "resendSuccess": "Code sent successfully ✅",
+      "resendError": "Failed to send code. Please try again. ❌",
+      "submit": "Confirm",
+      "submitting": "Verifying...",
+      "error": "Invalid OTP code. Please try again.",
+      "loading": "Loading..."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Enter a new password consisting of 8 characters, numbers and symbols",
+      "password": "Password",
+      "passwordPlaceholder": "••••••",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••",
+      "submit": "Confirm",
+      "submitting": "Updating...",
+      "success": "Password reset successfully. Redirecting to login page...",
+      "loading": "Loading..."
+    },
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordAlphanumeric": "Password must contain only letters and numbers",
+      "confirmPasswordRequired": "Confirm password is required",
+      "passwordMismatch": "Passwords do not match",
+      "nameRequired": "Name is required",
+      "nameMin": "Name must be at least 2 characters",
+      "phoneRequired": "Phone number is required",
+      "phoneLength": "Phone number must be 9-15 digits",
+      "phoneNumeric": "Phone number must contain only numbers",
+      "nationalIdRequired": "National ID is required",
+      "nationalIdLength": "National ID must be 10 digits",
+      "nationalIdNumeric": "National ID must contain only numbers",
+      "expiryDateRequired": "Expiry date is required",
+      "expiryDateFuture": "Expiry date must be a future date"
+    }
+  },
+  "userProfile": {
+    "personalInfo": "Personal Information",
+    "loans": "Loans",
+    "changePassword": "Change Password",
+    "savedCards": "Saved Cards",
+    "needHelp": "Need Help?",
+    "support": "Support",
+    "notifications": "Notifications",
+    "notificationsPage": {
+      "title": "Notifications",
+      "search": "Search",
+      "noNotifications": "No notifications",
+      "markAsRead": "Mark as read",
+      "deleteNotification": "Delete notification",
+      "loanApproved": "Your loan has been approved, please visit the association to receive the cash",
+      "paymentReminder": "Payment installment due date is approaching on 11th Dhul Qa'dah",
+      "minAgo": "min ago"
+    },
+    "updatePhoto": "Update Photo",
+    "photoValidation": {
+      "invalidType": "Please select a valid image",
+      "sizeLimit": "Image size must be less than 5MB"
+    },
+    "photoSuccess": "Profile photo updated successfully!",
+    "photoError": "An unexpected error occurred while updating the photo",
+    "personalInfoForm": {
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "nationalId": "National ID Number",
+      "expiryDate": "Expiry Date",
+      "expiryDatePlaceholder": "Select expiry date",
+      "edit": "Edit",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "saveSuccess": "Changes saved successfully!",
+      "unexpectedError": "An unexpected error occurred"
+    },
+    "changePasswordForm": {
+      "title": "Change Password",
+      "currentPassword": "Current Password",
+      "currentPasswordPlaceholder": "Enter current password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm New Password",
+      "confirmPasswordPlaceholder": "Re-enter new password",
+      "submit": "Change Password",
+      "saving": "Saving...",
+      "fillAllFields": "Please fill all fields",
+      "passwordMismatch": "New password does not match",
+      "success": "Password changed successfully",
+      "error": "An error occurred while changing password"
+    },
+    "loansPage": {
+      "title": "Loans",
+      "requestLoan": "Request Loan"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
   }
 }

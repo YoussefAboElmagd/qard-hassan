@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { UserProvider } from '@/contexts/UserContext';
+import { ToastProvider } from '@/components/providers/toast-provider';
 
 
 const GK_Dinkum_Regular = localFont({
@@ -47,6 +48,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <UserProvider>
+            <ToastProvider />
             {children}
           </UserProvider>
         </NextIntlClientProvider>

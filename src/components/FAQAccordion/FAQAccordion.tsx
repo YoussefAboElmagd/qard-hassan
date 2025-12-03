@@ -1,21 +1,27 @@
 'use client'
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { HiChevronDown } from 'react-icons/hi';
 
-const FAQAccordion = () => {
+function FAQAccordion() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
+    const t = useTranslations('faq');
+    const locale = useLocale();
+    const isRTL = locale === 'ar'; // Adjust based on your RTL locales
 
     const faqs = [
         {
-            question: 'ماهي المدة اللازمة لمعالجة طلب التمويل ؟',
-            answer: 'يتم معالجة طلب التمويل خلال 24-48 ساعة من تقديم جميع المستندات المطلوبة.'
+            question: t('questions.processingTime.question'),
+            answer: t('questions.processingTime.answer')
         },
         {
-            question: 'كيف يمكنني توقيع عقد التمويل و سندات الأمر؟',
-            answer: 'يمكنك توقيع العقد إلكترونياً من خلال المنصة باستخدام التوقيع الرقمي المعتمد.'
+            question: t('questions.signContract.question'),
+            answer: t('questions.signContract.answer')
         },
         {
-            question: 'هل يمكن الحصول على تمويل نقدي في حال وجود التزامات أخرى',
-            answer: 'نعم، يمكن الحصول على تمويل بشرط ألا تتجاوز نسبة الالتزامات الشهرية 50% من الدخل الشهري.'
+            question: t('questions.otherObligations.question'),
+            answer: t('questions.otherObligations.answer')
         }
     ];
 
@@ -24,46 +30,40 @@ const FAQAccordion = () => {
     };
 
     return (
-        <div className="py-16 bg-[#d0d5dd52]" dir="rtl">
+        <div className="py-16 bg-[#d0d5dd52]" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="max-w-4xl mx-auto px-6">
                 <h2 className="text-3xl font-bold text-center text-primary mb-12">
-                    أسئلة مكررة
+                    {t('title')}
                 </h2>
 
                 <div className="space-y-4">
                     {faqs.map((faq, index) => (
                         <div
                             key={index}
-                            className="border-b-2  border-gray-200 overflow-hidden transition-all duration-300"
+                            className="border-b-2 border-gray-200 overflow-hidden transition-all duration-300"
                         >
                             <button
                                 onClick={() => toggleFAQ(index)}
-                                className="w-full px-6 py-5 flex justify-between items-center cursor-pointer text-right transition-colors"
+                                className="w-full px-6 py-5 flex items-center cursor-pointer transition-colors relative"
                             >
-                                <span className="text-gray-800 font-medium text-lg">
+                                <span className={`flex-1 text-gray-800 font-medium text-lg ${
+                                    isRTL ? 'text-right' : 'text-left'
+                                }`}>
                                     {faq.question}
                                 </span>
-                                <svg
-                                    className={`w-6 h-6 text-black transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
-                                        }`}
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M19 9l-7 7-7-7"
-                                    />
-                                </svg>
+                                <HiChevronDown
+                                    className={`w-6 h-6 text-black transition-transform duration-300 flex-shrink-0 absolute end-0 ${
+                                        openIndex === index ? 'rotate-180' : ''
+                                    }`}
+                                />
                             </button>
 
                             <div
-                                className={`px-6 transition-all duration-300 ${openIndex === index ? 'py-4 pb-6' : 'max-h-0 overflow-hidden'
-                                    }`}
+                                className={`px-6 transition-all duration-300 ${
+                                    openIndex === index ? 'py-4 pb-6' : 'max-h-0 overflow-hidden'
+                                }`}
                             >
-                                <p className="text-gray-600 leading-relaxed">
+                                <p className={`text-gray-600 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
                                     {faq.answer}
                                 </p>
                             </div>
@@ -73,6 +73,6 @@ const FAQAccordion = () => {
             </div>
         </div>
     );
-};
+}
 
 export default FAQAccordion;

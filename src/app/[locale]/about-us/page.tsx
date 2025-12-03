@@ -11,32 +11,34 @@ import Landing_Hero from "@/components/landingHero/Landing_Hero";
 import StrategicGoals from "@/components/about/strategicGoals";
 import Vision2030Slide from "@/components/about/Vision2030Card";
 import BoardMembers from "@/components/about/BoardMembers";
-
-
-const cards = [
-  {
-    title: "عملية اقتراض",
-    num: "80",
-    k: true,
-  },
-  {
-    title: "عميل ",
-    num: "54",
-    k: true,
-  },
-  {
-    title: "الأستشاريون الخبراء",
-    num: "210",
-    k: false,
-  },
-  {
-    title: "المشاريع المكتملة",
-    num: "34",
-    k: true,
-  },
-];
+import { useLocale, useTranslations } from "next-intl";
 
 export default function Page() {
+  const t = useTranslations('aboutUs');
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const cards = [
+    {
+      title: t('statistics.lendingOperations'),
+      num: "80",
+      k: true,
+    },
+    {
+      title: t('statistics.clients'),
+      num: "54",
+      k: true,
+    },
+    {
+      title: t('statistics.expertConsultants'),
+      num: "210",
+      k: false,
+    },
+    {
+      title: t('statistics.completedProjects'),
+      num: "34",
+      k: true,
+    },
+  ];
   return (
     <>
       <header className="w-full relative h-auto lg:h-[45vh] pb-10 lg:pb-0 mb-16">
@@ -55,11 +57,11 @@ export default function Page() {
         {/* Hero Content Section */}
         <div className="flex justify-center items-center mt-5">
           <Landing_Hero
-            mainText={"من نحن"}
+            mainText={t('hero.title')}
             linkOne={"/"}
             linkTwo={"/about-us"}
-            textOne={"الصفحة الرئسية"}
-            textTwo={"من نحن"}
+            textOne={t('hero.breadcrumb.home')}
+            textTwo={t('hero.breadcrumb.about')}
           />
         </div>
         <Image 
@@ -67,7 +69,7 @@ export default function Page() {
             alt="header-white-top" 
             width={450} 
             height={100} 
-            className="absolute top-0 start-0 hidden lg:block w-[35vw] max-w-[400px] h-auto" 
+            className={`absolute top-0 hidden lg:block w-[35vw] max-w-[400px] h-auto ${isRTL ? "start-0" : "start-0 -scale-x-100"}`} 
           />
 
         <div className="absolute -bottom-15 right-10 hidden lg:block"></div>

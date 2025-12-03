@@ -33,12 +33,14 @@ export async function getProfileData() {
         
         const axiosError = error as AxiosError<{ message?: string; error?: string }>;
         const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
+        const statusCode = axiosError.response?.status;
         
         console.log("Backend error response:", axiosError.response?.data);
         
         return {
             success: false,
-            message: backendMessage || "حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى."
+            message: backendMessage || "حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.",
+            status: statusCode
         };
     }
 }
@@ -68,12 +70,14 @@ export async function editProfileData(data: ProfileData) {
         
         const axiosError = error as AxiosError<{ message?: string; error?: string }>;
         const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
+        const statusCode = axiosError.response?.status;
         
         console.log("Backend error response:", axiosError.response?.data);
         
         return {
             success: false,
-            message: backendMessage || "حدث خطأ أثناء حفظ التعديلات. يرجى المحاولة مرة أخرى."
+            message: backendMessage || "حدث خطأ أثناء حفظ التعديلات. يرجى المحاولة مرة أخرى.",
+            status: statusCode
         };
     }
 }
@@ -124,9 +128,11 @@ export async function changeProfilePhoto(formData: FormData) {
     } catch (error) {
         console.error("Error changing profile photo:", error);
         const axiosError = error as AxiosError<{ message?: string }>;
+        const statusCode = axiosError.response?.status;
         return {
             success: false,
-            message: axiosError.response?.data?.message || "حدث خطأ أثناء تحديث الصورة. يرجى المحاولة مرة أخرى."
+            message: axiosError.response?.data?.message || "حدث خطأ أثناء تحديث الصورة. يرجى المحاولة مرة أخرى.",
+            status: statusCode
         };
     }
 }

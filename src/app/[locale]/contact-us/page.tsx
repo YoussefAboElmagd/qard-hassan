@@ -1,14 +1,20 @@
+"use client";
+
 import Navbar from "@/components/navbar/navbar";
 import Image from "next/image";
-
 import background from "@/assets/images/background-arabic.png";
 import headerWhiteTop from "@/assets/images/LandingImgs/header-white-top.png";
 import Landing_Hero from "@/components/landingHero/Landing_Hero";
 import ContactFrom from "@/components/contactus/ContactFrom";
 import BannerFrom from "@/components/contactus/BannerFrom";
 import Footer from "@/components/Footer/footer";
+import { useTranslations, useLocale } from "next-intl";
 
-export default function page() {
+export default function Page() {
+  const t = useTranslations("contactUs");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+
   return (
     <>
       <header
@@ -22,40 +28,40 @@ export default function page() {
       >
         <Navbar />
         {/* Hero Content Section */}
-        <div className="flex  justify-center items-center mt-5">
+        <div className="flex justify-center items-center mt-5">
           <Landing_Hero
-            mainText={"تواصل معنا"}
+            mainText={t("hero.title")}
             linkOne={"/"}
             linkTwo={"/contact-us"}
-            textOne={"الصفحة الرئسية"}
-            textTwo={"تواصل معنا"}
+            textOne={t("hero.breadcrumb.home")}
+            textTwo={t("hero.breadcrumb.contact")}
           />
         </div>
-        <Image 
-            src={headerWhiteTop.src} 
-            alt="header-white-top" 
-            width={450} 
-            height={100} 
-            className="absolute top-0 start-0 hidden lg:block w-[35vw] max-w-[400px] h-auto" 
-          />
+        <Image
+          src={headerWhiteTop.src}
+          alt="header-white-top"
+          width={450}
+          height={100}
+          className={`absolute top-0 hidden lg:block w-[35vw] max-w-[400px] h-auto ${isRTL ? "start-0" : "start-0 -scale-x-100"}`}
+        />
 
         <div className="absolute -bottom-15 right-10 hidden lg:block"></div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6 sm:my-8 lg:my-10">
-        <p className="text-primary font-semibold text-lg sm:text-xl">تواصل معنا</p>
+        <p className="text-primary font-semibold text-lg sm:text-xl">{t("title")}</p>
         <h3 className="text-primary font-semibold text-3xl sm:text-4xl md:text-5xl lg:text-6xl py-2 sm:py-3 my-2 sm:my-3">
-          إبق على <span className="text-secondary">اتصال</span>
+          {t("stayIn")} <span className="text-secondary">{t("touch")}</span>
         </h3>
         <p className="font-semibold text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed">
-          لا تتردد في التواصل معنا فريق الدعم لدينا في انتظار كم علي مدار الساعة
+          {t("description")}
         </p>
 
         <div className="my-6 sm:my-8 lg:my-10 flex flex-col lg:flex-row gap-6 lg:gap-10 items-stretch">
-          <div className="flex-1  lg:pr-4">
+          <div className="flex-1 lg:pr-4">
             <ContactFrom />
           </div>
-          <div className=" w-full lg:w-1/3">
+          <div className="w-full lg:w-1/3">
             <BannerFrom />
           </div>
         </div>

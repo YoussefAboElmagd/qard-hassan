@@ -3,6 +3,8 @@ import { BsPieChartFill } from "react-icons/bs";
 import { IoShieldCheckmarkSharp } from 'react-icons/io5';
 import { PiSealPercentFill } from "react-icons/pi";
 import { RiCustomerService2Line } from 'react-icons/ri';
+import { useTranslations } from 'next-intl';
+
 interface FeatureProps {
   icon: React.ReactNode;
   title: string;
@@ -29,42 +31,37 @@ function FeatureCard({ icon, title, description }: FeatureProps) {
 }
 
 export default function WhyChooseUs() {
+  const t = useTranslations('whyChooseUs');
+
   const features = [
     {
       icon: (
         <BsPieChartFill className='w-10 h-10 text-primary' />
-
       ),
-      title: "شروط ميسرة",
-      description: "غالبًا ما تكون إجراءات الحصول على القرض الحسن أسهل وأسرع من القروض التقليدية، مما يجعله خيارًا جذابًا للكثيرين."
+      title: t('features.easyTerms.title'),
+      description: t('features.easyTerms.description')
     },
     {
       icon: (
         <PiSealPercentFill className='w-10 h-10 text-primary' />
-
       ),
-      title: "بدون فوائد",
-      description: "لا تُحتسب فوائد أو رسوم، بما يضمن التوافق مع الشريعة الإسلامية."
+      title: t('features.noInterest.title'),
+      description: t('features.noInterest.description')
     },
     {
       icon: (
         <RiCustomerService2Line className='w-10 h-10 text-primary' />
-
       ),
-      title: "دعم فني 24/7",
-      description: "فريقنا جاهز لمساعدتك في أي وقت. إذا كانت لديك أي أسئلة أو مشاكل، فلا تتردد في التواصل معنا"
+      title: t('features.support247.title'),
+      description: t('features.support247.description')
     },
     {
       icon: (
         <IoShieldCheckmarkSharp className='w-10 h-10 text-primary' />
-
       ),
-      title: "حل للمشاكل الطارئة",
-      description: "يوفر وقف الصدقة الجارية  للإقراض الحسن حلاً سريعاً و مشروعا للمشاكل المالية التي قد تواجه الأفراد والأسر، مثل العلاج أو الإصلاحات المنزلية الضرورية"
+      title: t('features.emergencySolution.title'),
+      description: t('features.emergencySolution.description')
     },
-
-
-
   ];
 
   return (
@@ -73,10 +70,10 @@ export default function WhyChooseUs() {
         {/* Header Section */}
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 md:mb-6 leading-tight px-4 ">
-            <span className='text-secondary'>وقف الصدقة الجارية</span> يعيد تشكيل مشهد الإقراض<br /> الحسن، مما يجعله خيارًا جاذبًا للكثيرين.
+            <span className='text-secondary'>{t('mainTitleHighlight')}</span> {t('mainTitle')}<br /> {t('mainTitleEnd')}
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed px-4">
-            من خلال دمج التقنيات المتقدمة، يعيد التمويل الإسلامي تشكيل المشهد المالي، <br /> مما يجعله أكثر سهولة في الاستخدام وتكيفًا مع الاحتياجات الحديثة.            <br className="hidden sm:block" />
+            {t('subtitle')}
           </p>
         </div>
 

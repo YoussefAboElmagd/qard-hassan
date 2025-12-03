@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getProfileData } from '@/actions/profile.actions';
+import { handleApiError } from '@/lib/toast-utils';
 
 interface UserProfile {
     name: string;
@@ -34,7 +35,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
             console.log("Profile data received:", data);
             
             if (data.success && data.profile) {
-                // Get user_id and user_partner_id from cookies if available
                 console.log("All cookies:", document.cookie);
                 
                 const userId = document.cookie
@@ -62,6 +62,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
                 
                 console.log("Setting user data:", userData);
                 setUser(userData);
+            } else if (!data.success) {
+                handleApiError({
+                    success: data.success,
+                    message: data.message,
+                    status: data.status
+                });
+                setUser(null);
             }
         } catch (error) {
             console.error('Failed to fetch user data:', error);
@@ -80,7 +87,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
-        fetchUserData();
+        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+        const isAuthPage = currentPath.includes('/auth/');
+        
+        if (!isAuthPage) {
+            fetchUserData();
+        } else {
+            setIsLoading(false);
+        }
     }, []);
 
     return (

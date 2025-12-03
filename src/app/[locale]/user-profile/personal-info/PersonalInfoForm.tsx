@@ -3,17 +3,19 @@ import { getProfileData, editProfileData } from '@/actions/profile.actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { useUser } from '@/contexts/UserContext'
 import DatePicker from 'react-datepicker'
 import { registerLocale } from 'react-datepicker'
 import { ar } from 'date-fns/locale/ar'
+import { enUS } from 'date-fns/locale/en-US'
 import { format, parse } from 'date-fns'
-import 'react-datepicker/dist/react-datepicker.css';
-
+import 'react-datepicker/dist/react-datepicker.css'
+import { handleApiError, showSuccessToast, showErrorToast } from '@/lib/toast-utils';
+import { useTranslations, useLocale } from 'next-intl';
 
 registerLocale('ar', ar)
+registerLocale('en', enUS)
 
 interface userInfoInterface {
     fullName: string,
@@ -25,6 +27,8 @@ interface userInfoInterface {
 
 export default function PersonalInfoForm() {
     const { refreshUser } = useUser();
+    const t = useTranslations('userProfile.personalInfoForm');
+    const locale = useLocale();
     const [userInfo, setUserInfo] = useState<userInfoInterface>({
         fullName: '',
         email: '',
@@ -35,9 +39,6 @@ export default function PersonalInfoForm() {
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState("");
-    const [isError, setIsError] = useState(false);
 
     const getUserProfileData = async () => {
         try {
@@ -45,9 +46,11 @@ export default function PersonalInfoForm() {
             console.log(data);
 
             if (!data.success) {
-                setModalMessage(data.message || "حدث خطأ أثناء تحميل البيانات");
-                setIsError(true);
-                setShowModal(true);
+                handleApiError({
+                    success: data.success,
+                    message: data.message,
+                    status: data.status
+                });
                 return;
             }
 
@@ -62,10 +65,8 @@ export default function PersonalInfoForm() {
             });
         } catch (error) {
             console.error('Error fetching profile data:', error);
-            const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
-            setModalMessage(errorMessage);
-            setIsError(true);
-            setShowModal(true);
+            const errorMessage = error instanceof Error ? error.message : t('unexpectedError');
+            showErrorToast(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -87,22 +88,20 @@ export default function PersonalInfoForm() {
             const response = await editProfileData(profileData);
 
             if (response.success) {
-                setModalMessage(response.message || "تم حفظ التعديلات بنجاح!");
-                setIsError(false);
-                setShowModal(true);
+                showSuccessToast(response.message || t('saveSuccess'));
                 setIsEditing(false);
                 await refreshUser();
             } else {
-                setModalMessage(response.message || "حدث خطأ أثناء حفظ البيانات");
-                setIsError(true);
-                setShowModal(true);
+                handleApiError({
+                    success: response.success,
+                    message: response.message,
+                    status: response.status
+                });
             }
         } catch (error) {
             console.error('Error saving profile data:', error);
-            const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
-            setModalMessage(errorMessage);
-            setIsError(true);
-            setShowModal(true);
+            const errorMessage = error instanceof Error ? error.message : t('unexpectedError');
+            showErrorToast(errorMessage);
         } finally {
             setIsSaving(false);
         }
@@ -166,7 +165,7 @@ export default function PersonalInfoForm() {
                     {/* Full Name */}
                     <div className="space-y-2">
                         <Label htmlFor="fullName" className="text-start text-gray-700 font-bold">
-                            الاسم رباعي
+                            {t('fullName')}
                         </Label>
                         <Input
                             id="fullName"
@@ -175,14 +174,14 @@ export default function PersonalInfoForm() {
                             onChange={(e) => handleInputChange('fullName', e.target.value)}
                             disabled={!isEditing}
                             className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
-                            dir="rtl"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
                         />
                     </div>
 
                     {/* Email */}
                     <div className="space-y-2">
                         <Label htmlFor="email" className="text-start text-gray-700 font-bold">
-                            البريد الالكتروني
+                            {t('email')}
                         </Label>
                         <Input
                             id="email"
@@ -191,14 +190,14 @@ export default function PersonalInfoForm() {
                             onChange={(e) => handleInputChange('email', e.target.value)}
                             disabled={!isEditing}
                             className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
-                            dir="rtl"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
                         />
                     </div>
 
                     {/* Phone Number */}
                     <div className="space-y-2">
                         <Label htmlFor="phone" className="text-start text-gray-700 font-bold">
-                            رقم الهاتف
+                            {t('phone')}
                         </Label>
                         <Input
                             id="phone"
@@ -214,7 +213,7 @@ export default function PersonalInfoForm() {
                     {/* National ID */}
                     <div className="space-y-2">
                         <Label htmlFor="nationalId" className="text-start text-gray-700 font-bold">
-                            رقم الهوية الوطنية
+                            {t('nationalId')}
                         </Label>
                         <Input
                             id="nationalId"
@@ -223,23 +222,23 @@ export default function PersonalInfoForm() {
                             onChange={(e) => handleInputChange('nationalId', e.target.value)}
                             disabled={!isEditing}
                             className={`text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border-gray-200 rounded-lg h-12 px-4`}
-                            dir="rtl"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
                         />
                     </div>
 
                     {/* ID Expiry Date with DatePicker */}
                     <div className="space-y-2">
                         <Label htmlFor="idExpiryDate" className="text-start text-gray-700 font-bold">
-                            تاريخ الانتهاء
+                            {t('expiryDate')}
                         </Label>
                         <DatePicker
                             selected={userInfo.idExpiryDate}
                             onChange={(date) => handleInputChange('idExpiryDate', date)}
-                            locale="ar"
+                            locale={locale}
                             dateFormat="dd/MM/yyyy"
                             minDate={new Date()}
                             disabled={!isEditing}
-                            placeholderText="اختر تاريخ الانتهاء"
+                            placeholderText={t('expiryDatePlaceholder')}
                             className={`w-full text-start ${!isEditing ? 'disabled:opacity-100 disabled:text-black bg-gray-100 cursor-not-allowed' : 'bg-white'} border border-gray-200 rounded-lg h-12 px-4`}
                             wrapperClassName="w-full"
                             showYearDropdown
@@ -262,40 +261,8 @@ export default function PersonalInfoForm() {
                             variant="outline"
                             className="w-auto px-8 py-3 border-2 border-secondary text-secondary hover:text-white hover:bg-secondary rounded-full font-bold bg-white disabled:opacity-50"
                         >
-                            {isSaving ? 'جارِ الحفظ...' : isEditing ? 'حفظ التعديلات' : 'تعديل'}
+                            {isSaving ? t('saving') : isEditing ? t('saveChanges') : t('edit')}
                         </Button>
-                    </div>
-                </div>
-            )}
-
-            {/* Success/Error Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-in fade-in zoom-in duration-300">
-                        <div className="text-center">
-                            <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 ${isError ? 'bg-red-100' : 'bg-green-100'}`}>
-                                {isError ? (
-                                    <Icon icon="mdi:alert-circle" className="text-red-600" />
-                                ) : (
-                                    <Icon icon="mdi:check-circle" className="text-green-600" />
-                                )}
-                            </div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                                {isError ? 'حدث خطأ!' : 'تم الحفظ بنجاح!'}
-                            </h3>
-                            <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                                {modalMessage}
-                            </p>
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${isError
-                                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                                    : 'bg-secondary hover:bg-secondary/90 text-white'
-                                    }`}
-                            >
-                                حسناً
-                            </button>
-                        </div>
                     </div>
                 </div>
             )}

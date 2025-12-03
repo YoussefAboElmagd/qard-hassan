@@ -5,10 +5,15 @@ import appleStore from '@/assets/images/LandingImgs/Group.png'
 import logo from '@/assets/images/main-logo.png'
 import mdarjLogo from '@/assets/images/mdarjFooter.png'
 import Image from 'next/image';
+import { useTranslations, useLocale } from 'next-intl';
 
-const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
+function Footer({ contactUsFooter }: { contactUsFooter: boolean }) {
+    const t = useTranslations('footer');
+    const locale = useLocale();
+    const isRTL = locale === 'ar'; // Adjust based on your RTL locales
+
     return (
-        <div className="bg-gray-50 px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="bg-gray-50 px-4 sm:px-6 lg:px-8 py-8 sm:py-12" dir={isRTL ? 'rtl' : 'ltr'}>
             {/* Main content container */}
             <div className="max-w-7xl mx-auto">
                 {/* Top section with newsletter and logo */}
@@ -16,35 +21,35 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
 
                     <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between mb-12 lg:mb-16">
                         {/* Right side - Logo and tagline */}
-                        <div className="text-center lg:text-right">
+                        <div className={`text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'}`}>
                             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 leading-tight text-secondary">
-                                <span className='text-primary'>تابع آخر</span>  الأخبار
+                                <span className='text-primary'>{t('newsletter.title')}</span> {t('newsletter.titleHighlight')}
                             </h1>
                             <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
-                                انضم إلى نشرتنا الإخبارية للبقاء على اطلاع على الميزات والإصدارات.                        </p>
+                                {t('newsletter.subtitle')}
+                            </p>
                         </div>
                         {/* Left side - Newsletter signup */}
                         <div className="flex-1 max-w-lg w-full">
-                            <h2 className="text-gray-600 text-base sm:text-lg mb-6 font-bold text-center lg:text-right">دائماً على تواصل</h2>
+                            <h2 className={`text-gray-600 text-base sm:text-lg mb-6 font-bold text-center ${isRTL ? 'lg:text-right' : 'lg:text-left'}`}>
+                                {t('newsletter.stayConnected')}
+                            </h2>
 
                             <div className="flex flex-col sm:flex-row gap-3 mb-4">
-
                                 <input
                                     type="email"
-                                    placeholder="ادخل البريد الالكتروني"
-                                    className="flex-1 w-full px-5 py-3 border border-primary placeholder:text-primary rounded-full text-sm text-right focus:outline-none focus:border-2"
+                                    placeholder={t('newsletter.emailPlaceholder')}
+                                    className={`flex-1 w-full px-5 py-3 border border-primary placeholder:text-primary rounded-full text-sm ${isRTL ? 'text-right' : 'text-left'} focus:outline-none focus:border-2`}
                                 />
                                 <button className="bg-secondary hover:bg-secondary/80 text-white px-8 py-3 rounded-full font-bold transition-colors w-full sm:w-auto">
-                                    اشترك
+                                    {t('newsletter.subscribe')}
                                 </button>
                             </div>
 
-                            <p className="text-gray-500 text-sm leading-relaxed">
-                                من خلال الاشتراك فإنك توافق على سياسة الخصوصية لخدمتنا
+                            <p className={`text-gray-500 text-sm leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
+                                {t('newsletter.privacyNote')}
                             </p>
                         </div>
-
-
                     </div>
 
                     <div className="border-t border-gray-300 mb-12"></div>
@@ -52,27 +57,32 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
 
                 <div className='flex flex-col sm:flex-row gap-6 sm:gap-10 justify-between items-center py-8 sm:py-10'>
                     <Image src={logo.src} alt="logo" width={200} height={150} className="w-40 sm:w-48 md:w-56 h-auto" />
-                    <div className="flex flex-wrap justify-center sm:justify-start text-gray-700 gap-x-3 gap-y-2 text-sm sm:text-base">
-                        <a href="#" className="hover:text-primary transition-colors sm:border-l-2 border-gray-300 pl-3 whitespace-nowrap">شروط الاستخدام</a>
-                        <a href="#" className="hover:text-primary transition-colors sm:border-l-2 border-gray-300 pl-3 whitespace-nowrap">المساعدة والدعم</a>
-                        <a href="#" className="hover:text-primary transition-colors sm:border-l-2 border-gray-300 pl-3 whitespace-nowrap">من نحن</a>
-                        <a href="#" className="hover:text-primary transition-colors whitespace-nowrap">تمويل</a>
+                    <div className={`flex flex-wrap justify-center sm:justify-start text-gray-700 gap-x-3 gap-y-2 text-sm sm:text-base ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+                        <a href="#" className={`hover:text-primary transition-colors whitespace-nowrap ${isRTL ? 'sm:border-r-2 pr-3' : 'sm:border-l-2 pl-3'} border-gray-300`}>
+                            {t('links.termsOfUse')}
+                        </a>
+                        <a href="#" className={`hover:text-primary transition-colors whitespace-nowrap ${isRTL ? 'sm:border-r-2 pr-3' : 'sm:border-l-2 pl-3'} border-gray-300`}>
+                            {t('links.helpSupport')}
+                        </a>
+                        <a href="#" className={`hover:text-primary transition-colors whitespace-nowrap ${isRTL ? 'sm:border-r-2 pr-3' : 'sm:border-l-2 pl-3'} border-gray-300`}>
+                            {t('links.aboutUs')}
+                        </a>
+                        <a href="#" className="hover:text-primary transition-colors whitespace-nowrap">
+                            {t('links.financing')}
+                        </a>
                     </div>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-center sm:justify-end gap-3 text-gray-700 ">
-                            <span className="text-lg">00966507766965</span>
+                        <div className={`flex items-center justify-center sm:justify-end gap-3 text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             <Phone className="w-5 h-5 text-primary" />
-
+                            <span className="text-lg">{t('contact.phone')}</span>
                         </div>
-                        <div className="flex items-center justify-center sm:justify-end gap-3 text-gray-700">
-                            <span className="text-base">waqf.qard.h@gmail.com</span>
+                        <div className={`flex items-center justify-center sm:justify-end gap-3 text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             <Mail className="w-5 h-5 text-primary" />
-
+                            <span className="text-base">{t('contact.email')}</span>
                         </div>
-                        <div className="flex items-center justify-center sm:justify-end gap-3 text-gray-700">
-                            <span className="text-base">Saudi Arabia</span>
+                        <div className={`flex items-center justify-center sm:justify-end gap-3 text-gray-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             <MapPin className="w-5 h-5 text-primary" />
-
+                            <span className="text-base">{t('contact.location')}</span>
                         </div>
                     </div>
                 </div>
@@ -98,7 +108,6 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
                     </div>
                     {/* App download buttons */}
                     <div className="flex gap-4 mb-6 flex-wrap justify-center sm:justify-end ">
-
                         <div className="cursor-pointer hover:opacity-80 transition-opacity">
                             <Image
                                 src={googlePlay.src}
@@ -118,30 +127,27 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
                             />
                         </div>
                     </div>
-
-
                 </div>
 
                 {/* Powered by Mdarj and Copyright section */}
                 <div className="bg-gray-100 py-4 px-4 rounded-lg">
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                         {/* Copyright text */}
-                        <div className="text-center sm:text-right">
+                        <div className={`text-center ${isRTL ? 'sm:text-right' : 'sm:text-left'}`}>
                             <p className="text-gray-600 text-sm">
-                                حقوق الطبع والنشر © 2025  وقف الصدقة الجارية للإقراض الحسن. جميع الحقوق محفوظة
+                                {t('copyright')}
                             </p>
                         </div>
                         
                         {/* Powered by Mdarj */}
-                        <div className="flex items-center gap-2 text-gray-600">
-                            <span className="text-sm font-bold italic">Powered by Mdarj</span>
+                        <div className={`flex items-center gap-2 text-gray-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <span className="text-sm font-bold italic">{t('poweredBy')}</span>
                             <div className="flex items-center gap-2 bg-primary rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                                 <Image
                                     src={mdarjLogo.src}
                                     alt="Mdarj Logo"
                                     width={50}
                                     height={50}
-                                    
                                 />
                             </div>
                         </div>
@@ -150,6 +156,6 @@ const Footer = ({ contactUsFooter }: { contactUsFooter: boolean }) => {
             </div>
         </div>
     );
-};
+}
 
 export default Footer;

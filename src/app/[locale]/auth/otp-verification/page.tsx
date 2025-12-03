@@ -5,6 +5,7 @@ import Image from "next/image";
 import mainLogo from "@/assets/images/main-logo.png";
 import { resendOtp, userOtpVerification } from "@/actions/auth.actions";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function OTPVerification() {
     const [otp, setOtp] = useState(Array(6).fill(""));
@@ -16,6 +17,8 @@ export default function OTPVerification() {
     const [otpType, setOtpType] = useState<string>("login");
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const router = useRouter();
+    const t = useTranslations("auth");
+    const locale = useLocale();
     
     // Helper function to get cookie value
     const getCookie = (name: string): string | null => {
@@ -39,7 +42,7 @@ export default function OTPVerification() {
             setEmail(cookieEmail);
         } else {
             // Redirect to login if no email cookie found
-            router.push("/ar/auth/login");
+            router.push(`/${locale}/auth/login`);
             return;
         }
 
@@ -50,7 +53,7 @@ export default function OTPVerification() {
         console.log("Email from cookie:", cookieEmail);
         console.log("OTP Type from cookie:", cookieType);
         setIsInitialized(true);
-    }, [router]);
+    }, [router, locale]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (
@@ -153,24 +156,23 @@ export default function OTPVerification() {
                 if (otpType === "forgot_password") {
                     // Set the verified OTP in a cookie for the reset password page
                     document.cookie = `verified_otp=${otpCode}; path=/; max-age=3600`;
-                    router.push("/ar/auth/reset-password");
+                    router.push(`/${locale}/auth/reset-password`);
                 } else if (otpType === "register") {
                     // Clear cookies after registration verification
                     document.cookie = "otp_email=; path=/; max-age=0";
                     document.cookie = "otp_type=; path=/; max-age=0";
-                    router.push("/ar/auth/login");
+                    router.push(`/${locale}/auth/login`);
                 } else {
-                    // Login - clear cookies and go to home
                     document.cookie = "otp_email=; path=/; max-age=0";
                     document.cookie = "otp_type=; path=/; max-age=0";
                     router.push("/");
                 }
             } else if (response && response.success === false) {
-                setError("كود OTP غير صحيح. يرجى المحاولة مرة أخرى.");
+                setError(t("otp.error"));
             }
         } catch (error) {
             console.error("OTP verification failed:", error);
-            setError("كود OTP غير صحيح. يرجى المحاولة مرة أخرى.");
+            setError(t("otp.error"));
         } finally {
             setIsLoading(false);
         }
@@ -183,14 +185,14 @@ export default function OTPVerification() {
             const response = await resendOtp(email as string);
             console.log(response);
             if (response.success == true) {
-                setResendMessage("تم إرسال الكود بنجاح ✅");
+                setResendMessage(t("otp.resendSuccess"));
             }
             if (response.success == false) {
-                setResendMessage("فشل في إرسال الكود. يرجى المحاولة مرة أخرى. ❌");
+                setResendMessage(t("otp.resendError"));
             }
         } catch (error) {
             console.error("Resend OTP error:", error);
-            setResendMessage("فشل في إرسال الكود. يرجى المحاولة مرة أخرى.");
+            setResendMessage(t("otp.resendError"));
         } finally {
             setIsLoading(false);
         }
@@ -202,7 +204,7 @@ export default function OTPVerification() {
             <div className="w-full h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">جاري التحميل...</p>
+                    <p className="text-gray-600">{t("otp.loading")}</p>
                 </div>
             </div>
         );
@@ -218,18 +220,18 @@ export default function OTPVerification() {
             <div>
                 {/* Title */}
                 <h1 className="text-5xl font-bold text-primary text-start ">
-                    ادخال OTP
+                    {t("otp.title")}
                 </h1>
 
                 {/* Description */}
                 <p className="text-lg text-gray-600 mb-8 leading-relaxed text-start">
-                    تم إرسال رسالة OTP التي تحتوي على الكود الخاص بك إلى {email}
+                    {t("otp.description")} {email}
                 </p>
             </div>
 
             {/* Instruction */}
             <p className="text-center text-primary font-bold mb-6">
-                ادخل الكود المرسل المكون من 6 أرقام
+                {t("otp.instruction")}
             </p>
 
             {/* OTP Input Fields */}
@@ -268,15 +270,15 @@ export default function OTPVerification() {
             {/* Resend Link */}
             <div className="mb-10 flex flex-col gap-2 justify-center items-center">
                 <p className="text-base text-black">
-                    لم يصلني الكود؟ {" "}
+                    {t("otp.noCode")} {" "}
                     <button
                         onClick={handleResendCode}
                         className="text-primary hover:text-primary/80 cursor-pointer font-bold "
                     >
                         {isLoading ? (
-                            <span>جاري الإرسال...</span>
+                            <span>{t("otp.resending")}</span>
                         ) : (
-                            "إرسال مره أخري"
+                            t("otp.resend")
                         )}
                     </button>
                 </p>
@@ -296,10 +298,10 @@ export default function OTPVerification() {
                 {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>جاري التحقق...</span>
+                        <span>{t("otp.submitting")}</span>
                     </div>
                 ) : (
-                    "تأكيد"
+                    t("otp.submit")
                 )}
             </Button>
         </div>

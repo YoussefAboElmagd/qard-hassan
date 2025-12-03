@@ -1,30 +1,20 @@
+"use client"
+import { useTranslations, useLocale } from 'next-intl';
+
 export default function BoardMembers() {
-    const members = [
-        {
-            name: "الشيخ/ عبدالعزيز بن",
-            title: "محمد بن صالح السيف"
-        },
-        {
-            name: "الشيخ/ عبدالله بن ناصر",
-            title: "بن محمد المخيربش"
-        },
-        {
-            name: "الدكتور/ عمر بن سعيد بن",
-            title: "محمد آل مبطي"
-        },
-        {
-            name: "الدكتور/ يوسف بن سعيد",
-            title: "بن حمدان الغامدي"
-        }
-    ];
+    const t = useTranslations('aboutUs.boardMembers');
+    const locale = useLocale();
+    const isRTL = locale === 'ar';
+
+    const members = t.raw('members') as Array<{ name: string; title: string }>;
 
     return (
         <div className="py-20 px-4">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <h1 className="text-4xl md:text-5xl font-bold text-center mb-16">
-                    <span className="text-secondary me-2">أعضاء</span>
-                    <span className="text-primary"> مجلس الإدارة</span>
+                    <span className={`text-secondary ${isRTL ? 'me-2' : 'ms-2'}`}>{t('title')}</span>
+                    <span className="text-primary"> {t('titleHighlight')}</span>
                 </h1>
 
                 {/* Members Grid */}

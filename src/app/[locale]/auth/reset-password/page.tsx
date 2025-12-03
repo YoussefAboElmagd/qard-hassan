@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ResetPasswordFormData {
     password: string;
@@ -26,12 +27,14 @@ export default function ResetPassword() {
     const [success, setSuccess] = useState("");
     const [isInitialized, setIsInitialized] = useState(false);
     const router = useRouter();
+    const t = useTranslations("auth");
+    const locale = useLocale();
 
     const resetPasswordSchema = z.object({
-        password: z.string().nonempty("كلمة المرور مطلوبة").min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل").regex(/^[a-zA-Z0-9]+$/, "كلمة المرور يجب أن تحتوي على حروف وأرقام فقط"),
-        confirmPassword: z.string().nonempty("تأكيد كلمة المرور مطلوب")
+        password: z.string().nonempty(t("validation.passwordRequired")).min(8, t("validation.passwordMin")).regex(/^[a-zA-Z0-9]+$/, t("validation.passwordAlphanumeric")),
+        confirmPassword: z.string().nonempty(t("validation.confirmPasswordRequired"))
     }).refine((data) => data.password === data.confirmPassword, {
-        message: "كلمة المرور غير متطابقة",
+        message: t("validation.passwordMismatch"),
         path: ["confirmPassword"]
     });
 
@@ -62,14 +65,14 @@ export default function ResetPassword() {
 
         if (!cookieEmail || !cookieOtp) {
             // Redirect to forgot password if required data is missing
-            router.push("/ar/auth/forgot-password");
+            router.push(`/${locale}/auth/forgot-password`);
             return;
         }
 
         setEmail(cookieEmail);
         setOtp(cookieOtp);
         setIsInitialized(true);
-    }, [router]);
+    }, [router, locale]);
 
     const handleResetPassword = async (data: ResetPasswordFormData) => {
         setError("");
@@ -88,9 +91,9 @@ export default function ResetPassword() {
                 document.cookie = "otp_type=; path=/; max-age=0";
                 document.cookie = "verified_otp=; path=/; max-age=0";
                 
-                setSuccess("تم إعادة تعيين كلمة المرور بنجاح. سيتم التحويل إلى صفحة تسجيل الدخول...");
+                setSuccess(t("resetPassword.success"));
                 setTimeout(() => {
-                    router.push("/ar/auth/login");
+                    router.push(`/${locale}/auth/login`);
                 }, 2000);
             }
             if (response.success == false) {
@@ -107,7 +110,7 @@ export default function ResetPassword() {
             <div className="w-full h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">جاري التحميل...</p>
+                    <p className="text-gray-600">{t("resetPassword.loading")}</p>
                 </div>
             </div>
         );
@@ -122,12 +125,12 @@ export default function ResetPassword() {
 
             {/* Title */}
             <h1 className="text-4xl font-bold text-primary mb-8">
-                إعادة تعيين كلمة مرور
+                {t("resetPassword.title")}
             </h1>
 
             {/* Description */}
             <p className="text-lg text-gray-600 mb-12 leading-relaxed">
-                ادخل كلمة المرور الجديدة المكونة من 8 أرقام وحروف ورموز
+                {t("resetPassword.description")}
             </p>
 
             {/* Form */}
@@ -147,13 +150,13 @@ export default function ResetPassword() {
                 {/* Password Field */}
                 <div className="space-y-2">
                     <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
-                        كلمة المرور
+                        {t("resetPassword.password")}
                     </Label>
                     <div className="relative">
                         <Input
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="••••••"
+                            placeholder={t("resetPassword.passwordPlaceholder")}
                             className="h-14 placeholder:text-gray-400 border-2 border-gray-300 rounded-xl text-base focus:border-primary focus:ring-2 focus:ring-primary/20"
                             {...register("password")}
                             required
@@ -172,13 +175,13 @@ export default function ResetPassword() {
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
                     <Label htmlFor="confirmPassword" className="text-sm font-bold text-[#919499] block">
-                        تأكيد كلمة المرور
+                        {t("resetPassword.confirmPassword")}
                     </Label>
                     <div className="relative">
                         <Input
                             id="confirmPassword"
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="••••••"
+                            placeholder={t("resetPassword.confirmPasswordPlaceholder")}
                             className="h-14 placeholder:text-gray-400 border-2 border-gray-300 rounded-xl text-base focus:border-primary focus:ring-2 focus:ring-primary/20"
                             {...register("confirmPassword")}
                             required
@@ -200,7 +203,7 @@ export default function ResetPassword() {
                     disabled={isSubmitting}
                     className="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all mt-8"
                 >
-                    {isSubmitting ? "جاري التحديث..." : "تأكيد"}
+                    {isSubmitting ? t("resetPassword.submitting") : t("resetPassword.submit")}
                 </Button>
             </form>
         </div>

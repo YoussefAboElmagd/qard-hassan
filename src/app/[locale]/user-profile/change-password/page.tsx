@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Lock } from 'lucide-react'
 import React, { useState } from 'react'
 import { resetPassword } from '@/actions/profile.actions'
+import { useTranslations, useLocale } from 'next-intl'
 
 interface PasswordFormInterface {
     currentPassword: string,
@@ -13,6 +14,8 @@ interface PasswordFormInterface {
 }
 
 export default function ResetPasswordForm() {
+    const t = useTranslations('userProfile.changePasswordForm');
+    const locale = useLocale();
     const [passwordForm, setPasswordForm] = useState<PasswordFormInterface>({
         currentPassword: '',
         newPassword: '',
@@ -26,12 +29,12 @@ export default function ResetPasswordForm() {
         try {
             // Validation
             if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
-                alert('يرجى ملء جميع الحقول');
+                alert(t('fillAllFields'));
                 return;
             }
 
             if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-                alert('كلمة المرور الجديدة غير متطابقة');
+                alert(t('passwordMismatch'));
                 return;
             }
 
@@ -50,10 +53,10 @@ export default function ResetPasswordForm() {
                 confirmPassword: ''
             });
             
-            alert('تم تغيير كلمة المرور بنجاح');
+            alert(t('success'));
         } catch (error) {
             console.error('Error resetting password:', error);
-            alert('حدث خطأ أثناء تغيير كلمة المرور');
+            alert(t('error'));
         } finally {
             setIsSaving(false);
         }
@@ -74,7 +77,7 @@ export default function ResetPasswordForm() {
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                     <Lock className="w-6 h-6 text-gray-600" />
                 </div>
-                <h1 className="text-lg font-semibold text-primary">تغيير كلمة المرور</h1>
+                <h1 className="text-lg font-semibold text-primary">{t('title')}</h1>
             </div>
 
             {isLoading ? (
@@ -110,7 +113,7 @@ export default function ResetPasswordForm() {
                     {/* Current Password */}
                     <div className="space-y-2">
                         <Label htmlFor="currentPassword" className="text-start text-gray-700 font-bold">
-                            كلمة المرور الحالية
+                            {t('currentPassword')}
                         </Label>
                         <Input
                             id="currentPassword"
@@ -118,15 +121,15 @@ export default function ResetPasswordForm() {
                             value={passwordForm.currentPassword}
                             onChange={(e) => handleInputChange('currentPassword', e.target.value)}
                             className="text-start bg-white border-gray-200 rounded-lg h-12 px-4"
-                            dir="rtl"
-                            placeholder="أدخل كلمة المرور الحالية"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                            placeholder={t('currentPasswordPlaceholder')}
                         />
                     </div>
 
                     {/* New Password */}
                     <div className="space-y-2">
                         <Label htmlFor="newPassword" className="text-start text-gray-700 font-bold">
-                            كلمة المرور الجديدة
+                            {t('newPassword')}
                         </Label>
                         <Input
                             id="newPassword"
@@ -134,15 +137,15 @@ export default function ResetPasswordForm() {
                             value={passwordForm.newPassword}
                             onChange={(e) => handleInputChange('newPassword', e.target.value)}
                             className="text-start bg-white border-gray-200 rounded-lg h-12 px-4"
-                            dir="rtl"
-                            placeholder="أدخل كلمة المرور الجديدة"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                            placeholder={t('newPasswordPlaceholder')}
                         />
                     </div>
 
                     {/* Confirm New Password */}
                     <div className="space-y-2">
                         <Label htmlFor="confirmPassword" className="text-start text-gray-700 font-bold">
-                            تأكيد كلمة المرور الجديدة
+                            {t('confirmPassword')}
                         </Label>
                         <Input
                             id="confirmPassword"
@@ -150,8 +153,8 @@ export default function ResetPasswordForm() {
                             value={passwordForm.confirmPassword}
                             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                             className="text-start bg-white border-gray-200 rounded-lg h-12 px-4"
-                            dir="rtl"
-                            placeholder="أعد إدخال كلمة المرور الجديدة"
+                            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                            placeholder={t('confirmPasswordPlaceholder')}
                         />
                     </div>
 
@@ -163,7 +166,7 @@ export default function ResetPasswordForm() {
                             variant="outline"
                             className="w-auto px-8 py-3 border-2 border-secondary text-secondary hover:text-white hover:bg-secondary rounded-full font-bold bg-white disabled:opacity-50"
                         >
-                            {isSaving ? 'جارِ الحفظ...' : 'تغيير كلمة المرور'}
+                            {isSaving ? t('saving') : t('submit')}
                         </Button>
                     </div>
                 </div>

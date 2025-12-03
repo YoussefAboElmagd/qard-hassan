@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ForgotPasswordFormData {
     email: string;
@@ -20,9 +21,11 @@ export default function ForgotPassword() {
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
     const router = useRouter();
+    const t = useTranslations("auth");
+    const locale = useLocale();
 
     const forgotPasswordSchema = z.object({
-        email: z.string().nonempty("البريد الإلكتروني مطلوب").email("البريد الإلكتروني غير صالح"),
+        email: z.string().nonempty(t("validation.emailRequired")).email(t("validation.emailInvalid")),
     });
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ForgotPasswordFormData>({
@@ -41,9 +44,9 @@ export default function ForgotPassword() {
                 document.cookie = `otp_email=${encodeURIComponent(data.email)}; path=/; max-age=3600`;
                 document.cookie = `otp_type=forgot_password; path=/; max-age=3600`;
                 
-                setSuccess("تم إرسال رمز التحقق إلى البريد الإلكتروني المسجل. سيتم التحويل خلال 3 ثوانٍ...");
+                setSuccess(t("forgotPassword.success"));
                 setTimeout(() => {
-                    router.push("/ar/auth/otp-verification");
+                    router.push(`/${locale}/auth/otp-verification`);
                 }, 3000);
             }
             if (response.success == false) {
@@ -64,12 +67,12 @@ export default function ForgotPassword() {
 
                 {/* Title */}
                 <h1 className="text-4xl font-bold text-primary mb-8">
-                    استرداد الحساب
+                    {t("forgotPassword.title")}
                 </h1>
 
                 {/* Description */}
                 <p className="text-lg text-gray-600 mb-12 leading-relaxed">
-                    ادخل الإيميل المسجل لإرسال OTP
+                    {t("forgotPassword.description")}
                 </p>
 
                 {/* Form */}
@@ -89,12 +92,12 @@ export default function ForgotPassword() {
                     {/* Email Field */}
                     <div className="space-y-2">
                         <Label htmlFor="email" className="text-sm font-bold text-[#919499] block">
-                            الإيميل
+                            {t("forgotPassword.email")}
                         </Label>
                         <Input
                             id="email"
                             type="email"
-                            placeholder="Name@gmail.com"
+                            placeholder={t("forgotPassword.emailPlaceholder")}
                             className="h-14 placeholder:text-gray-400 border-2 border-gray-300 rounded-xl text-base focus:border-primary focus:ring-2 focus:ring-primary/20"
                             {...register("email")}
                             required
@@ -111,9 +114,9 @@ export default function ForgotPassword() {
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                جاري الإرسال...
+                                {t("forgotPassword.submitting")}
                             </>
-                        ) : "تأكيد"}
+                        ) : t("forgotPassword.submit")}
                     </Button>
                 </form>
             </div>

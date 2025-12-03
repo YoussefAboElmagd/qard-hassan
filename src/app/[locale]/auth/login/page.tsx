@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations, useLocale } from "next-intl";
 
 interface LoginFormData {
     login: string;
@@ -23,10 +24,12 @@ export default function Login() {
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
     const router = useRouter();
+    const t = useTranslations("auth");
+    const locale = useLocale();
 
     const loginSchema = z.object({
-        login: z.string().nonempty("البريد الإلكتروني مطلوب").email("البريد الإلكتروني غير صالح"),
-        password: z.string().nonempty("كلمة المرور مطلوبة").min(1, "كلمة المرور مطلوبة"),
+        login: z.string().nonempty(t("validation.emailRequired")).email(t("validation.emailInvalid")),
+        password: z.string().nonempty(t("validation.passwordRequired")).min(1, t("validation.passwordRequired")),
     });
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormData>({
@@ -46,9 +49,9 @@ export default function Login() {
                 document.cookie = `otp_email=${encodeURIComponent(data.login)}; path=/; max-age=3600`;
                 document.cookie = `otp_type=login; path=/; max-age=3600`;
                 
-                setSuccess("تم تسجيل الدخول بنجاح. سيتم التحويل إلى صفحة التحقق...");
+                setSuccess(t("login.success"));
                 setTimeout(() => {
-                    router.push("/ar/auth/otp-verification");
+                    router.push(`/${locale}/auth/otp-verification`);
                 }, 2000);
             }
             if (response.success == false) {
@@ -56,7 +59,7 @@ export default function Login() {
             }
         } catch (error) {
             console.error("Login failed:", error);
-            setError("فشل في تسجيل الدخول. يرجى التحقق من البيانات المدخلة.");
+            setError(t("login.error"));
         }
     }
 
@@ -69,7 +72,7 @@ export default function Login() {
                 </div>
             </div>
             <h1 className="text-4xl font-bold text-primary mb-10">
-                مرحباً بكم من جديد!
+                {t("login.title")}
             </h1>
 
             {/* Login Form */}
@@ -89,13 +92,13 @@ export default function Login() {
                 {/* Email Field */}
                 <div className="space-y-2">
                     <Label htmlFor="login" className="text-sm font-bold text-[#919499] block">
-                        الايميل
+                        {t("login.email")}
                     </Label>
                     <Input
                         {...register("login")}
                         id="login"
                         type="email"
-                        placeholder="Name@gmail.com"
+                        placeholder={t("login.emailPlaceholder")}
                         className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         required
                     />
@@ -105,14 +108,14 @@ export default function Login() {
                 {/* Password Field */}
                 <div className="space-y-2">
                     <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
-                        كلمة المرور
+                        {t("login.password")}
                     </Label>
                     <div className="relative">
                         <Input
                             {...register("password")}
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="••••••"
+                            placeholder={t("login.passwordPlaceholder")}
                             className="h-12 placeholder:text-gray-400 border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             required
                         />
@@ -130,7 +133,7 @@ export default function Login() {
                 {/* Forgot Password Link */}
                 <div className="text-end mb-6">
                     <Link href="/auth/forgot-password" className="text-sm text-secondary hover:text-secondary/90 font-bold">
-                        نسيت كلمة المرور؟
+                        {t("login.forgotPassword")}
                     </Link>
                 </div>
 
@@ -140,15 +143,15 @@ export default function Login() {
                     disabled={isSubmitting}
                     className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold h-14 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all mt-8"
                 >
-                    {isSubmitting ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+                    {isSubmitting ? t("login.submitting") : t("login.submit")}
                 </Button>
 
                 {/* Register Link */}
                 <div className="text-center mt-6">
                     <p className="text-sm text-gray-600">
-                        ليس لديك حساب؟{"  "}
+                        {t("login.noAccount")}{"  "}
                         <Link href="/auth/register" className="text-secondary hover:text-secondary/90 font-bold">
-                            انشاء حساب
+                            {t("login.createAccount")}
                         </Link>
                     </p>
                 </div>

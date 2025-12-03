@@ -1,7 +1,16 @@
-import { redirect } from 'next/navigation'
+"use client";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 
 export default function UserProfile() {
-  // Redirect to personal-info page by default
-  redirect('/ar/user-profile/personal-info')
+  const router = useRouter();
+  const locale = useLocale();
+  
+  useEffect(() => {
+    router.push(`/${locale}/user-profile/personal-info`);
+  }, [router, locale]);
+  
+  return null;
 }
-
