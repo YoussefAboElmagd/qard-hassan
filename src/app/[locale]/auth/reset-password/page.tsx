@@ -149,7 +149,7 @@ export default function ResetPassword() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="password" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("resetPassword.password")}
                     </Label>
                     <div className="relative">
@@ -174,7 +174,7 @@ export default function ResetPassword() {
 
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="confirmPassword" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("resetPassword.confirmPassword")}
                     </Label>
                     <div className="relative">

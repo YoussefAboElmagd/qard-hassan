@@ -3,8 +3,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { RiGraduationCapFill } from 'react-icons/ri'
 import SaudiRiyalIcon from '@/assets/images/SaudiRiyalSymbol.svg'
+import { useTranslations } from 'next-intl'
 
 export default function LoanInfo() {
+    const t = useTranslations('userProfile.loanInfo');
     // Sample data - in real app this would come from props or API
     const loanData = {
         loanAmount: 10000,
@@ -17,11 +19,11 @@ export default function LoanInfo() {
     }
 
     const paymentSchedule = [
-        { date: 'May 5, 2026', amount: 833, status: 'تسديد', statusColor: 'bg-primary', statusTextColor: 'text-white' },
-        { date: 'May 5, 2026', amount: 833, status: 'مسدد', statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
-        { date: 'May 5, 2026', amount: 833, status: 'مسدد', statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
-        { date: 'May 5, 2026', amount: 833, status: 'مسدد', statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
-        { date: 'May 5, 2026', amount: 833, status: 'مسدد', statusColor: 'bg-green-100', statusTextColor: 'text-green-700' }
+        { date: 'May 5, 2026', amount: 833, status: t('unpaid'), statusColor: 'bg-primary', statusTextColor: 'text-white' },
+        { date: 'May 5, 2026', amount: 833, status: t('paid'), statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
+        { date: 'May 5, 2026', amount: 833, status: t('paid'), statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
+        { date: 'May 5, 2026', amount: 833, status: t('paid'), statusColor: 'bg-green-100', statusTextColor: 'text-green-700' },
+        { date: 'May 5, 2026', amount: 833, status: t('paid'), statusColor: 'bg-green-100', statusTextColor: 'text-green-700' }
     ]
 
 
@@ -37,8 +39,8 @@ export default function LoanInfo() {
                                 <RiGraduationCapFill className='text-primary text-3xl' />
                             </div>
                             <div className="text-right">
-                                <h2 className="text-xl font-semibold text-gray-800">قرض للدراسة</h2>
-                                <p className="text-gray-600">12 شهر</p>
+                                <h2 className="text-xl font-semibold text-gray-800">{t('loanForStudy')}</h2>
+                                <p className="text-gray-600">12 {t('month')}</p>
                             </div>
 
                         </div>
@@ -67,14 +69,14 @@ export default function LoanInfo() {
                                 {/* first row */}
                                 <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                                     <div>
-                                        <p className="text-gray-600 mb-1">مبلغ القرض</p>
+                                        <p className="text-gray-600 mb-1">{t('loanAmount')}</p>
                                         <p className="text-lg font-semibold text-primary">
                                             {loanData.loanAmount.toLocaleString()}
                                             <SaudiRiyalIcon className="fill-secondary inline-block w-5 h-5" />
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-600 mb-1">مبلغ المتبقي</p>
+                                        <p className="text-gray-600 mb-1">{t('remainingAmount')}</p>
                                         <p className="text-lg font-semibold text-primary">
                                             {loanData.remainingAmount.toLocaleString()}
                                             <SaudiRiyalIcon className="fill-secondary inline-block w-5 h-5" />
@@ -84,26 +86,26 @@ export default function LoanInfo() {
                                 {/* second row */}
                                 <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                                     <div>
-                                        <p className="text-gray-600 mb-1">عدد الأقساط</p>
+                                        <p className="text-gray-600 mb-1">{t('installmentCount')}</p>
                                         <p className="text-lg font-semibold text-primary">{loanData.installmentCount}</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-600 mb-1">قيمة القسط</p>
+                                        <p className="text-gray-600 mb-1">{t('installmentValue')}</p>
                                         <p className="text-lg font-semibold text-primary">
                                             {loanData.installmentAmount} {""}
                                             <SaudiRiyalIcon className="fill-secondary inline-block w-4 h-4" />
-                                            /شهر
+                                            {t('perMonth')}
                                         </p>
                                     </div>
                                 </div>
                                 {/* third row */}
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-gray-600 mb-1">تاريخ الطلب</p>
+                                        <p className="text-gray-600 mb-1">{t('applicationDate')}</p>
                                         <p className="text-lg text-primary font-bold">{loanData.applicationDate}</p>
                                     </div>
                                     <div>
-                                        <p className="text-gray-600 mb-1">تاريخ الانتهاء</p>
+                                        <p className="text-gray-600 mb-1">{t('endDate')}</p>
                                         <p className="text-lg text-primary font-bold">{loanData.startDate}</p>
                                     </div>
                                 </div>
@@ -116,20 +118,20 @@ export default function LoanInfo() {
                 <Card className="border border-gray-300 rounded-2xl">
                     <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-2xl font-bold text-primary">أقساط</h3>
+                            <h3 className="text-2xl font-bold text-primary">{t('installments')}</h3>
                             <Button
                                 variant="outline"
                                 className="text-secondary border-secondary hover:bg-secondary hover:text-white cursor-pointer rounded-full px-6 font-bold"
                             >
-                                تسديد معجل
+                                {t('acceleratedPayment')}
                             </Button>
                         </div>
 
                         {/* Table Header */}
                         <div className="flex justify-between p-4 px-6 text-gray-600 font-medium  border-t border-gray-100">
-                            <div className="">المبلغ</div>
-                            <div className="">التاريخ</div>
-                            <div className="">الحالة</div>
+                            <div className="">{t('amount')}</div>
+                            <div className="">{t('date')}</div>
+                            <div className="">{t('status')}</div>
                         </div>
 
                         {/* Table Rows */}

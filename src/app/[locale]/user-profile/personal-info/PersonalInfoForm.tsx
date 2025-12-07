@@ -3,7 +3,7 @@ import { getProfileData, editProfileData } from '@/actions/profile.actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useUser } from '@/contexts/UserContext'
 import DatePicker from 'react-datepicker'
 import { registerLocale } from 'react-datepicker'
@@ -40,7 +40,7 @@ export default function PersonalInfoForm() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    const getUserProfileData = async () => {
+    const getUserProfileData = useCallback(async () => {
         try {
             const data = await getProfileData();
             console.log(data);
@@ -70,7 +70,7 @@ export default function PersonalInfoForm() {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [t])
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -116,7 +116,7 @@ export default function PersonalInfoForm() {
 
     useEffect(() => {
         getUserProfileData();
-    }, [])
+    }, [getUserProfileData])
 
     return (
         <>

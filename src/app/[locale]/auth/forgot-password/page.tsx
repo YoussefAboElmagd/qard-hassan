@@ -91,7 +91,7 @@ export default function ForgotPassword() {
 
                     {/* Email Field */}
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-bold text-[#919499] block">
+                        <Label htmlFor="email" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                             {t("forgotPassword.email")}
                         </Label>
                         <Input

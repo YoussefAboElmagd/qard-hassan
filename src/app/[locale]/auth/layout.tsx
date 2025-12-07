@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import authSocials from "@/assets/images/authSocialMedia.png";
 import iphone from "@/assets/images/iphone-register.png";
 import iphoneLogin from "@/assets/images/iphone-login.png";
@@ -13,22 +14,23 @@ import bgPattern from "@/assets/images/authPattern.png";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
+    const t = useTranslations("auth.layout");
     const page = pathname.includes('register') ? 'register' : pathname.includes('login') ? 'login' : pathname.includes('otp-verification') ? 'otp-verification' : pathname.includes('forgot-password') ? 'forgot-password' : pathname.includes('reset-password') ? 'reset-password' : '';
     return (
         <>
-            <div className="min-h-screen flex">
+            <div dir="rtl" className="min-h-screen flex">
 
                 {/* Right Half - App Promotion */}
                 <div className="w-[40%] bg-gradient-to-br from-primary to-primary/90 flex flex-col items-center pt-16 p-8 text-white relative z-0 shadow-[inset_10px_0_10px_3px_rgba(0,0,0,0.3)]">
-                    <div className="text-start max-w-md">
+                    <div className=" max-w-md">
                         {/* Main Headline */}
                         <h2 className="text-4xl font-bold mb-6" >
-                            تمويل خير.. <span className="text-secondary">بلا فوائد</span>
+                            {t("title")} <span className="text-secondary">{t("titleHighlight")}</span>
                         </h2>
 
                         {/* Description */}
                         <p className="text-lg leading-relaxed mb-12 opacity-90 font-bold" >
-                            نقدم لك قروضًا حسنة بدون فوائد ربوية، متوافقة مع أحكام الشريعة الإسلامية. نؤمن بأن التمويل يجب أن يكون وسيلة لتمكين الأفراد والمجتمعات، لا عبئًا يثقل كاهلهم.
+                            {t("description")}
                         </p>
 
                         {/* App Store Badges */}
@@ -117,5 +119,4 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         </>
     )
 }
-
 export default AuthLayout;

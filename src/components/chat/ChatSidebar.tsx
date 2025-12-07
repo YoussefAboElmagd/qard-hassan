@@ -3,6 +3,7 @@
 import { Plus, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getMyTickets, createTicket } from "@/actions/contact-us.actions";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Ticket {
     id: number;
@@ -18,6 +19,9 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarProps) {
+    const t = useTranslations('chat');
+    const locale = useLocale();
+    const isRTL = locale === "ar";
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -59,11 +63,11 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                         );
                     }
                 } else {
-                    alert(result.error || "حدث خطأ أثناء إنشاء التذكرة");
+                    alert(result.error || t('errorSendingMessage'));
                 }
             } catch (error) {
                 console.error("Error creating ticket:", error);
-                alert("حدث خطأ أثناء إنشاء التذكرة");
+                alert(t('errorSendingMessage'));
             } finally {
                 setIsCreatingTicket(false);
             }
@@ -78,11 +82,11 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
     const getStatusLabel = (status: string) => {
         switch (status) {
             case "new":
-                return "جديد";
+                return t('new');
             case "in_progress":
-                return "جاري العمل";
+                return t('inProgress');
             case "closed":
-                return "مغلق";
+                return t('closed');
             default:
                 return status;
         }
@@ -107,7 +111,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
             <div className="px-5 py-5 border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-gray-800 font-bold text-xl">تذاكر الدعم</h2>
+                        <h2 className="text-gray-800 font-bold text-xl">{t('supportTickets')}</h2>
                         <span className="text-primary font-bold text-base bg-primary/10 rounded-full px-3 py-1 min-w-[36px] text-center">
                             {tickets.length}
                         </span>
@@ -115,7 +119,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                     <button
                         onClick={() => setShowNewTicketInput(!showNewTicketInput)}
                         className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-all shadow-sm hover:shadow-md active:scale-95"
-                        title="إنشاء تذكرة جديدة"
+                        title={t('createNewTicket')}
                     >
                         <Plus className="w-5 h-5" />
                     </button>
@@ -125,10 +129,10 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                 <div>
                     <input
                         type="text"
-                        placeholder="ابحث عن تذكرة..."
+                        placeholder={t('searchTicket')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full text-right bg-white border border-gray-200 h-11 rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400"
+                        className={`w-full bg-white border border-gray-200 h-11 rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400 ${isRTL ? 'text-right' : 'text-left'}`}
                     />
                 </div>
             </div>
@@ -139,8 +143,8 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                     <textarea
                         value={newTicketMessage}
                         onChange={(e) => setNewTicketMessage(e.target.value)}
-                        placeholder="اكتب رسالتك هنا..."
-                        className="w-full text-right bg-white border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary min-h-[100px] resize-none placeholder:text-gray-400"
+                        placeholder={t('writeMessage')}
+                        className={`w-full bg-white border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary min-h-[100px] resize-none placeholder:text-gray-400 ${isRTL ? 'text-right' : 'text-left'}`}
                         autoFocus
                     />
                     <div className="flex gap-2 mt-3">
@@ -149,7 +153,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                             disabled={isCreatingTicket || !newTicketMessage.trim()}
                             className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all font-medium shadow-sm hover:shadow-md"
                         >
-                            {isCreatingTicket ? "جاري الإنشاء..." : "إنشاء تذكرة"}
+                            {isCreatingTicket ? t('creating') : t('createTicket')}
                         </button>
                         <button
                             onClick={() => {
@@ -158,7 +162,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                             }}
                             className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-medium"
                         >
-                            إلغاء
+                            {t('cancel')}
                         </button>
                     </div>
                 </div>
@@ -170,7 +174,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                     <div className="flex items-center justify-center py-12 text-gray-400">
                         <div className="text-center">
                             <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3"></div>
-                            <p>جاري التحميل...</p>
+                            <p>{t('loading')}</p>
                         </div>
                     </div>
                 ) : filteredTickets.length === 0 ? (
@@ -179,7 +183,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
                                 <MessageSquare className="w-8 h-8 text-gray-400" />
                             </div>
-                            <p className="text-gray-500 text-sm">لا توجد تذاكر</p>
+                            <p className="text-gray-500 text-sm">{t('noTickets')}</p>
                         </div>
                     </div>
                 ) : (
@@ -195,7 +199,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                                 )}
                                 className={`px-5 py-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-all ${
                                     selectedId === ticket.ticket_number 
-                                        ? "bg-primary/5 border-l-4 border-l-primary" 
+                                        ? `bg-primary/5 ${isRTL ? 'border-r-4 border-r-primary' : 'border-l-4 border-l-primary'}` 
                                         : ""
                                 }`}
                             >
@@ -209,7 +213,7 @@ export function ChatSidebar({ selectedId, onSelectConversation }: ChatSidebarPro
                                         {getStatusLabel(ticket.status)}
                                     </span>
                                 </div>
-                                <p className="text-sm text-gray-600 text-right line-clamp-2 leading-relaxed">
+                                <p className={`text-sm text-gray-600 line-clamp-2 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
                                     {ticket.message}
                                 </p>
                             </div>

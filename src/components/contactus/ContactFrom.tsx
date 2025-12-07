@@ -79,7 +79,7 @@ export default function ContactForm() {
           ></textarea>
           {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>}
         </div>
-        <button type="submit" disabled={isSubmitting} className="bg-secondary rounded-lg text-white py-2 sm:py-3 cursor-pointer px-5 sm:px-6 font-semibold ms-auto block hover:bg-secondary/90 transition-colors text-sm sm:text-base w-full sm:w-auto mt-auto disabled:opacity-70 disabled:cursor-not-allowed">
+        <button type="submit" disabled={isSubmitting} className="bg-secondary rounded-lg text-white py-2 sm:py-3 cursor-pointer px-5 sm:px-6 font-semibold block hover:bg-secondary/90 transition-colors text-sm sm:text-base w-full sm:w-auto mt-auto disabled:opacity-70 disabled:cursor-not-allowed sm:ml-auto">
           {isSubmitting ? t("form.submitting") : t("form.submit")}
         </button>
       </form>

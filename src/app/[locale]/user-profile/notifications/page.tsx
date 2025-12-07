@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTranslations } from "next-intl";
+import React, { useState, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { Search, SlidersHorizontal, MoreVertical } from "lucide-react";
 import mainLogo from "@/assets/images/logo.png";
@@ -11,21 +11,21 @@ interface Notification {
     message: string;
     time: string;
     type: "approved" | "reminder";
-    isStarred: boolean;
     isRead: boolean;
 }
 
 function NotificationsPage() {
     const t = useTranslations("userProfile.notificationsPage");
+    const locale = useLocale();
+    const isRTL = locale === "ar";
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [notifications, setNotifications] = useState<Notification[]>([
+    const notifications = useMemo<Notification[]>(() => [
         {
             id: "1",
             message: t("loanApproved"),
             time: `8 ${t("minAgo")}`,
             type: "approved",
-            isStarred: true,
             isRead: false,
         },
         {
@@ -33,7 +33,6 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
         {
@@ -41,7 +40,6 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
         {
@@ -49,7 +47,6 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
         {
@@ -57,7 +54,6 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
         {
@@ -65,7 +61,6 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
         {
@@ -73,18 +68,9 @@ function NotificationsPage() {
             message: t("paymentReminder"),
             time: `8 ${t("minAgo")}`,
             type: "reminder",
-            isStarred: false,
             isRead: true,
         },
-    ]);
-
-    const toggleStar = (id: string) => {
-        setNotifications(prev =>
-            prev.map(notif =>
-                notif.id === id ? { ...notif, isStarred: !notif.isStarred } : notif
-            )
-        );
-    };
+    ], [t]);
 
     const filteredNotifications = notifications.filter(notif =>
         notif.message.toLowerCase().includes(searchQuery.toLowerCase())
@@ -94,7 +80,7 @@ function NotificationsPage() {
         <div className="w-full  mx-auto">
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="px-6 py-5 border-b border-gray-100">
-                    <h1 className="text-xl font-bold text-gray-800 text-right">
+                    <h1 className={`text-xl font-bold text-gray-800 ${isRTL ? 'text-right' : 'text-left'}`}>
                         {t("title")}
                     </h1>
                 </div>
@@ -104,15 +90,14 @@ function NotificationsPage() {
                             <SlidersHorizontal className="w-5 h-5 text-[var(--primary)]" />
                         </button>
                         <div className="flex-1 relative">
-                            <div className="flex items-center border border-gray-200 rounded-xl px-4 py-2.5 bg-white focus-within:border-[var(--primary)] transition-colors">
-                                <Search className="w-5 h-5 text-gray-400 ml-2" />
+                            <div className={`flex items-center border border-gray-200 rounded-xl px-4 py-2.5 bg-white focus-within:border-[var(--primary)] transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                <Search className={`w-5 h-5 text-gray-400 ${isRTL ? 'mr-2' : 'ml-2'}`} />
                                 <input
                                     type="text"
                                     placeholder={t("search")}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="flex-1 outline-none text-right text-gray-600 placeholder:text-gray-400 bg-transparent"
-                                    dir="rtl"
+                                    className={`flex-1 outline-none text-gray-600 placeholder:text-gray-400 bg-transparent ${isRTL ? 'text-right' : 'text-left'}`}
                                 />
                             </div>
                         </div>
@@ -125,7 +110,6 @@ function NotificationsPage() {
                         <NotificationItem
                             key={notification.id}
                             notification={notification}
-                            onToggleStar={toggleStar}
                         />
                     ))}
                 </div>
@@ -136,17 +120,19 @@ function NotificationsPage() {
 
 interface NotificationItemProps {
     notification: Notification;
-    onToggleStar: (id: string) => void;
 }
 
-function NotificationItem({ notification, onToggleStar }: NotificationItemProps) {
+function NotificationItem({ notification }: NotificationItemProps) {
+    const locale = useLocale();
+    const isRTL = locale === "ar";
+    
     const getIndicatorColor = () => {
         return notification.type === "approved" ? "bg-green-500" : "bg-[#d9a645]";
     };
 
     return (
         <div className="px-6 py-4 hover:bg-gray-50/50 transition-colors">
-            <div className="flex flex-row-reverse items-center gap-4">
+            <div className={`flex items-center gap-4 flex-row-reverse`}>
 
 
                 {/* Three Dots Menu */}
@@ -155,7 +141,7 @@ function NotificationItem({ notification, onToggleStar }: NotificationItemProps)
                 </button>
 
                 {/* Content */}
-                <div className="flex-1 text-right">
+                <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                     <p className="text-sm text-gray-700 leading-relaxed mb-1">
                         {notification.message}
                     </p>
@@ -168,7 +154,7 @@ function NotificationItem({ notification, onToggleStar }: NotificationItemProps)
                 <div className="flex items-center gap-0 flex-shrink-0">
 
                     {/* Logo */}
-                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#d9a645] flex items-center justify-center bg-white ml-1.5">
+                    <div className={`w-10 h-10 rounded-full overflow-hidden border-2 border-[#d9a645] flex items-center justify-center bg-white me-1.5`}>
                         <Image
                             src={mainLogo}
                             alt="Logo"

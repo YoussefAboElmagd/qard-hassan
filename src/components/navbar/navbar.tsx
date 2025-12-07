@@ -173,7 +173,7 @@ const Navbar = ({ variant = "transparent", className }: NavbarProps) => {
                                 onClick={() => setIsGovernanceDropdownOpen(false)}
                                 className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-secondary/10 hover:text-primary focus:bg-secondary/10 focus:text-primary transition-colors outline-none focus:outline-none"
                               >
-                                <span className="me-2 h-2 w-2 rounded-full bg-secondary/70 group-hover:bg-secondary" aria-hidden="true" />
+                                <span className="ms-2 h-2 w-2 rounded-full bg-secondary/70 group-hover:bg-secondary" aria-hidden="true" />
                                 <span className="flex-1">{tGov(item.key)}</span>
                               </Link>
                             ) : (
@@ -218,7 +218,7 @@ const Navbar = ({ variant = "transparent", className }: NavbarProps) => {
         </ul>
 
         {/* Desktop CTA Buttons */}
-        <div className="hidden md:flex justify-end items-center gap-2 lg:gap-4 me-4">
+        <div className="hidden md:flex justify-end items-center gap-2 lg:gap-4 ms-4">
           {/* Notification Bell - Always visible */}
           {isAuthenticated && <NotificationBell />}
           
@@ -271,7 +271,7 @@ const Navbar = ({ variant = "transparent", className }: NavbarProps) => {
               </button>
               {/* Dropdown Menu */} 
               {isUserDropdownOpen && (
-                <div className="absolute top-full end-0 w-64 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100/50 py-3 pb-0 z-50 backdrop-blur-sm">
+                <div className="absolute top-full end-0 w-64 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100/50 py-3 pb-0 z-50 backdrop-blur-sm" dir={locale === "ar" ? "rtl" : "ltr"}>
                   {/* User Info Section */}
                   <div className="px-5 py-3 border-b border-gray-100/60 bg-gradient-to-r from-gray-50/50 to-gray-100/30">
                     <div className="flex items-center gap-3">
@@ -420,7 +420,7 @@ const Navbar = ({ variant = "transparent", className }: NavbarProps) => {
                               className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-secondary/10 hover:text-primary focus:bg-secondary/10 focus:text-primary transition-colors"
                             >
                               <span className="flex-1">{tGov(item.key)}</span>
-                              <span className="ms-2 h-2 w-2 rounded-full bg-secondary/70" aria-hidden="true" />
+                              <span className="me-2 h-2 w-2 rounded-full bg-secondary/70" aria-hidden="true" />
                             </Link>
                           ) : (
                             <div className="block px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed">

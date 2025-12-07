@@ -4,6 +4,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { CalendarIcon, ChevronDown } from 'lucide-react';
 import FileUploadField from './FileUploadField';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Country {
     id: number;
@@ -48,20 +49,24 @@ export default function GuarantorInformationForm({
     guarantorTermsChecked,
     onGuarantorTermsChange
 }: GuarantorInformationFormProps) {
+    const t = useTranslations('userProfile.guarantorInfo');
+    const tLoan = useTranslations('userProfile.loanRequest');
+    const locale = useLocale();
+    const isRTL = locale === "ar";
 
     return (
         <Card className="w-full bg-gray-50 border-0 shadow-none">
             <CardHeader className="p-0">
-                <CardTitle className="text-primary text-xl font-bold bg-[#D0D5DD52] px-6 py-3 rounded-xl">
-                    بيانات الكفيل
+                <CardTitle className={`text-primary text-xl font-bold bg-[#D0D5DD52] px-6 py-3 rounded-xl ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('title')}
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Name */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorName" className="block text-gray-600 font-medium">
-                            الاسم
+                        <Label htmlFor="guarantorName" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('name')}
                         </Label>
                         <Input
                             id="guarantorName"
@@ -75,8 +80,8 @@ export default function GuarantorInformationForm({
 
                     {/* Mobile Number */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorPhone" className="block text-gray-600 font-medium">
-                            رقم الجوال
+                        <Label htmlFor="guarantorPhone" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('phone')}
                         </Label>
                         <Input
                             id="guarantorPhone"
@@ -90,8 +95,8 @@ export default function GuarantorInformationForm({
 
                     {/* Email */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorEmail" className="block text-gray-600 font-medium">
-                            البريد الإلكتروني
+                        <Label htmlFor="guarantorEmail" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('email')}
                         </Label>
                         <Input
                             id="guarantorEmail"
@@ -105,8 +110,8 @@ export default function GuarantorInformationForm({
 
                     {/* Nationality */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorNationality" className="block text-gray-600 font-medium">
-                            الجنسية
+                        <Label htmlFor="guarantorNationality" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('nationality')}
                         </Label>
                         <div className="relative">
                             <select
@@ -115,12 +120,12 @@ export default function GuarantorInformationForm({
                                 onChange={(e) => onChange('nationalityId', e.target.value)}
                                 className="h-12 w-full rounded-lg border border-gray-300 bg-white px-3 appearance-none cursor-pointer text-gray-600"
                             >
-                                <option value="اختيار">اختيار</option>
+                                <option value={tLoan('select')}>{tLoan('select')}</option>
                                 {countries.map((c: Country) => (
                                     <option key={c.id} value={String(c.id)}>{c.name}</option>
                                 ))}
                             </select>
-                            <ChevronDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            <ChevronDown className={`absolute top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none ${isRTL ? 'left-3' : 'right-3'}`} />
                         </div>
                     </div>
 
@@ -129,8 +134,8 @@ export default function GuarantorInformationForm({
 
                     {/* ID Number */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorIdNumber" className="block text-gray-600 font-medium">
-                            رقم الهوية
+                        <Label htmlFor="guarantorIdNumber" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('idNumber')}
                         </Label>
                         <Input
                             id="guarantorIdNumber"
@@ -144,8 +149,8 @@ export default function GuarantorInformationForm({
 
                     {/* Expiration Date */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorExpirationDate" className="block text-gray-600 font-medium">
-                            تاريخ الانتهاء
+                        <Label htmlFor="guarantorExpirationDate" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('expiryDate')}
                         </Label>
                         <div className="relative">
                             <Input
@@ -162,8 +167,8 @@ export default function GuarantorInformationForm({
 
                     {/* City */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorCity" className="block text-gray-600 font-medium">
-                            المدينة
+                        <Label htmlFor="guarantorCity" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('city')}
                         </Label>
                         <Input
                             id="guarantorCity"
@@ -177,8 +182,8 @@ export default function GuarantorInformationForm({
                     
                     {/* Address */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorAddress" className="block text-gray-600 font-medium">
-                            عنوان السكن
+                        <Label htmlFor="guarantorAddress" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('address')}
                         </Label>
                         <Input
                             id="guarantorAddress"
@@ -194,8 +199,8 @@ export default function GuarantorInformationForm({
 
                     {/* Work Mobile */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorWorkMobile" className="block text-gray-600 font-medium">
-                            جوال العمل
+                        <Label htmlFor="guarantorWorkMobile" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('workPhone')}
                         </Label>
                         <Input
                             id="guarantorWorkMobile"
@@ -209,8 +214,8 @@ export default function GuarantorInformationForm({
 
                     {/* Work Title */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorWorkTitle" className="block text-gray-600 font-medium">
-                            عنوان العمل
+                        <Label htmlFor="guarantorWorkTitle" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('workTitle')}
                         </Label>
                         <Input
                             id="guarantorWorkTitle"
@@ -224,8 +229,8 @@ export default function GuarantorInformationForm({
 
                     {/* Contact Person */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorContactPerson" className="block text-gray-600 font-medium">
-                            اسم شخص آخر يمكن الاتصال به
+                        <Label htmlFor="guarantorContactPerson" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('contactPerson')}
                         </Label>
                         <Input
                             id="guarantorContactPerson"
@@ -239,8 +244,8 @@ export default function GuarantorInformationForm({
 
                     {/* Mobile Number (Another) */}
                     <div className="space-y-2">
-                        <Label htmlFor="guarantorContactMobile" className="block text-gray-600 font-medium">
-                            رقم جوال شخص آخر يمكن الاتصال به
+                        <Label htmlFor="guarantorContactMobile" className={`block text-gray-600 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('contactPersonPhone')}
                         </Label>
                         <Input
                             id="guarantorContactMobile"
@@ -255,7 +260,7 @@ export default function GuarantorInformationForm({
                     {/* Signature Upload */}
                     <FileUploadField
                         id="guarantorSignature"
-                        label="التوقيع"
+                        label={t('signature')}
                         selectedFile={data.signatureFile}
                         onChange={(e) => {
                             const file = e.target.files?.[0];
@@ -268,7 +273,7 @@ export default function GuarantorInformationForm({
                 <div>
                     <div className="pb-4 mt-10">
                         <h2 className="text-[#919499] text-2xl font-bold text-right border-b border-gray-200 pb-4 mb-10">
-                            مرفقات هامة
+                            {t('importantAttachments')}
                         </h2>
                     </div>
                     <div className="space-y-8 mb-10">
@@ -276,7 +281,7 @@ export default function GuarantorInformationForm({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <FileUploadField
                                 id="guarantorNationalAddress"
-                                label="إرفاق صورة العنوان الوطني"
+                                label={t('nationalAddressImage')}
                                 selectedFile={data.nationalAddressFile}
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -285,7 +290,7 @@ export default function GuarantorInformationForm({
                             />
                             <FileUploadField
                                 id="guarantorValidId"
-                                label="هوية سارية الصلاحية"
+                                label={t('validId')}
                                 selectedFile={data.validIdFile}
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -298,7 +303,7 @@ export default function GuarantorInformationForm({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <FileUploadField
                                 id="guarantorIncomeProof"
-                                label="إرفاق تعريف حديث للراتب للكفيل"
+                                label={t('incomeProof')}
                                 selectedFile={data.incomeProofFile}
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -307,7 +312,7 @@ export default function GuarantorInformationForm({
                             />
                             <FileUploadField
                                 id="guarantorCreditReport"
-                                label="تقرير حديث من (سمة) للكفيل"
+                                label={t('creditReport')}
                                 selectedFile={data.creditReportFile}
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -319,16 +324,17 @@ export default function GuarantorInformationForm({
                 </div>
 
                 {/* Checkbox */}
-                <div className="flex items-start gap-3 pt-4">
+                <div className={`flex items-start gap-3 pt-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
                     <input
                         type="checkbox"
                         id="guarantorTerms"
                         checked={guarantorTermsChecked}
                         onChange={onGuarantorTermsChange}
-                        className="mt-1 w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+                        className="mt-1 w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 flex-shrink-0"
                     />
-                    <Label htmlFor="guarantorTerms" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
-                    أقر انا الكفيل الغارم بصحة كامل البيانات المكتوبة اعلاه واحتمل كامل المسؤولية في حال ثبوت خلاف ذلك.                    </Label>
+                    <Label htmlFor="guarantorTerms" className={`text-sm text-gray-600 leading-relaxed cursor-pointer flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {t('guarantorTerms')}
+                    </Label>
                 </div>
             </CardContent>
         </Card>

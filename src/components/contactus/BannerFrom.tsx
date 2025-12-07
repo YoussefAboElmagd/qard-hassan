@@ -42,19 +42,19 @@ export default function BannerFrom() {
 
         {/* Contact Information */}
         <div className="mb-8 sm:mb-12 lg:mb-16 space-y-4 sm:space-y-6">
-          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end flex-row-reverse" : "justify-start flex-row"}`}>
             <span className="text-sm sm:text-base lg:text-lg">{tFooter("contact.phone")}</span>
             <span>
               <PhoneCall size={18} className="sm:w-5 sm:h-5" />
             </span>
           </div>
-          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+          <div className={`flex gap-x-3 sm:gap-x-4 items-center ${isRTL ? "justify-end flex-row-reverse" : "justify-start flex-row"}`}>
             <span className="text-sm sm:text-base lg:text-lg">{tFooter("contact.email")}</span>
             <span>
               <Mail size={18} className="sm:w-5 sm:h-5" />
             </span>
           </div>
-          <div className={`flex gap-x-3 sm:gap-x-4 items-start ${isRTL ? "justify-end" : "justify-start flex-row-reverse"}`}>
+          <div className={`flex gap-x-3 sm:gap-x-4 items-start ${isRTL ? "justify-end flex-row-reverse" : "justify-start flex-row"}`}>
             <span className={`text-sm sm:text-base lg:text-lg leading-relaxed ${isRTL ? "text-end" : "text-start"}`}>
               {tFooter("contact.location")}
             </span>

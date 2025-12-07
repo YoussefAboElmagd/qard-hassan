@@ -4,6 +4,23 @@
   themes: light --default;
 }
 
+/* Font Face Declarations */
+@font-face {
+  font-family: 'GK Dinkum Regular';
+  src: url('../assets/fonts/GE Dinkum Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GK Dinkum Bold';
+  src: url('../assets/fonts/GE Dinkum Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer theme {
   a, span {
     display: inline-block;
@@ -31,10 +48,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-gk-dinkum-regular: var(--font-gk-dinkum-regular);
-  --font-gk-dinkum-bold: var(--font-gk-dinkum-bold);
-  --font-family-gk-dinkum-regular: var(--font-gk-dinkum-regular), ui-sans-serif, system-ui, sans-serif;
-  --font-family-gk-dinkum-bold: var(--font-gk-dinkum-bold), ui-sans-serif, system-ui, sans-serif;
+  --font-gk-dinkum-regular: 'GK Dinkum Regular', ui-sans-serif, system-ui, sans-serif;
+  --font-gk-dinkum-bold: 'GK Dinkum Bold', ui-sans-serif, system-ui, sans-serif;
+  --font-family-gk-dinkum-regular: 'GK Dinkum Regular', ui-sans-serif, system-ui, sans-serif;
+  --font-family-gk-dinkum-bold: 'GK Dinkum Bold', ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

@@ -91,7 +91,7 @@ export default function Login() {
 
                 {/* Email Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="login" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="login" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("login.email")}
                     </Label>
                     <Input
@@ -107,7 +107,7 @@ export default function Login() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="password" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("login.password")}
                     </Label>
                     <div className="relative">

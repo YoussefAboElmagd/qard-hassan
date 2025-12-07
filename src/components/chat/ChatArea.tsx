@@ -9,6 +9,7 @@ import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useUser } from "@/contexts/UserContext";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Message {
   id: string;
@@ -29,14 +30,10 @@ interface ChatAreaProps {
   status: string;
 }
 
-const STATUS_CONFIG = {
-  new: { label: "جديد", color: "bg-blue-100 text-blue-600" },
-  "in_progress": { label: "جاري العمل", color: "bg-amber-100 text-amber-600" },
-  resolved: { label: "تم الحل", color: "bg-green-100 text-green-600" },
-  closed: { label: "مغلق", color: "bg-gray-200 text-gray-600" },
-};
-
 export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: ChatAreaProps) {
+  const t = useTranslations('chat');
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +42,13 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useUser();
+
+  const STATUS_CONFIG = {
+    new: { label: t('new'), color: "bg-blue-100 text-blue-600" },
+    "in_progress": { label: t('inProgress'), color: "bg-amber-100 text-amber-600" },
+    resolved: { label: t('resolved'), color: "bg-green-100 text-green-600" },
+    closed: { label: t('closed'), color: "bg-gray-200 text-gray-600" },
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -117,17 +121,17 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
 
   const handleSend = async () => {
     if (status === "closed") {
-      alert("لا يمكن إرسال رسائل في تذكرة مغلقة");
+      alert(t('cannotSendClosedTicket'));
       return;
     }
     
     if (!chatRoomId) {
-      alert("خطأ: لا يوجد معرف غرفة الدردشة");
+      alert(t('errorNoChatRoom'));
       return;
     }
     
     if (!user?.user_id || !user?.user_partner_id) {
-      alert("خطأ: بيانات المستخدم غير مكتملة. يرجى تسجيل الدخول مرة أخرى.");
+      alert(t('errorIncompleteUserData'));
       return;
     }
     
@@ -144,7 +148,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
       }
 
       const messageData = {
-        text: selectedFile && !trimmedMessage ? `📎 تم مشاركة ملف: ${selectedFile.name}` : trimmedMessage,
+        text: selectedFile && !trimmedMessage ? `📎 ${t('fileShared')} ${selectedFile.name}` : trimmedMessage,
         userId: user.user_id,
         userPartnerId: user.user_partner_id,
         userName: user.name,
@@ -163,7 +167,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.");
+      alert(t('errorSendingMessage'));
     } finally {
       setIsUploading(false);
     }
@@ -183,7 +187,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-5 shadow-sm">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex-1 text-right">
+          <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
             <h2 className="text-xl font-bold text-gray-800 mb-1">{ticketNumber}</h2>
             <p className="text-sm text-gray-500 line-clamp-1">{initialMessage}</p>
           </div>
@@ -199,7 +203,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div className="w-14 h-14 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-500 font-medium">جاري تحميل المحادثة...</p>
+              <p className="text-gray-500 font-medium">{t('loadingConversation')}</p>
             </div>
           </div>
         ) : messages.length === 0 ? (
@@ -208,9 +212,9 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
               <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
                 <MessageSquare className="w-12 h-12 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">ابدأ المحادثة</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">{t('startConversation')}</h3>
               <p className="text-gray-500 leading-relaxed">
-                لم يتم إرسال أي رسائل بعد. اكتب رسالتك أدناه للتواصل مع فريق الدعم.
+                {t('noMessagesYet')}
               </p>
             </div>
           </div>
@@ -228,18 +232,18 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
                     <div className="bg-gradient-to-br from-primary to-primary/90 text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-md hover:shadow-lg transition-all max-w-lg">
                       {message.fileUrl ? (
                         <div className="space-y-2">
-                          <p className="text-right leading-relaxed">{message.text}</p>
+                          <p className={`leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>{message.text}</p>
                           <a 
                             href={message.fileUrl} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="block text-xs underline hover:opacity-80 text-right bg-white/10 px-3 py-1 rounded-lg"
+                            className={`block text-xs underline hover:opacity-80 bg-white/10 px-3 py-1 rounded-lg ${isRTL ? 'text-right' : 'text-left'}`}
                           >
-                            📎 عرض الملف
+                            📎 {t('viewFile')}
                           </a>
                         </div>
                       ) : (
-                        <p className="text-right leading-relaxed">{message.text}</p>
+                        <p className={`leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>{message.text}</p>
                       )}
                     </div>
                     <span className="text-xs text-gray-500 px-1">
@@ -253,18 +257,18 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
                     <div className="bg-white px-5 py-2 rounded-2xl rounded-tl-sm shadow-md hover:shadow-lg transition-all max-w-lg border border-gray-200">
                       {message.fileUrl ? (
                         <div className="space-y-2">
-                          <p className="text-right text-gray-800 leading-relaxed">{message.text}</p>
+                          <p className={`text-gray-800 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>{message.text}</p>
                           <a 
                             href={message.fileUrl} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="block text-xs text-primary underline hover:opacity-80 text-right bg-primary/5 px-3 py-1 rounded-lg"
+                            className={`block text-xs text-primary underline hover:opacity-80 bg-primary/5 px-3 py-1 rounded-lg ${isRTL ? 'text-right' : 'text-left'}`}
                           >
-                            📎 عرض الملف
+                            📎 {t('viewFile')}
                           </a>
                         </div>
                       ) : (
-                        <p className="text-right text-gray-800 leading-relaxed">{message.text}</p>
+                        <p className={`text-gray-800 leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>{message.text}</p>
                       )}
                     </div>
                     <span className="text-xs text-gray-500 px-1">
@@ -288,7 +292,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
           {/* Closed Ticket Message */}
           {status === "closed" && (
             <div className="mb-4 flex items-center justify-center gap-2 bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl">
-              <span className="text-sm font-medium">⚠️ هذه التذكرة مغلقة ولا يمكن إرسال رسائل جديدة</span>
+              <span className="text-sm font-medium">⚠️ {t('ticketClosed')}</span>
             </div>
           )}
           
@@ -296,11 +300,11 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
           {selectedFile && (
             <div className="mb-3 flex items-center gap-3 bg-blue-50 border border-blue-200 p-3 rounded-xl">
               <Paperclip className="w-5 h-5 text-primary shrink-0" />
-              <span className="text-sm text-gray-700 flex-1 text-right font-medium truncate">{selectedFile.name}</span>
+              <span className={`text-sm text-gray-700 flex-1 font-medium truncate ${isRTL ? 'text-right' : 'text-left'}`}>{selectedFile.name}</span>
               <button
                 onClick={handleRemoveFile}
                 className="text-red-500 hover:text-red-700 hover:bg-red-100 p-1.5 rounded-lg transition-all"
-                title="إزالة الملف"
+                title={t('removeFile')}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -319,7 +323,7 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
             <button 
               onClick={() => fileInputRef.current?.click()}
               className="p-3 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 hover:border-primary shrink-0"
-              title={status === "closed" ? "التذكرة مغلقة" : "إرفاق ملف"}
+              title={status === "closed" ? t('ticketClosedPlaceholder') : t('attachFile')}
               disabled={isUploading || status === "closed"}
             >
               <Paperclip className="w-5 h-5" />
@@ -331,15 +335,15 @@ export function ChatArea({ ticketNumber, chatRoomId, initialMessage, status }: C
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && !isUploading && status !== "closed" && handleSend()}
-                placeholder={status === "closed" ? "التذكرة مغلقة" : "اكتب رسالتك هنا..."}
+                placeholder={status === "closed" ? t('ticketClosedPlaceholder') : t('writeMessageHere')}
                 disabled={isUploading || status === "closed"}
-                className="w-full text-right bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 pr-5 pl-16 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white transition-all placeholder:text-gray-400 disabled:opacity-50 disabled:bg-gray-100 text-base"
+                className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white transition-all placeholder:text-gray-400 disabled:opacity-50 disabled:bg-gray-100 text-base ${isRTL ? 'text-right pr-5 pl-16' : 'text-left pl-5 pr-16'}`}
               />
               <button
                 onClick={handleSend}
                 disabled={(!messageText.trim() && !selectedFile) || isUploading || status === "closed"}
                 className="absolute left-2 top-1/2 -translate-y-1/2 bg-primary text-white rounded-xl w-11 h-11 flex items-center justify-center hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95"
-                title={status === "closed" ? "التذكرة مغلقة" : "إرسال"}
+                title={status === "closed" ? t('ticketClosedPlaceholder') : t('send')}
               >
                 {isUploading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

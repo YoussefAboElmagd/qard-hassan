@@ -27,7 +27,7 @@ export default function StrategicGoals() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                     {goals.map((goal) => (
-                        <div key={goal.key} className={`flex items-start gap-6 ${isRTL ? 'text-right flex-row' : 'text-left flex-row-reverse'}`}>
+                        <div key={goal.key} className={`flex items-start gap-6 ${isRTL ? 'text-right flex-row-reverse' : 'text-left flex-row'}`}>
                             <div className="flex-shrink-0">
                                 <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center">
                                     <Icon icon={goal.icon} className="text-primary text-3xl" />

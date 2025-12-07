@@ -106,7 +106,7 @@ export default function Register() {
                 )}
                 {/* Name Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="name" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("register.name")}
                     </Label>
                     <Input
@@ -121,7 +121,7 @@ export default function Register() {
                 </div>
                 {/* Email Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="email" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("register.email")}
                     </Label>
                     <Input
@@ -136,7 +136,7 @@ export default function Register() {
                 </div>  
                 {/* Phone Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="phone" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("register.phone")}
                     </Label>
                     <Input
@@ -155,7 +155,7 @@ export default function Register() {
                 <div className="grid grid-cols-2 gap-4">
                     {/* ID Number Field */}
                     <div className="space-y-2">
-                        <Label htmlFor="idNumber" className="text-sm font-bold text-[#919499] block">
+                        <Label htmlFor="idNumber" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                             {t("register.nationalId")}
                         </Label>
                         <Input
@@ -171,8 +171,8 @@ export default function Register() {
                     </div>
 
                     {/* Expiry Date Field */}
-                    <div className="space-y-2" dir="rtl">
-                        <Label htmlFor="expiryDate" className="text-sm font-bold text-[#919499] block">
+                    <div className="space-y-2" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                        <Label htmlFor="expiryDate" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                             {t("register.expiryDate")}
                         </Label>
                         <Input
@@ -189,7 +189,7 @@ export default function Register() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="password" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("register.password")}
                     </Label>
                     <div className="relative">
@@ -214,7 +214,7 @@ export default function Register() {
 
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-bold text-[#919499] block">
+                    <Label htmlFor="confirmPassword" className={`text-sm font-bold text-[#919499] block ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                         {t("register.confirmPassword")}
                     </Label>
                     <div className="relative">

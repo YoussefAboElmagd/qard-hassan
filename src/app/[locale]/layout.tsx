@@ -1,21 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { UserProvider } from '@/contexts/UserContext';
 import { ToastProvider } from '@/components/providers/toast-provider';
-
-
-const GK_Dinkum_Regular = localFont({
-  src: "../../assets/fonts/GE Dinkum Regular.ttf",
-  variable: "--font-gk-dinkum-regular",
-});
-
-const GK_Dinkum_Bold = localFont({
-  src: "../../assets/fonts/GE Dinkum Bold.ttf",
-  variable: "--font-gk-dinkum-bold",
-});
 
 
 export const metadata: Metadata = {
@@ -38,7 +26,7 @@ export default async function RootLayout({
   const messages = await getMessages();
   const dir = locale === "ar" ? "rtl" : "ltr";
 
-  const fontClass = locale === "ar" ? `${GK_Dinkum_Regular.variable} ${GK_Dinkum_Bold.variable} font-gk-dinkum-regular` : "font-sans";
+  const fontClass = locale === "ar" ? "font-gk-dinkum-regular" : "font-sans";
 
   return (
     <html lang={locale} dir={dir}>

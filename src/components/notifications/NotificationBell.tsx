@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { Search, SlidersHorizontal, MoreVertical, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,7 +13,6 @@ interface Notification {
   message: string;
   time: string;
   type: "approved" | "reminder";
-  isStarred: boolean;
   isRead: boolean;
 }
 
@@ -23,17 +22,18 @@ interface NotificationBellProps {
 
 export function NotificationBell({ initialNotifications }: NotificationBellProps) {
   const t = useTranslations("userProfile.notificationsPage");
+  const locale = useLocale();
+  const isRTL = locale === "ar";
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const defaultNotifications: Notification[] = [
+  const defaultNotifications: Notification[] = useMemo(() => [
     {
       id: "1",
       message: t("loanApproved"),
       time: `8 ${t("minAgo")}`,
       type: "approved",
-      isStarred: true,
       isRead: false,
     },
     {
@@ -41,7 +41,6 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
       message: t("paymentReminder"),
       time: `8 ${t("minAgo")}`,
       type: "reminder",
-      isStarred: false,
       isRead: true,
     },
     {
@@ -49,7 +48,6 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
       message: t("paymentReminder"),
       time: `8 ${t("minAgo")}`,
       type: "reminder",
-      isStarred: false,
       isRead: true,
     },
     {
@@ -57,13 +55,13 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
       message: t("paymentReminder"),
       time: `8 ${t("minAgo")}`,
       type: "reminder",
-      isStarred: false,
       isRead: true,
     },
-  ];
+  ], [t]);
 
-  const [notifications, setNotifications] = useState<Notification[]>(
-    initialNotifications ?? defaultNotifications
+  const notifications = useMemo<Notification[]>(
+    () => initialNotifications ?? defaultNotifications,
+    [initialNotifications, defaultNotifications]
   );
 
   // Close dropdown when clicking outside
@@ -79,14 +77,6 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const toggleStar = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === id ? { ...notif, isStarred: !notif.isStarred } : notif
-      )
-    );
-  };
 
   const filteredNotifications = notifications.filter((notif) =>
     notif.message.toLowerCase().includes(searchQuery.toLowerCase())
@@ -138,15 +128,14 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
                   <SlidersHorizontal className="w-5 h-5 text-[#d9a645]" />
                 </button>
                 <div className="flex-1">
-                  <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 bg-white focus-within:border-[var(--primary)] transition-colors">
-                    <Search className="w-4 h-4 text-gray-400 ml-2" />
+                  <div className={`flex items-center border border-gray-200 rounded-xl px-3 py-2.5 bg-white focus-within:border-[var(--primary)] transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <Search className={`w-4 h-4 text-gray-400 ${isRTL ? 'mr-2' : 'ml-2'}`} />
                     <input
                       type="text"
                       placeholder={t("search")}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1 outline-none text-right text-gray-600 placeholder:text-gray-400 bg-transparent text-sm"
-                      dir="rtl"
+                      className={`flex-1 outline-none text-gray-600 placeholder:text-gray-400 bg-transparent text-sm ${isRTL ? 'text-right' : 'text-left'}`}
                     />
                   </div>
                 </div>
@@ -165,7 +154,6 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
                     <NotificationListItem
                       key={notification.id}
                       notification={notification}
-                      onToggleStar={toggleStar}
                       isLast={index === filteredNotifications.length - 1}
                     />
                   ))}
@@ -192,49 +180,32 @@ export function NotificationBell({ initialNotifications }: NotificationBellProps
 
 interface NotificationListItemProps {
   notification: Notification;
-  onToggleStar: (id: string) => void;
   isLast: boolean;
 }
 
 function NotificationListItem({
   notification,
-  onToggleStar,
   isLast,
 }: NotificationListItemProps) {
-  const isStarred = notification.isStarred;
-
   return (
     <div
       className={`
-        ${isStarred ? "bg-[#e8f4f8] rounded-xl" : "bg-transparent"}
-        ${!isLast && !isStarred ? "border-b border-gray-200" : ""}
+        bg-transparent
+        ${!isLast ? "border-b border-gray-200" : ""}
         py-3 px-2
       `}
     >
       <div className="flex flex-row-reverse items-center gap-3">
-        {/* Star Icon for Starred / Three Dots for Regular */}
+        {/* Three Dots Menu */}
         <div className="flex-shrink-0">
-          {isStarred ? (
-            <button
-              onClick={() => onToggleStar(notification.id)}
-              className="p-1 hover:bg-white/50 rounded-full transition-colors"
-            >
-              <StarOutlineIcon className="w-5 h-5 text-[#d9a645]" />
-            </button>
-          ) : (
-            <button className="p-1 hover:bg-gray-100 rounded-full transition-colors">
-              <MoreVertical className="w-4 h-4 text-gray-400" />
-            </button>
-          )}
+          <button className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+            <MoreVertical className="w-4 h-4 text-gray-400" />
+          </button>
         </div>
 
         {/* Content */}
         <div className="flex-1 text-right">
-          <p
-            className={`text-xs leading-relaxed mb-1 ${
-              isStarred ? "text-[#1a5276] font-medium" : "text-gray-700"
-            }`}
-          >
+          <p className="text-xs leading-relaxed mb-1 text-gray-700">
             {notification.message}
           </p>
           <p className="text-[10px] text-gray-400">{notification.time}</p>
@@ -252,30 +223,11 @@ function NotificationListItem({
               className="object-contain"
             />
           </div>
-          {/* Vertical Indicator - Only for non-starred items */}
-          {!isStarred && (
-            <div className="w-1 h-11 rounded-full bg-[#d9a645]" />
-          )}
+          {/* Vertical Indicator */}
+          <div className="w-1 h-11 rounded-full bg-[#d9a645]" />
         </div>
       </div>
     </div>
-  );
-}
-
-// Custom Star Outline Icon to match the design
-function StarOutlineIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2L9.09 8.26 2 9.27l5.18 4.73L5.82 21 12 17.27 18.18 21l-1.36-6.95L22 9.27l-7.09-1.01L12 2z" />
-    </svg>
   );
 }
 

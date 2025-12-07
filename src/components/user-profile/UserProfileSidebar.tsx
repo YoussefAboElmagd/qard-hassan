@@ -137,7 +137,7 @@ const Sidebar = () => {
                         </div>
                     </div>
                     {/* Floating add button with menu */}
-                    <div ref={menuRef} className="absolute top-[50%] -right-3 sm:-right-5 transform translate-y-[-50%]">
+                    <div ref={menuRef} className={`absolute top-[50%] transform translate-y-[-50%] ${locale === 'ar' ? '-right-3 sm:-right-5' : '-left-3 sm:-left-5'}`}>
                         <button 
                             onClick={toggleMenu}
                             disabled={isUploading}
@@ -152,10 +152,10 @@ const Sidebar = () => {
 
                         {/* Small Menu */}
                         {showMenu && !isUploading && (
-                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-lg shadow-xl border border-gray-100 py-1 min-w-[160px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className={`absolute top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-100 py-1 min-w-[160px] z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${locale === 'ar' ? 'left-1/2 transform -translate-x-1/2' : 'right-1/2 transform translate-x-1/2'}`}>
                                 <button
                                     onClick={handleUploadClick}
-                                    className="w-full px-4 py-2.5 text-right text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 justify-end"
+                                    className={`w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 ${locale === 'ar' ? 'text-right justify-end' : 'text-left justify-start'}`}
                                 >
                                     <span>{t('updatePhoto')}</span>
                                     <Icon icon="mdi:image-edit" className="w-4 h-4" />

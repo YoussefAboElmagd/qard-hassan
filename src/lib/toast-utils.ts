@@ -80,6 +80,18 @@ export function handleApiError(error: { success: boolean; message?: string; stat
         return;
       }
       
+      // Allowed routes where expired session should not trigger redirection
+      const allowedRoutes = ['/', '/about-us', '/governance', "/contact-us"];
+      const pathWithoutLocale = currentPath.replace(/^\/(ar|en)/, '') || '/';
+      const normalizedPath = pathWithoutLocale === '' ? '/' : pathWithoutLocale;
+      const isAllowedRoute = allowedRoutes.includes(normalizedPath);
+      
+      if (isAllowedRoute) {
+        // Show toast but don't redirect
+        showSessionExpiredToast(error.message);
+        return;
+      }
+      
       showSessionExpiredToast(error.message);
       
       setTimeout(() => {

@@ -3,6 +3,7 @@ import React from 'react';
 import { RiGraduationCapFill } from 'react-icons/ri';
 import RiyalIcon from '@/assets/images/SaudiRiyalSymbol.svg';
 import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface LoanCardProps {
     id: number;
@@ -26,15 +27,25 @@ export default function LoanCard({
     number_of_installments,
     submission_date,
     status,
-    buttonText = status === "under_review" ? "قيد المراجعة" : status === "approved" ? "تسديد" : "مرفوض",
+    buttonText,
     buttonColor = status === "under_review" ? "bg-gray-400" : status === "approved" ? "bg-green-700" : "bg-red-700",
     buttonHoverColor = status === "under_review" ? "hover:bg-gray-500" : status === "approved" ? "hover:bg-green-800" : "hover:bg-red-800",
     onButtonClick
 }: LoanCardProps) {
     const router = useRouter();
+    const t = useTranslations('userProfile.loanCard');
+    const locale = useLocale();
+    const isRTL = locale === "ar";
     const progressPercentage = status === "under_review" ? 0 : status === "approved" ? 50 : 100;
+    
+    const getButtonText = () => {
+        if (buttonText) return buttonText;
+        if (status === "under_review") return t('underReview');
+        if (status === "approved") return t('approved');
+        return t('rejected');
+    };
     return (
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-300 p-6 mx-auto" dir="rtl">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-300 p-6 mx-auto" dir={isRTL ? "rtl" : "ltr"}>
             {/* Top section with icon, title and amount */}
             <div className='flex items-center justify-between border-b border-gray-100 pb-4 mb-4' >
                 <div className="flex items-center gap-2">
@@ -43,7 +54,7 @@ export default function LoanCard({
                     </div>
                     <div>
                         <h3 className='text-lg font-bold'>{loan_reason}</h3>
-                        <p className='text-sm text-gray-500'>{number_of_installments} شهر</p>
+                        <p className='text-sm text-gray-500'>{number_of_installments} {t('month')}</p>
                     </div>
                 </div>
                 <div className=''>
@@ -66,10 +77,10 @@ export default function LoanCard({
                     <div className='text-gray-500 text-sm'>{submission_date}</div>
                 </div>
                 <button 
-                    onClick={onButtonClick || (() => router.push('/ar/user-profile/loans/loan-info'))} 
+                    onClick={onButtonClick || (() => router.push(`/${locale}/user-profile/loans/loan-info`))} 
                     className={`${buttonColor} text-white px-5 py-2 rounded-xl font-bold ${buttonHoverColor} cursor-pointer transition-colors`}
                 >
-                    {buttonText}
+                    {getButtonText()}
                 </button>
             </div>
 
