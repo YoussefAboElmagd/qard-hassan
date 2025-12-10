@@ -210,11 +210,11 @@ export async function userRegister(userData: RegisterFormData) {
     }
 }
 
-export async function resendOtp(email: string) {
+export async function resendOtp(email: string, type: string) {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/resend-otp`, {
             email: email,
-            type: "forgot_password",
+            type: type,
         });
         return response.data;
     } catch (error) {

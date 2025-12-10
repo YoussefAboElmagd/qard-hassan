@@ -617,8 +617,18 @@
       "amount": "المبلغ",
       "date": "التاريخ",
       "status": "الحالة",
+      "actions": "الإجراءات",
       "paid": "مسدد",
-      "unpaid": "تسديد"
+      "unpaid": "تسديد",
+      "overdue": "متأخر",
+      "underReview": "قيد المراجعة",
+      "approved": "تمت الموافقة",
+      "rejected": "مرفوض",
+      "noLoanId": "لم يتم تحديد رقم القرض",
+      "fetchError": "فشل في جلب تفاصيل القرض",
+      "noData": "لا تتوفر بيانات القرض",
+      "requestDeferral": "طلب استثناء",
+      "pay": "تسديد"
     }
   },
   "chat": {

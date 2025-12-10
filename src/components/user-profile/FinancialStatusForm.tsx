@@ -5,8 +5,6 @@ import { Input } from '../ui/input';
 import SaudiRiyalIcon from '@/assets/images/SaudiRiyalSymbol.svg';
 import FileUploadField from './FileUploadField';
 import { useTranslations, useLocale } from 'next-intl';
-
-// Simple data structure - everything in one place!
 interface FinancialData {
     incomeAmount: string;
     rentAmount: string;

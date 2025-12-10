@@ -696,7 +696,6 @@ function LoanRequestForm() {
                     </div>
  
                     <div className="mt-8">
-                        {/* Much simpler! Just pass the data and one change handler */}
                         <FinancialStatusForm
                             data={financialData}
                             onChange={handleFinancialChange}
@@ -704,7 +703,6 @@ function LoanRequestForm() {
                     </div>
 
                     <div className="mt-8">
-                        {/* Much simpler! Just pass the data, one change handler, and countries list */}
                         <GuarantorInformationForm
                             data={guarantorData}
                             onChange={handleGuarantorChange}

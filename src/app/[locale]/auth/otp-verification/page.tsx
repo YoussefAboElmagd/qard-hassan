@@ -182,7 +182,7 @@ export default function OTPVerification() {
         setIsLoading(true);
         setResendMessage("");
         try {
-            const response = await resendOtp(email as string);
+            const response = await resendOtp(email as string, otpType as string);
             console.log(response);
             if (response.success == true) {
                 setResendMessage(t("otp.resendSuccess"));

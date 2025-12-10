@@ -617,8 +617,18 @@
       "amount": "Amount",
       "date": "Date",
       "status": "Status",
+      "actions": "Actions",
       "paid": "Paid",
-      "unpaid": "Unpaid"
+      "unpaid": "Unpaid",
+      "overdue": "Overdue",
+      "underReview": "Under Review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "noLoanId": "No loan ID provided",
+      "fetchError": "Failed to fetch loan details",
+      "noData": "No loan data available",
+      "requestDeferral": "Request Deferral",
+      "pay": "Pay"
     }
   },
   "chat": {

@@ -13,7 +13,6 @@ interface Country {
     image?: string;
 }
 
-// Simple data structure - everything in one place!
 interface GuarantorData {
     name: string;
     nationalId: string;

@@ -22,6 +22,7 @@ interface LoanCardProps {
 }
 
 export default function LoanCard({
+    id,
     loan_amount,
     loan_reason,
     number_of_installments,
@@ -77,7 +78,7 @@ export default function LoanCard({
                     <div className='text-gray-500 text-sm'>{submission_date}</div>
                 </div>
                 <button 
-                    onClick={onButtonClick || (() => router.push(`/${locale}/user-profile/loans/loan-info`))} 
+                    onClick={onButtonClick || (() => router.push(`/${locale}/user-profile/loans/loan-info?loanId=${id}`))} 
                     className={`${buttonColor} text-white px-5 py-2 rounded-xl font-bold ${buttonHoverColor} cursor-pointer transition-colors`}
                 >
                     {getButtonText()}

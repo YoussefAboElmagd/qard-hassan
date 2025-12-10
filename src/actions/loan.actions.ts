@@ -146,3 +146,46 @@ export async function getActiveLoanDetails() {
         };
     }
 }
+
+export async function getLoanDetailsWithPayments(loanId: number) {
+    try {
+        const cookieStore = await cookies();
+        const sessionId = cookieStore.get("session_id")?.value;
+        const api_session = cookieStore.get("api_session")?.value;
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/loan/${loanId}/details?`, {
+            headers: {
+                Cookie: `api_session=${api_session}; session_id=${sessionId}`,
+            },
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error getting loan details with payments:", error);
+        throw error;
+    }
+}   
+
+export async function installmentRequestDeferral(installmentId: number) {
+    try {
+        const cookieStore = await cookies();
+        const sessionId = cookieStore.get("session_id")?.value;
+        const api_session = cookieStore.get("api_session")?.value;
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/installment/${installmentId}/request-deferral`, {
+            headers: {
+                Cookie: `api_session=${api_session}; session_id=${sessionId}`,
+            },
+            withCredentials: true
+        });
+        return {
+            success: true,
+            message: response.data.message || "تم طلب استثناء القسط بنجاح",
+            data: response.data,
+        };
+    } catch (error: unknown) {
+        console.error("Error requesting installment deferral:", error);
+        return {
+            success: false,
+            message: (error as AxiosError<{ message?: string; error?: string }>).response?.data?.message || (error as AxiosError<{ message?: string; error?: string }>).response?.data?.error || "حدث خطأ غير متوقع",
+        };
+    }
+}
